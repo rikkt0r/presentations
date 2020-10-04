@@ -9,7 +9,7 @@ A few of my presentations, feel free to use them. CC0 license, as this is not co
 
 
 ### Created using reveal.js. To read presentations:
-sh```
+```
 python3 -m http.server
 ```
 and enter http://localhost:8000
