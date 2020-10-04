@@ -1,0 +1,533 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>PyQt5 na bogatości</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h1>Szkolenie PyQt</h1>
+				</section>
+				<section>
+					<section>
+						<h2>co to Qt?</h2>
+					</section>
+					<section>
+						<h2>Tia..</h2>
+						<img src="images/batman.jpg">
+					</section>
+					<section>
+						<ul>
+							<li>Okienka</li>
+							<li>Drivery baz danych</li>
+							<li>Multimedia (dosłownie wszystko)</li>
+							<li>Sieć</li>
+							<li>Drukarki itd</li>
+							<li>Urządzenia mobilne</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Generalnie all in one</h2>
+					</section>
+
+					<section>
+						<h2>Konkurencja</h2>
+						<ul>
+							<li>GTK</li>
+							<li>WxWidgets</li>
+							<li>WinAPI (MS Foundation Class Library)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Kto używa?</h2>
+						<p>Comarch i NASA</p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1>Projektowanie gui</h1>
+					</section>
+					<section>
+						<h2>Z palca</h2>
+						<p>Co za chwile będziemy robić</p>
+					</section>
+					<section>
+						<p>QtCreator/QtDesigner</p>
+						<img src="images/qtcreator.png">
+					</section>
+					<section>
+						<h2>Zasada działania dla gui:</h2>
+						<ul>
+							<li>Event loop</li>
+							<li>Okienka z bajerami</li>
+							<li>callbacki (eventy -> sloty)</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Pierwszy program :-)</h2>
+						<pre>
+							<code data-trim data-noescape>
+								import sys
+								from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
+
+								if __name__ == '__main__':
+									app = QApplication([])
+									window = QMainWindow()
+									window.setWindowTitle('Pierwszy apku')
+									QLabel('Labelka', window)
+									window.show()
+									sys.exit(app.exec())
+							</code>
+						</pre>
+					</section>
+					<section>
+						<h2>Jeszcze krok wstecz</h2>
+						<ul>
+							<li>QtCore</li>
+							<li>QtGui</li>
+							<li>QtWidgets</li>
+							<li>QtMultimedia</li>
+							<li>...</li>
+							<li>QtWebKit</li>
+							<li>QtSql</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Layouty</h2>
+						<ul>
+							<li>Chamski ;-)</li>
+							<li>Dynamiczny</li>
+							<li>Grid</li>
+							<li>I jakieśtam inne</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Layout na pałe</h2>
+						<pre>
+							<code data-trim data-noescape>
+								import sys
+								from PyQt5.QtWidgets import (QApplication, QMainWindow,
+									QLabel, QPushButton, QLineEdit)
+
+								if __name__ == '__main__':
+									app = QApplication([])
+									window = QMainWindow()
+									window.setGeometry(200, 200, 300, 500)
+									window.setWindowTitle('Bieda w ch*j')
+
+									label = QLabel('Labelka', window)
+									label.move(100, 50)
+
+									button = QPushButton('Przycisk', window)
+									button.move(150, 90)
+
+									edit = QLineEdit(window)
+									edit.setText('Text area')
+									edit.move(30, 200)
+									edit.resize(140, 300)
+
+									window.show()
+									sys.exit(app.exec())
+							</code>
+						</pre>
+					</section>
+
+					<section>
+						<h2>Oczywiście można, w ręcz wypada mądrzej to pisać :-)</h2>
+						<pre>
+							<code data-trim data-noescape>
+								import sys
+								from PyQt5.QtWidgets import (QApplication, QMainWindow,
+									QLabel, QPushButton, QLineEdit)
+
+
+								class MainWindow(QMainWindow):
+									def __init__(self):
+										super(MainWindow, self).__init__()
+
+										self.setWindowTitle('Bieda w ch*j')
+										self.setGeometry(200, 200, 300, 500)
+
+										label = QLabel('Labelka', self)
+										label.move(100, 50)
+
+										button = QPushButton('Przycisk', self)
+										button.move(150, 90)
+
+										edit = QLineEdit(self)
+										edit.setText('Text area')
+										edit.move(30, 200)
+										edit.resize(140, 300)
+
+
+								if __name__ == '__main__':
+									app = QApplication([])
+									window = MainWindow()
+									window.show()
+									sys.exit(app.exec())
+							</code>
+						</pre>
+					</section>
+
+				</section>
+
+				<section>
+					<section>
+						<h1>Tera bajery</h1>
+						<h3>A później layouty ciąg dalszy</h3>
+					</section>
+			
+					<section>
+						<h2>Menu</h2>
+						<pre>
+							<code data-trim data-noescape>
+						        menu = self.menuBar()
+						        fileMenu = menu.addMenu('&File')
+
+						        exit = QAction(QIcon('icons/exit.svg'), '&Exit', self)
+						        exit.setShortcut('Ctrl+Q')
+						        exit.setStatusTip('Exit application')
+						        exit.triggered.connect(self.close)
+						        fileMenu.addAction(exit)
+							</code>
+						</pre>
+					</section>
+
+					<section>
+						<h2>Uwaga</h2>
+						<h4>clicked | triggered . connect</h4>
+						<ul>
+							<li>.connect(funkcja)</li>
+							<li>.connect(functools.partial(funkcja, arg1, arg2))</li>
+							<li>.connect(lambda: _cos())</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Status bar</h2>
+						<pre>
+							<code data-trim data-noescape>
+						        stat = self.statusBar()
+						        stat.showMessage('wiadomość')
+							</code>
+						</pre>
+					</section>
+
+					<section>
+						<h2>Przycisk</h2>
+						<pre>
+							<code data-trim data-noescape>
+						        btn = QPushButton('Przycisk')
+						        btn = QPushButton('Przycisk', self)
+						        btn = QPushButton(QIcon('images/tick.png'), self)
+
+								btn.clicked.connect(QApplication.instance().quit)
+								btn.resize(btn.sizeHint())
+							</code>
+						</pre>
+					</section>
+
+					<section>
+						<h2>Message box</h2>
+						<pre>
+							<code data-trim data-noescape>
+						        msg = QMessageBox()
+						        msg.setIcon(QMessageBox.Information)
+						        msg.setWindowTitle('About')
+						        msg.setText('Some info')
+						        msg.setStyleSheet('ul {list-style-type: hiragana}')
+						        msg.setInformativeText('''
+						        &lt;ul&gt;
+						            &lt;li&gt;Tutaj&lt;br/&gt;&lt;strong&gt;HTML&lt;/strong&gt;&lt;/li&gt;
+						        &lt;/ul&gt;
+						        ''')
+						        msg.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+						        msg.resize(800, 200)
+						        msg.exec_()
+
+						        # niestety jest blokujące, albo ja głupi i nie zauważyłem inaczej
+							</code>
+						</pre>
+					</section>
+
+					<section>
+						<h2>Message box - funkcyjny</h2>
+						<pre>
+							<code data-trim data-noescape>
+							    def closeEvent(self, event):
+							        reply = QMessageBox.question(self, ';( ?', 'Are you sure to quit?',
+							            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+							        if reply == QMessageBox.Yes:
+							            event.accept()
+							        else:
+							            event.ignore()
+							</code>
+						</pre>
+					</section>
+
+					<section>
+						<h2>Typy "złożone"</h2>
+
+						<pre>
+							<code data-trim data-noescape>
+								class SuperCheckbox(QHBoxLayout):
+								    def __init__(self, parent=None):
+								        super(SuperCheckbox, self).__init__(parent)
+
+								        self.checkbox = QCheckBox()
+								        self.addWidget(self.checkbox)
+
+								        self.edit = QLineEdit()
+								        self.edit.setText('Placeholder')
+								        self.addWidget(self.edit)
+
+								        button = QPushButton()
+								        button.setIcon(QIcon('icons/plus.svg'))
+								        button.clicked.connect(self.removeThis)
+								        button.resize(self.sizeHint())
+								        self.addWidget(button)
+
+								    def checkState(self):
+								        return self.checkbox.checkState()
+
+								    def removeThis(self):
+								        print('Removed !')
+							</code>
+						</pre>
+					</section>
+
+					<section>
+						<h1>Startczy. </h1>
+						<h3>Layouty i przykłady!</h3>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Layout dynamiczny</h2>
+						<p>QVBoxLayout / QHBoxLayout</p>
+					</section>
+
+					<section>
+						<h2>QV(H)BoxLayout</h2>
+						<ul>
+							<li>V - Vertically - Pionowo</li>
+							<li>H - Horizonally - Poziomo</li>
+							<li>.addWidget( item )</li>
+							<li>.addLayout( item ) - zagnieżdżamy layouty</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Kod</h2>
+						<pre>
+							<code data-trim data-noescape>
+								import sys
+
+								from PyQt5.QtGui import QIcon
+								from PyQt5.QtWidgets import (QApplication, QMainWindow, QCheckBox, QVBoxLayout,
+								                             QLineEdit, QPushButton, QWidget, QHBoxLayout)
+
+
+								class SuperCheckbox(QHBoxLayout):
+								    def __init__(self, parent=None):
+								        super(SuperCheckbox, self).__init__(parent)
+
+								        self.checkbox = QCheckBox()
+								        self.addWidget(self.checkbox)
+
+								        self.edit = QLineEdit()
+								        self.edit.setText('Placeholder')
+								        self.addWidget(self.edit)
+
+								        button = QPushButton()
+								        button.setIcon(QIcon('icons/plus.svg'))
+								        button.clicked.connect(self.removeThis)
+								        button.resize(self.sizeHint())
+								        self.addWidget(button)
+
+								    def checkState(self):
+								        return self.checkbox.checkState()
+
+								    def removeThis(self):
+								        print('Removed !')
+
+
+								class CentralWidget(QWidget):
+								    items = []
+
+								    def __init__(self, parent):
+								        super(CentralWidget, self).__init__(parent)
+								        self.container = QVBoxLayout(self)
+
+								        btn = QPushButton('Dodaj')
+								        btn.clicked.connect(self.addSuperCheckbox)
+								        btn.resize(btn.sizeHint())
+								        self.container.addWidget(btn)
+
+								    def addSuperCheckbox(self):
+								        item = SuperCheckbox()
+								        self.container.addLayout(item)
+								        self.items.append(item)
+
+
+								class GlowneOkienko(QMainWindow):
+								    def __init__(self):
+								        super(GlowneOkienko, self).__init__(None)
+
+								        self.setWindowTitle('Dynamic layout & typ złożony')
+								        self.setWindowIcon(QIcon('icons/exit.svg'))
+								        self.setGeometry(500, 400, 600, 400)
+
+								        self.widget = CentralWidget(self)
+								        self.setCentralWidget(self.widget)
+
+
+								if __name__ == '__main__':
+
+								    app = QApplication([])
+								    window = GlowneOkienko()
+								    window.show()
+
+								    sys.exit(app.exec_())
+
+
+							</code>
+						</pre>
+					</section>
+				</section>
+
+				<section>
+					
+					<section>
+						<h2>Grid</h2>
+						<img src="images/kcalc.png">
+					</section>
+
+					<section>
+						<h2>Albo jak wyjdzie krzywo</h2>
+						<img src="images/grid.png">
+					</section>
+
+					<section>
+						<h2>Krzywo-kod</h2>
+						<pre>
+							<code data-trim data-noescape>
+								import sys
+
+								from PyQt5.QtGui import QIcon
+								from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QGroupBox,
+									QVBoxLayout, QGridLayout, QMainWindow, QAction)
+
+
+								class GridWidget(QWidget):
+								    def __init__(self):
+								        super(GridWidget, self).__init__()
+								        self.container = QVBoxLayout()
+								        self.setLayout(self.container)
+
+								        self.setUpGrid()
+								        self.container.addWidget(self.hGroupBox)
+
+								    def setUpGrid(self):
+								        self.hGroupBox = QGroupBox("Grid example")
+
+								        layout = QGridLayout()
+								        layout.setColumnStretch(1, 4)
+								        layout.setColumnStretch(2, 4)
+
+								        # QGridLayout::addWidget(elem, y, x, (opt)y_size, (opt)x_size)
+
+								        layout.addWidget(QPushButton('1'), 0, 0)
+								        layout.addWidget(QPushButton('2(2)'), 0, 1, 1, 2)
+								        # layout.addWidget(QPushButton('3'), 0, 2)
+								        layout.addWidget(QPushButton('4(3)'), 1, 0, 1, 3)
+								        # layout.addWidget(QPushButton('5'), 1, 1)
+								        # layout.addWidget(QPushButton('6'), 1, 2)
+								        layout.addWidget(QPushButton('7'), 2, 0)
+								        layout.addWidget(QPushButton('8'), 2, 1)
+								        layout.addWidget(QPushButton('9'), 2, 2)
+
+								        self.hGroupBox.setLayout(layout)
+
+
+								class MainWindow(QMainWindow):
+								    def __init__(self):
+								        super(MainWindow, self).__init__()
+
+								        self.grid = GridWidget()
+								        self.setCentralWidget(self.grid)
+								        self.initMenu()
+
+								    def initMenu(self):
+								        menu = self.menuBar()
+								        fileMenu = menu.addMenu('&File')
+
+								        exit = QAction(QIcon('icons/exit.svg'), '&Exit', self)
+								        exit.setShortcut('Ctrl+Q')
+								        exit.setStatusTip('Exit application')
+								        exit.triggered.connect(self.close)
+								        fileMenu.addAction(exit)
+
+
+								if __name__ == '__main__':
+								    app = QApplication([])
+
+								    window = MainWindow()
+								    window.show()
+
+								    sys.exit(app.exec())
+
+							</code>
+						</pre>
+					</section>
+				</section>
+
+				<section>
+                    <h2>The end</h2>
+                    <p>skrypty do pobrania: <a href="python/__all_compressed.zip">&lt;click&gt;</a></p>
+                    <p>podgląd pojedynczych:  <a href="python/" target="_blank">&lt;click&gt;</a></p>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			Reveal.initialize({
+				mouseWheel: false,
+				dependencies: [
+					{ src: 'js/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>

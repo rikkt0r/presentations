@@ -1,0 +1,784 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>JavaScripty na bogato</title>
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/black.css">
+
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section data-menu-title="Title">
+                    <h1>Szkolenie ES6</h1>
+                    <h2 class="fragment">..czyli ES2015</h2>
+                    <h3 class="fragment"> w sumie ES6 to nie język</h3>
+                    <h4 class="fragment">nikt nie wie co to~~</h4>
+                </section>
+
+                <section>
+                    <h2>Co ciekawego? (1/2)</h2>
+                    <p class="fragment highlight-current-blue">Arrow function</p>
+                    <p class="fragment highlight-current-blue">Tablice typowane</p>
+                    <p class="fragment highlight-current-blue">Parametry domyślne</p>
+                    <p class="fragment highlight-red grow">Klasy!!!!!!!</p>
+                    <p class="fragment highlight-current-blue">Subklasowanie tablic</p>
+                    <p class="fragment highlight-current-blue">Operator reszty*</p>
+                    <p class="fragment highlight-current-blue">Generator/iterator</p>
+                    <p class="fragment highlight-current-blue">Szablony stringów</p>
+                </section>
+
+                <section>
+                    <h2>Co ciekawego? (2/2)</h2>
+                    <p class="fragment highlight-current-blue">Nacjonalizacja</p>
+                    <p class="fragment highlight-current-blue">Zmienne kontekstowe</p>
+                    <p class="fragment highlight-current-blue">Stałe</p>
+                    <p class="fragment highlight-current-blue">Meta programowanie</p>
+                    <p class="fragment highlight-current-blue">I inne cuda</p>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>Od najciekawszych...</h2>
+                        <h3 class="fragment">...do powiedzmy mniej ciekawych</h3>
+                    </section>
+
+                    <section data-menu-title="Pajtonik">
+                        <h2>Trochę pajtonika dla odniesienia</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                class Invoice(AbstractAggregate):
+                                    def __init__(self, seller, **kwargs):
+                                        super().__init__(**kwargs)
+                                        self.seller = seller
+
+                                    @property
+                                    def address(self):
+                                        return 'Address:\n%s' % self.seller.getAddressFormatted()
+
+                                    # ...
+
+                                    def __iter__(self):
+                                        self.n = 0
+                                        self.cachedItemsCount = len(self.cachedItems)
+                                        return self
+
+                                    def __next__(self):
+                                        if self.n >= self.cachedItemsCount:
+                                            raise StopIteration
+                                        item = self.cachedItems[self.n].prepareItem()
+                                        self.n += 1
+                                        return item
+                            </code>
+                        </pre>
+                    </section>
+
+                    <section>
+                        <h2>Co to zajęzyk? &trade;</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                class Invoice extends AbstractAggregate {
+                                    constructor(seller, ...kwargs) {
+                                        super(...kwargs);
+                                        this.seller = seller;
+                                    }
+
+                                    get address(){
+                                        return `Address:\n${this.seller.getAddressFormatted()}`
+                                    }
+
+                                    [Symbol.iterator]() {
+                                        let cachedItemsCount = this.cachedItems.length,
+                                            n = 0;
+                                        return {
+                                           next () {
+                                                let item = this.cachedItems[n].prepareItem();
+                                                n++;
+                                                return {
+                                                    done: n >= cachedItemsCount ? true : false,
+                                                    value: item
+                                                }
+                                           }
+                                        }
+                                    }
+                                }
+                            </code>
+                        </pre>
+                    </section>
+
+                    <section data-background-image="images/queen.gif" data-menu-title="Klasy - brawo">
+                        <h2>Tak, klasy w JavaScript'cie!</h2>
+                    </section>
+            
+                    <section>
+                        <h2>Klasy kiedyś (ES5)</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                var Czlowiek = function(wasy){
+                                    if (wasy === undefined){
+                                        wasy = false;
+                                    }
+                                    if (typeof wasy !== 'boolean'){
+                                        throw "Ma wąsy czy nie?"
+                                    }
+                                    this.wasy = wasy;
+                                }
+                                Czlowiek.prototype.maWasy = function(){
+                                    return this.wasy;
+                                }
+                                var Zwiazkowiec = function(){
+                                    Czlowiek.call(this, true);
+                                }
+                                Zwiazkowiec.prototype = Object.create(Czlowiek.prototype);
+                                Zwiazkowiec.prototype.constructor = Zwiazkowiec;
+                            </code>
+                        </pre>
+                    </section>
+
+                    <section>
+                        <h2>Klasy teraz (ES6)</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                class Czlowiek {
+                                    constructor(wasy=false){
+                                        this.wasy = wasy
+                                    }
+
+                                    maWasy() {
+                                        return this.wasy
+                                    }
+
+                                    get wasy() {return this._wasy}
+
+                                    set wasy(val) {
+                                        if(typeof val !== 'boolean') {
+                                            throw 'Ma wąsy czy nie?'
+                                        }
+                                        this._wasy = val
+                                    }
+                                }
+
+                                class Zwiazkowiec extends Czlowiek{
+                                    constructor(){
+                                        super(true)
+                                    }
+                                }
+                            </code>
+                        </pre>
+
+                    </section>
+                    
+                    <section>
+                        <h2>Settery, gettery, static</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                class Miasto {
+                                    // ...
+
+                                    set ludnosc(val) {return this._ludnosc = val}
+                                    get ludnosc()    {return this._ludnosc}
+
+                                    static defaultoweMiasto(){
+                                        return new Miasto(1, 2, 3, 'Wilkowyje')
+                                    }
+                                }
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section>
+                        <h2>Subklasowanie tablic</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                class HyperArray extends Array {
+                                    sum() {
+                                        let _sum = (i, j) => i + j;
+                                        return this.reduce(_sum)
+                                    }
+
+                                    average() {
+                                        return this.sum()/this.length
+                                    }
+
+                                    max() {
+                                        let _max = (i, j) => i > j ? i : j;
+                                        return this.reduce(_max)
+                                    }
+                                }
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    
+                    <section>
+                        <h2>Tablice typowane</h2>
+                        <small>&copy; https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays</small>
+                        <img src="images/typed_array.png">
+                    </section>
+                    
+                </section>
+
+                <section>
+                    
+                    <section>
+                        <h2>Zmienne, stałe</h2>
+                    </section>
+                    
+                    <section>
+                        <h2>Const</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                const stala = 123.456;
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section data-menu-title="Const kiedyś">
+                        <h2>Const</h2>
+                        <p>(Kiedyś*)</p>
+                        <pre>
+                            <code data-trim data-noescape>
+                                Object.defineProperty(
+                                    typeof global === 'object' ? global : window,
+                                    'stala',
+                                    {
+                                        value:        123.456,
+                                        enumerable:   true,
+                                        writable:     false,
+                                        configurable: false
+                                    }
+                                )
+                            </code>
+                        </pre>
+                        <small>* - tylko globalnie. Node: object, przeglądarka: window</small>
+                    </section>
+                    
+                    <section>
+                        <h2>Symbol</h2>
+                        <p>Czyli coś cholernie unikalnego</p>
+                        <pre>
+                            <code data-trim data-noescape>
+                                let s = Symbol('s')
+                                // String wewnątrz konstruktora jest tylko do debugu, nic nie zmienia.
+                                
+                                Symbol() === Symbol() // false
+                                Symbol() == Symbol() // false
+                                const a = Symbol('a')
+                                const b = Symbol('b')
+                                let obj = {}
+                                obj[a] = 1
+                                obj[b] = 2
+                                obj['c']         = 3
+                                Object.keys(obj) // ["c"]
+                                Object.getOwnPropertyNames(obj) // ["c"]
+                                Object.getOwnPropertySymbols(obj) // [Symbol(a), Symbol(b)]
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section>
+                        <h2>Let vs. var</h2>
+                        
+                        <pre>
+                            <code data-trim data-noescape>
+                                for(var i=0; i<10; i++){
+                                    var x = i;
+                                }
+                                // i == 9 ???
+                                // x == 9 ???
+                                // yyyy, niby wewnątrz scope :-)
+                                // garbage collector płacze
+                                
+                                
+                                for(let i=0; i<10; i++){
+                                    let x = i;
+                                }
+                                // i --> ReferenceError !
+                                // x --> ReferenceError ! Yay
+                                
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section data-menu-title="Var - przypadek złośliwy">
+                        <h2>var</h2>
+                        <p>Przypadek złośliwy</p>
+                        
+                        <pre>
+                            <code data-trim data-noescape>
+                                var callbacki = [];
+                                for(var i=0; i<3; i++) {
+                                    callbacki.push(function() {return i*10})
+                                }
+                                <mark class="fragment">callbacki[0](); // 0 * 10 == 30?</mark>
+                                <mark class="fragment">callbacki[1](); // 1 * 10 == 30?</mark>
+                                <mark class="fragment">callbacki[2](); // 2 * 10 == 30?</mark>
+                            </code>
+                        </pre>
+                    </section>
+                    
+
+                    <section data-menu-title="Var - fix">
+                        <h2>var</h2>
+                        <p>Naprawmy to</p>
+                        
+                        <pre>
+                            <code data-trim data-noescape>
+                                var callbacki = [];
+                                for(var i=0; i<3; i++) {
+                                    (function(i){
+                                        callbacki.push(function() {return i*10})
+                                    })(i)
+                                }
+                                callbacki[0](); // 0
+                                callbacki[1](); // 10
+                                callbacki[2](); // 20
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section data-menu-title="Let - samo się fixło">
+                        <h2>Let</h2>
+                        <p>Samo się fixło</p>
+                        
+                        <pre>
+                            <code data-trim data-noescape>
+                                var callbacki = [];
+                                for(let i=0; i<3; i++) {
+                                    callbacki.push(function() {return i*10})
+                                }
+                                callbacki[0](); // 0
+                                callbacki[1](); // 10
+                                callbacki[2](); // 20
+                            </code>
+                        </pre>
+                    </section>
+                    
+                </section>
+                    
+
+                <section>
+                    <section>
+                        <h2>Arrow function</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                let max = _array.reduce(function(tmp, curr) {tmp > cur? : tmp : cur})
+                                
+                                // vs.
+                                
+                                
+                                let max = _array.reduce((tmp, curr) => tmp > cur? : tmp : cur)
+                                // lub
+                                let max = _array.reduce((tmp, curr) =>{tmp > cur? : tmp : cur})
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section data-menu-title="Arrow function - this intro">
+                        <h2>Niby pierdoła</h2>
+                        <p>Ale..</p>
+                        <p>Rozwiązuje pewien wkurzający problem</p>
+                        <pre>
+                            <code data-trim data-noescape>
+                                function Test() {};
+                                Test.prototype.fn = function() {
+                                    function test() {
+                                        console.log(this)
+                                    }
+                                    test();
+                                }
+                                
+                                // new Test().fn()
+                                <mark class="fragment">// window ????</mark>
+                                <mark class="fragment">// uhuhu, na bogato</mark>
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section data-menu-title="Arrow function - this, fix">
+                        <h2>Naprawmy to klasycznie</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                function Test() {};
+                                Test.prototype.fn = function() {
+                                    var _this = this;
+                                    function test() {
+                                        console.log(_this)
+                                    }
+                                    test();
+                                }
+                                
+                                // new Test().fn()
+                                <mark class="fragment">// teraz jest ok</mark>
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section data-menu-title="Arrow function - this, fix 2">
+                        <h2>Naprawmy mądrzej</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                function Test() {};
+                                Test.prototype.fn = function() {
+                                    var test = function() {
+                                        console.log(this)
+                                    }.bind(this)
+                                    test();
+                                }
+                                // new Test().fn()
+                                <mark class="fragment">// teraz też git</mark>
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    
+
+                    <section data-menu-title="Arrow function - użyjmy arrow">
+                        <h2>A teraz użyjmy arrow function</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                function Test() {};
+                                Test.prototype.fn = function() { 
+                                    let test = () => {
+                                        console.log(this)
+                                    }
+                                    test();
+                                }
+                                // new Test().fn()
+                                <mark class="fragment">// jest git</mark>
+                            </code>
+                        </pre>
+                        <small class="fragment">*Jeszcze prezentacja na tablicach</small>
+                    </section>
+                </section>
+                
+                <!-- TUTAJ
+                var obj = {arr: [], even: []}
+                obj.add = function(elem) {
+                    this.arr.push(elem);
+                    if(!(elem%2)){this.even.push(elem)}
+                }
+                obj.enum = function() {
+                    this.arr.forEach(function() {
+                        console.log(this)
+                    })
+                }
+                obj.enum = function() {
+                    this.arr.forEach(function() {
+                        console.log(this)
+                    }.bind(this))
+                }
+                -->
+                
+                
+                
+                <section>
+                    <section>
+                        <h2>Parametry i stringi</h2>
+                        <ul>
+                            <li>Rest parameter</li>
+                            <li>Spread operator</li>
+                            <li>Domyślne wartości</li>
+                            <li>Destructuring (Rozpakowywanie struktur)</li>
+                            <li>Template literal/string</li>
+                        </ul>
+                    </section>
+                    
+                    <section>
+                        <h2>Rest parameter</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                function test(x, ...other) {
+                                    console.log(x)
+                                    console.info(other)
+                                }
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section>
+                        <h2>Spread operator</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                function test(a, b, c) {
+                                    console.log(a, b, c)
+                                }
+                                test(1, ...[2, 3])
+                                test(...[1, 2], 3)
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section>
+                        <h2>Domyślne wartości</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                function test(a=1, b=2, c=3) {
+                                    console.log(a + b + c)
+                                }
+                                test()
+                                test(1,2,3)
+                                test(0)
+                                test(0, 0)
+                                test(0, 0, 0)
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section>
+                        <h2>Rozpakowanie struktur</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                let [a, b] = [1, 2]
+                                let [a, b, ...c] = [1, 2, 3, 4, 5, 6]
+                                let [a, , b] = [1, 2, 3]
+                                let [a, , b] = [1, 2 , 3, 4, 5]
+                                let {a, b} = {a: 1, b: 2}
+                                
+                                let [a=1, b=2, c] = [3, 4, 5]
+                                let [a=1, b=2, c] = [1]
+                                
+                                function test({val1: a, val2: b}){
+                                    console.log(a, b)
+                                }
+                                test({val1: 5, val2: 3, c: 5})
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section>
+                        <h2>Template literal</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                let a = 'aaa', b = 'bbb', c = {d: 123}
+                                
+                                // kiedyś
+                                let x = 'To jest sklejka a (' + a + '), b(' + b + '), c->d(' + c.d + ')'
+                                
+                                //teraz
+                                let x = `To jest sklejka a (${a}), b(${b}), c->d(${c.d})`
+                            </code>
+                        </pre>
+                    </section>
+                    
+                </section>
+                
+                <section>
+                    <section>
+                        <h2>Inne</h2>
+                        <p>Warte wspomnienia</p>
+                        <ul>
+                            <li>Iterator</li>
+                            <li>Generator</li>
+                            <li>Moduły</li>
+                            <li>"Lokalizacja"</li>
+                            <li>Promise</li>
+                            <li>Meta-programowanie</li>
+                        </ul>
+                    </section>
+                    
+                    <section data-menu-title="Moduły kiedyś">
+                        <h2>Moduły</h2>
+                        <p>(kiedyś)</p>
+                        <pre>
+                            <code data-trim data-noescape>
+                                // math.js
+                                var Aggregation = {}
+                                Aggregation.average = function(arr) {
+                                    return arr.reduce(function(acc, cur){return acc+cur})/arr.length
+                                }
+                                Aggregation.variable = 123
+                                
+                                // main.js
+                                var tab = [1,2,3]
+                                Aggregation.average(tab)
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section data-menu-title="Moduły kiedyś">
+                        <h2>Moduły</h2>
+                        <p>(teraz)</p>
+                        <pre>
+                            <code data-trim data-noescape>
+                                // math.js
+                                export default function average(arr) {
+                                    let _avg = (acc, cur) => {acc+cur})
+                                    return arr.reduce(_avg)/arr.length
+                                }
+                                export var variable = 123
+                                
+                                // main.js
+                                import * as Aggregation from 'math'
+                                // import {average, variable} from 'math'
+                                let tab = [1,2,3]
+                                Aggregation.average(tab)
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section>
+                        <h2>Iterator</h2>
+                        <small>*Fajny przykład z http://es6-features.org</small>
+                        <pre>
+                            <code data-trim data-noescape>
+                                let fibonacci = {
+                                    [Symbol.iterator]() {
+                                        let pre = 0, cur = 1
+                                        return {
+                                        next () {
+                                            [ pre, cur ] = [ cur, pre + cur ]
+                                            return { done: false, value: cur }
+                                        }
+                                        }
+                                    }
+                                }
+
+                                for (let n of fibonacci) {
+                                    if (n > 1000)
+                                        break
+                                    console.log(n)
+                                }
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section>
+                        <h2>Generator</h2>
+                        <small>*Fajny przykład z http://es6-features.org</small>
+                        <pre>
+                            <code data-trim data-noescape>
+                                let fibonacci = {
+                                    *[Symbol.iterator]() {
+                                        let pre = 0, cur = 1
+                                        for (;;) {
+                                            [ pre, cur ] = [ cur, pre + cur ]
+                                            yield cur
+                                        }
+                                    }
+                                }
+
+                                for (let n of fibonacci) {
+                                    if (n > 1000)
+                                        break
+                                    console.log(n)
+                                }
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section>
+                        <h2>Nacjonalizacja/Lokalizacja</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                // daty
+                                Date() // "Thu Mar 29 2018 05:47:50 GMT+0000 (-00)"
+                                
+                                let l10nEN = new Intl.DateTimeFormat("en-US")
+                                let l10nPL = new Intl.DateTimeFormat("pl-PL")
+                                l10nEN.format(new Date()) // "3/29/2018"
+                                l10nPL.format(new Date()) // "29.03.2018"
+                                
+                                
+                                // liczby
+                                let l10nEN = new Intl.NumberFormat("en-US")
+                                let l10nPL = new Intl.NumberFormat("pl-PL")
+                                l10nEN.format(1234567890.123) // "1,234,567,890.123"
+                                l10nPL.format(1234567890.123) // "1 234 567 890,123"                                
+                                
+                                // pieniądze
+                                let l10nEN = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" })
+                                let l10nPL = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" })
+                                l10nEN.format(1234567890.123) // "$1,234,567,890.12"
+                                l10nPL.format(1234567890.123) // "1 234 567 890,12 zł"
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section>
+                        <h2>Promise</h2>
+                        <p>Czyli co by tu zwrócić, jak mamy asynchroniczne przetwarzanie</p>
+                        
+                        <img src="images/promises.png">
+                        <small>&copy; developer.mozilla.org</small>
+                    </section>
+                    
+                    <section>
+                        <h2>Promise - przykład</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                            let promise = new Promise((resolve, reject) => {
+                                // robimy cokolwiek i na koniec wołamy resolve albo reject :: np.
+                                setTimeout(function() {
+                                    resolve("Znudziło mi się czekanie")
+                                }, 500)
+                            });
+                            
+                            promise.then(data){
+                                // sukces
+                            }.catch(reason) {
+                                // smutek
+                            }
+                            </code>
+                        </pre>
+                    </section>
+                    
+                    <section>
+                        <h2>Meta-programowanie</h2>
+                        <p>Cała prezentacja by z tego była ;-)</p>
+                        <small>Do wybadania <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Meta_programming" target="_blank">Tutaj</a></small>
+                        
+                        <p>Generalnie weszły w użycie Proxy oraz Refleksje</p>
+                        
+                    </section>
+                </section>
+                
+                <section>
+                    <h2>Coming up next..</h2>
+                    <ul>
+                        <li>API HTML5: audio, file, canvas itd.</li>
+                        <li>WebWorker</li>
+                        <li>WebSocket</li>
+                    </ul>
+                </section>
+                
+                <section>
+                    <h2>The end; &copy; rikkt0r</h2>
+                    <p>Nadszedł czas napierdalania!</p>
+                    <p>Nie bądźcie dziwkami bez szkoły, czytać:</p>
+                    <ul>
+                        <li><a href="https://bonsaiden.github.io/JavaScript-Garden/" target="_blank">JS w pigułce</a></li>
+                        <li><a href="http://es6-features.org" target="_blank">Podsumowanie ES6</a></li>
+                        <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference" target="_blank">Biblia JS</a></li>
+                    </ul>
+                </section>
+
+            </div>
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+            Reveal.initialize({
+                mouseWheel: false,
+                transition: 'convex',
+                menu: {
+                    side: 'left',
+                    markers: true
+                },
+                dependencies: [
+                    { src: 'plugins/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugins/menu/menu.js'}
+                ]
+            });
+        </script>
+    </body>
+</html>

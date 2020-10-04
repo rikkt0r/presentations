@@ -1,0 +1,302 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>JavaScripty na bogato</title>
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/black.css">
+
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section data-menu-title="Tytułowa">
+                    <h2>Python2 ==> Python3</h2>
+                    <h3 class="fragment">bez bólu głowy</h3>
+                </section>
+
+                <section data-menu-title="Plan">
+                    <h2>Plan</h2>
+					<ul>
+						<li class="fragment highlight-current-blue">Timeline python'a 2</li>
+						<li class="fragment highlight-current-blue">Timeline django 1.x</li>
+						<li class="fragment highlight-current-blue">Narzędzia i automaty migracyjne</li>
+						<li class="fragment highlight-current-blue">Główne zmiany</li>
+						<li class="fragment highlight-current-blue">Co nowego</li>
+						<li class="fragment highlight-current-blue">Co to dla nas znaczy</li>
+						<li class="fragment highlight-current-blue">Grand Vision</li>
+					</ul>
+                </section>
+
+                <section>
+                    <section data-menu-title="Timeline Python 2.x">
+                        <h2>Timeline python 2</h2>
+						<p>TUTAJ OBRAZEK</p>
+                        
+						<p class="fragment">Hax, hax- firma ActiveState, która daje wsparcie dla paczek pythonowych na kolejnych pare lat.</p>
+                    </section>
+
+                    <section data-menu-title="Timeline Django 1.x">
+                        <h2>Timeline django 1.x</h2>
+						<p>TUTAJ OBRAZEK od nich ze strony</p>
+                    </section>					
+				</section>
+				<section>
+				
+					<section data-menu-title="Narzędzia migracyjne">
+						<h2>Narzędzia i automaty migracyjne</h2>
+						<ul>
+							<li>py2to3</li>
+							<li>six</li>
+							<li>cokolwiek tu jeszcze nie bylo</li>
+						</ul>
+					</section>
+					
+					<section>
+						<h2>py2to3</h2>
+						<p>BLa bla bla</p>
+					</section>
+					
+					<section>
+						<h2>six</h2>
+						<p>już używamy, tylko o tym nie wiemy</p>
+					</section>
+					
+					<section>
+						<h2>cokolwiek</h2>
+						<p>BLa bla bla</p>
+					</section>			
+					
+					<section>
+						<h2>DLACZEGO NIE</h2>
+						<p>bo u nas kod jest zbyt nakombinowany (importy dynamiczne itd)</p>
+					</section>
+				
+				</section>
+				<section>
+				
+					<section data-menu-title="Główne zmiany">
+						<h1>Główne zmiany</h1>
+						<h3><u>Zmiany</u>, a nie nowości</h3>
+					</section>
+					
+					<section data-menu-title="Print">
+						<h1>WAS ULUBIONY</h1>
+						<pre>
+                            <code data-trim data-noescape>
+								# python2
+								print 'a', 'b'
+								print('a', 'b')
+								
+								# python3
+								print 'a', 'b'
+								print('a', 'b')
+                            </code>
+                        </pre>
+					</section>
+					
+
+                    <section data-menu-title="Listy">
+                        <h2>Zmiana zachowania metod</h2>
+						<p>zip, items, keys itd. -- zwracają teraz generatory, a nie liste.
+						Niby stanardowe iteracje, extendy itd. zadziałają. ALe niech ktos zrobi finxa, index, cokolwiek. Malo tego bedzie
+						NO ale moze byc</p>
+                    </section>
+
+                    <section data-menu-title="Inty, object, preprocesor">
+                        <h2>Ni ma dyszki synku</h2>
+						<p>ALe spokojnie, przegrałeś z nikim innym jak wilkim chujni hujdini negocjacji.</p>
+												
+						<p>NIE MA JUŻ long - tylko int</p>
+						<p>Object - samo się</p>
+						<p>NIe trzeba spamować #coding: utf-8 - teraz jest defaultowe</p>
+						<p>Mock wchodzi w skład unittesta</p>
+                    </section>
+					
+					<section data-menu-title="Wątki">
+						<h2>Które i tak są smutne</h2>
+						<h4>A teraz jeszcze bardziej</h4>
+					</section>
+					
+					<section data-menu-title="">
+						<h2>Zjebane kodowanie</h2>
+						<p>
+						
+						tutaj wklejka z Armina od flaska &trade;. Dlaczego to się ukręci.
+						
+						</p>
+					</section>
+					
+					<section data-menu-title="Biblioteki">
+						<p>"Zobacz no sinko, co CI tu ugotowałam na biod, takie dobre, że cie wydupi z matrixa"</p>
+						
+						<ul>
+							<li>Dojango</li>
+							<li>ZSI</li>
+							<li>Suds-jurko - tylko jedna poprawka do zrobienia i będzie śmigać</li>
+							<li>Celery???</li>
+							<li>Pewnie połowa z tych kryptograficznych</li>
+						</ul>
+					</section>
+					
+
+					<!--
+                    <section data-background-image="images/queen.gif" data-menu-title="Klasy - brawo">
+                        <h2>Tak, klasy w JavaScript'cie!</h2>
+                    </section>
+            
+                    
+                    <section>
+                        <h2>Tablice typowane</h2>
+                        <small>&copy; https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays</small>
+                        <img src="images/typed_array.png">
+                    </section>
+                    -->
+                </section>
+
+                <section>
+                    
+                    <section>
+                        <h2>Co nowego</h2>
+                    						
+						<pre>
+							- dictionary merging ({**aa, **bb})
+							- zaawansowane rozpakowywanie
+							- wymuszenie kwargsow
+							- słownik ma zachowaną kolejność && zeżera 35% mniej ramu(python 3.6 - ale to nie jest pewne, ze tak zostanie)
+							
+							- formatowanie liczb
+							- zmiana podstawowego zaokraglania
+							- exitstack (from contextlib import ExitStack ; with ExitStack() as stack:...)
+							- super()
+							- annotations
+							- secrets module (SECRETS.token_bytes(11), tokenbytes)
+							- enum
+							- ipddress module
+							- from contextlib import redirect_stdout ---> wiyth stdout... (file_handler)
+							- with supress(Exception): pass
+					
+							- fstring ( jak js)
+							- yielowanie z generatora
+						</pre>
+						
+						<small>DOnna mamma es chujoczita</small>
+						
+					</section>
+					
+					<section>
+						
+						AAAAA słowniki w jedną sekcję
+						
+                        <h2>Mergowanie słowników</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                const stala = 123.456;
+                            </code>
+                        </pre>
+                    </section>
+					
+					<section>
+						<h2>Słownik ma zachowaną kolejnść</h2>
+						<h4>& żre mniej ramu &trademarks;</h4>
+                        <pre>
+                            <code data-trim data-noescape>
+                                const stala = 123.456;
+                            </code>
+                        </pre>
+                    </section>
+					
+					<section>
+						<h2>Zarządzanie argumentami</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                const stala = 123.456;
+                            </code>
+                        </pre>
+                    </section>			
+					
+					<section>
+						<h2>Zarządzanie argumentami /2</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                const stala = 123.456;
+                            </code>
+                        </pre>
+                    </section>
+					
+					<section>
+						<h2>Zarządzanie argumentami /2</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                const stala = 123.456;
+                            </code>
+                        </pre>
+					</section>
+					
+                </section>
+				
+				<section>
+					<h2>Co to wszstko dla nas znaczy?</h2>
+				
+					<p>
+					- kodowanie 
+					- watki - nie ma problemu
+					- printy - no problem
+					- zwracanie generatorow zamiast list -- uuu, trzeba bedzie pregmatch grepowac
+					- int zamiast longa -> suds-jutro bedzie zjebany. trzeba ogarnac
+					- niekompatybilnosc ilustam bibliotek
+					- przy okazji trzeba bedzie zmigrowac celery (???) --> a ono juz nie wspiera django per se
+					</p>
+				</section>
+				
+				<section>
+					<h1>Casino royale</h1>
+					<p>
+						Najwięcej jebaczki będzie z kodowaniem. Ale jak usuniemy zaszłości jak original_encoding_post, będzie mniej do dobrej zabawy.
+						Nie będzie pewnie działało ileś bibliotek. Dojango, suds-jurko i ZSI na 100% trzeba będzie podłatać. 
+						Z udogodnień, zaczniemy korzystać z mergowania slowników w testach. Przechwycimy też output w redirect_stdout.
+
+						W taskach użyjemy wymuszenia kwargsów, dla widoków zrobimy supress(Exception). 
+						Happy end.
+					</p>
+				</section>
+                
+                <section>
+                    <h2>The end; &copy; rikkt0r</h2>
+                    <p>Nadszedł czas napierdalania!</p>
+                    <p>Nie bądźcie dziwkami bez szkoły, czytać:</p>
+                    <ul>
+                        <li><a href="https://bonsaiden.github.io/JavaScript-Garden/" target="_blank">JS w pigułce</a></li>
+                        <li><a href="http://es6-features.org" target="_blank">Podsumowanie ES6</a></li>
+                        <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference" target="_blank">Biblia JS</a></li>
+                    </ul>
+                </section>
+
+            </div>
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+            Reveal.initialize({
+                mouseWheel: false,
+                transition: 'convex',
+                menu: {
+                    side: 'left',
+                    markers: true
+                },
+                dependencies: [
+                    { src: 'plugins/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugins/menu/menu.js'}
+                ]
+            });
+        </script>
+    </body>
+</html>

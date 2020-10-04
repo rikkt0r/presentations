@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <style>
+    html {
+        box-sizing: border-box;
+    }
+    *, *:before, *:after {
+        box-sizing: inherit;
+    }
+    
+    div.fx {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    img.nie-chuj {
+        height: 400px;
+    }
+    
+    h1 {
+        font-size: 5em;
+    }
+    
+    ul {
+        list-style-type: hiragana;
+        list-style-position: inside;
+    }
+    
+    ul li {
+        font-size: 4em;
+    }
+    
+    ul li:before {
+        content: "> ";
+    }
+    
+    ul li a:visited {
+        color: lightblue;
+    }
+    </style>
+  </head>
+  <body>
+  <h1>Stop chujowemu designowi!</h1>
+  
+  <div class="fx">
+    <img class="nie-chuj" src="images/nie-chuj.png">
+
+    <ul>
+        <li><a href="box-model.html">Box model</a></li>
+        <li><a href="box-sizing.html">Box sizing: content vs border</a></li>
+        <li><a href="bootstrap.html">Bootstrap itd.</a></li>
+        <li><a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" target="_blank">Flexbox</a></li>
+        <li><a href="http://flexboxfroggy.com" target="_blank">Flexbox ćwiczenie</a></li>
+        <li><a href="http://cssgridgarden.com/" target="_blank">Grid: zadanie domowe</a></li>
+    </ul>
+  </div>
+  
+  </body>
+</html>
