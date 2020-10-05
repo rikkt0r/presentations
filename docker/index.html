@@ -241,7 +241,20 @@
 
                     <section>
                         <h2>Compose a set of deployment</h2>
-                        TODO - docker-compose.yml in here
+                        <pre>
+                            <code data-trim data-noescape>
+                                version: '3.8'
+
+                                services:
+                                    redis:
+                                        image: redis:alpine
+
+                                    presentation:
+                                        image: prez
+                                        ports:
+                                            - 8000:8000
+                            </code>
+                        </pre>
                     </section>
 
                     <section>
@@ -334,32 +347,52 @@
                 <section>
                     <section>
                         <h2>Docker Networking</h2>
-                        <p> TODO </p>
+                        <p> few types </p>
+                        <p> each has it's own use </p>
                     </section>
                     
                     <section>
                         <h2>Docker Networking Bridge</h2>
-                        <p> TODO </p>
+                        <ul>
+                            <li>Default net</li>
+                            <li>Automatic DNS resolution to container names</li>
+                            <li>Connected with main network namespace by virtual interface</li>
+                        </ul>
                     </section>
                     
                     <section>
                         <h2>Docker Networking Overlay</h2>
-                        <p> TODO </p>
+                        <ul>
+                            <li>Docker magic</li>
+                            <li>Virtual network spans over Docker cluster</li>
+                            <li>Optionally encrypted</li>
+                            <li>Docker handles the routing</li>
+                        </ul>
                     </section>
                     
                     <section>
                         <h2>Docker Networking Host</h2>
-                        <p> TODO </p>
+                        <ul>
+                            <li>Host network stack is shared (no namespace)</li>
+                            <li>Port publishing doesn't work.</li>
+                            <li>Apps in containers bind to "real" ports</li>
+                        </ul>
                     </section>
                     
                     <section>
                         <h2>Docker Networking Macvlan</h2>
-                        <p> TODO </p>
+                        <ul>
+                            <li>Either as bridge (bind to physical interface)</li>
+                            <li>or vlan trunk (create and bind to virtual interface)</li>
+                            <li>all in all, this creates virtual L2 interfaces that get assigned real IP addresses</li>
+                            <li>(Yes, visible to outside network)
+                        </ul>
                     </section>
                     
                     <section>
-                        <h2>Docker Networking ???</h2>
-                        <p> TODO </p>
+                        <h2>Docker Networking None</h2>
+                        <p>It's just... no network</p>
+                        <p>Not sure why you would do that.. maybe for testing</p>
                     </section>
                 </section>
                 
@@ -374,12 +407,13 @@
                 
                 <section>
                     <h2>Environment composition</h2>
-                    <p><a href="https://docs.docker.com/engine/reference/builder/#from">reference</a></p>
+                    <p><a href="docker-compose-github.yml">(old) example</a></p>
+                    <p><a href="https://docs.docker.com/compose/compose-file/#service-configuration-reference">reference</a></p>
                 </section>
                 
                 <section>
                     <h2>example dockerfile + docker-compose.yml</h2>
-                    <p>Sorry github! Here is inner-company stuff, <b>can't share it</b></p>
+                    <p>Sorry github! Here is inner-company stuff, <br/><b>I can't share it</b></p>
                 </section>
 
                 <section>
@@ -391,7 +425,7 @@
                     </section>
 
                     <section data-background-image="images/queen.gif" data-menu-title="Yup">
-                        <h2>That's it</h2>
+                        <h2>Simple, right?</h2>
                     </section>
                     
                 </section>
@@ -408,7 +442,7 @@
                 </section>
                 
                 <section>
-                    <p>tips and tricks</p>
+                    <h2>tips and tricks</h2>
                 </section>
                 
                 <section>
@@ -416,6 +450,7 @@
                     <ul>
                         <li>Jenkins pipeline?</li>
                         <li>Vagrant vs. docker vs. kubernetes?</li>
+                        <li>Behind corporate proxy and aggresive VPN route propagation?</li>
                     </ul>
                 </section>
                 
@@ -426,9 +461,9 @@
                         <li><a href="https://man7.org/linux/man-pages/man7/namespaces.7.html" target="_blank">man 7 namespaces</a></li>
                         <li><a href="https://man7.org/linux/man-pages/man7/cgroups.7.html" target="_blank">man 7 cgroups</a></li>
                         <li><a href="https://man7.org/linux/man-pages/man7/capabilities.7.html" target="_blank">man 7 capabilities</a></li>
-                        <li><a href="https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt">more on cgroups</a></li>
-                        <li><a href="https://docs.docker.com/network/">docker networking</a></li>
-                        <li><a href="https://docs.docker.com/storage/volumes/">docker volumes</a></li>
+                        <li><a href="https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt" target="_blank">more on cgroups</a></li>
+                        <li><a href="https://docs.docker.com/network/" target="_blank">docker networking</a></li>
+                        <li><a href="https://docs.docker.com/storage/volumes/" target="_blank">docker volumes</a></li>
                     </ul>
                 </section>
 
