@@ -16,15 +16,59 @@
     <body>
         <div class="reveal">
             <div class="slides">
-                <section data-menu-title="Title">
-                    <h1><img src="images/docker-vector-logo.svg" style="max-height: 300px; border: none"></h1>
-                    <h2 class="fragment">wait?</h2>
-                    <h3 class="fragment">how is that better from VM?</h3>
-                </section>
-
+            
                 <section>
+            
+                    <section data-menu-title="Title">
+                        <h1><img src="images/docker-vector-logo.svg" style="max-height: 300px; border: none"></h1>
+                        <h2 class="fragment">what's that?</h2>
+                        <h3 class="fragment">is that better than VM?*</h3>
+                        <p class="fragment">(*- it depends)</p>
+                    </section>
+                    
+                    <section data-menu-title="What">
+                        <h2>What are we going to cover?</h2>
+                        <ul>
+                            <li>What is it?</li>
+                            <li>How does that compare..?</li>
+                            <li>Mid-depth technical analysis</li>
+                            <li>What is what - docker dictionary</li>
+                            <li>Images, layers, filesystems</li>
+                            <li>Networking</li>
+                            <li>Develompent flow</li>
+                            <li>Creating dockerfiles/composites</li>
+                        </ul>
+                    </section>
+
+                    <section data-menu-title="What not">
+                        <h2>And we're skipping..</h2>
+                        <ul>
+                            <li>Clusterization (docker swarm / kubernetes)</li>
+                            <li>Thorough FS analysis</li>
+                            <li>CI/CD workflows</li>
+                            <li>Deployment strategies</li>
+                        </ul>
+                        <p>Maybe another presentation on these topics?</p>
+                        <p>(This one is long enough)</p>
+                    </section>
+                    
+                    <section data-menu-title="So what is it?">
+                        <h2>And we're skipping..</h2>
+                        <ul>
+                            <li>Clusterization (docker swarm / kubernetes)</li>
+                            <li>Thorough FS analysis</li>
+                            <li>CI/CD workflows</li>
+                            <li>Deployment strategies</li>
+                        </ul>
+                        <p>Maybe another presentation on these topics?</p>
+                        <p>(This one is long enough)</p>
+                    </section>
+                    
+                </section>
+                
+                <section data-menu-title="Tech">
                     <section data-menu-title="Units">
-                        <h2>By the order of isolation</h2>
+                        <h2>OS "units" by the order of isolation</h2>
                         <p class="fragment highlight-current-blue">Thread</p>
                         <p class="fragment highlight-current-blue">Process</p>
                         <p class="fragment highlight-red grow">Container</p>
@@ -42,8 +86,8 @@
                         <ul>
                             <li>Exists within a process</li>
                             <li>Uses process heap</li>
-                            <li>Has own stack and register</li>
-                            <li>Communicates with other threads by SHM</li>
+                            <li>Has own stack(local variables, return addresses), priority and registers state</li>
+                            <li>Communicates with other threads by process's SHM</li>
                             <li>The only thing it isolates is execution(parallelism)</li>
                         </ul>
                     </section>
@@ -52,26 +96,28 @@
                         <h2>Process</h2>
                         <ul>
                             <li>Basic system entity</li>
+                            <li>Has program memory: instructions, static/global data, opened descriptors, uid, gid</li>
                             <li>Has own memory (heap)</li>
                             <li>Communicates with other processes (ipc, sockets)</li>
-                            <li>Adheres to GDT/LDT and kernel-enforced limitations (capabilities, fs permissions)</li>
+                            <li>Adheres to GDT/LDT and kernel-enforced limitations (capabilities 4ex: fs permissions)</li>
                         </ul>
                     </section>
-                    
                     
                     <section>
                         <h2>Container</h2>
                         <ul>
-                            <li>"Virtual home for a process"</li>
+                            <li>Basically it's still a process</li>
+                            <li>But kinda like VM :d</li>
                             <li>Shared kernel</li>
-                            <li>Netns</li>
+                            <li>Namespaces</li>
                             <li>Capabilities</li>
                             <li>cGroups</li>
                         </ul>
                         <p>More on that later</p>
                     </section>
                     
-                    
+                    <section data-background-image="images/container.png" data-menu-title="Container schema">
+                    </section>
                     
                     <section>
                         <h2>VM</h2>
@@ -80,20 +126,39 @@
                             <li>Hypervisor</li>
                             <li>Emulated architecture</li>
                             <li>GuestOS</li>
+                            <li>Separate address space</li>
                         </ul>
-                        <p>More on that later</p>
+                    </section>
+                    
+                    <section data-background-image="images/vm.png" data-menu-title="VM schema">
                     </section>
                     
                     <section>
-                        <p>Capabilities</p>
+                        <h2>Capabilities</h2>
+                        <p class="fragment highlight-current-blue">tldr; Extended permissions checks based on uid/gid</p>
+                        <p class="fragment highlight-current-blue">UID 0 (root) - all capabilities</p>
+                        <p class="fragment highlight-current-blue">ex: CAP_FOWNER - bypass file permission checks</p>
+                        <p class="fragment highlight-current-blue">ex: CAP_NET_RAW - use raw/packet sockets (ex: ping)</p>
+                        <a  class="fragment highlight-current-blue" href="https://man7.org/linux/man-pages/man7/capabilities.7.html" target="_blank">&gt;cap list&lt;</a>
+                        <p class="fragment highlight-current-blue">with docker you can enable/disable capabilities per container</p>
                     </section>
                     
                     <section>
-                        <p>cGroups</p>
+                        <h2>cGroups</h2>
+                        <ul>
+                            <li>organize processes into groups</li>
+                            <li>groups are monitored and can be limited</li>
+                            <li>ex. pids - limit process numbers</li>
+                            <li>ex. freezer - freeze process and children</li>
+                            <li>ex. net_cls - throttle network</li>
+                            <li>ex. memory: process/kernel memory and swap</li>
+                            <li><a href="https://man7.org/linux/man-pages/man7/cgroups.7.html" target="_blank">&gt;cgroup list&lt;</a></li>
+                        </ul>
                     </section>
                     
                     <section>
-                        <p>netns</p>
+                        <h2>Namespaces</h2>
+                        
                     </section>
                     
                 </section>
@@ -170,6 +235,14 @@
                 <section>
                     <h2>The end; &copy; rikkt0r</h2>
                     <p>(╯°□°）╯︵ ┻━┻        ┬──┬ ノ( ゜-゜ノ)  </p>
+                    <ul>
+                        <li><a href="https://man7.org/linux/man-pages/man7/namespaces.7.html" target="_blank">man 7 namespaces</a></li>
+                        <li><a href="https://man7.org/linux/man-pages/man7/cgroups.7.html" target="_blank">man 7 cgroups</a></li>
+                        <li><a href="https://man7.org/linux/man-pages/man7/capabilities.7.html" target="_blank">man 7 capabilities</a></li>
+                        <li><a href="https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt">more on cgroups</a></li>
+                        <li><a href="https://docs.docker.com/network/">docker networking</a></li>
+                        <li><a href="https://docs.docker.com/storage/volumes/">docker volumes</a></li>
+                    </ul>
                 </section>
 
             </div>
