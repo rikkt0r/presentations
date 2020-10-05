@@ -44,24 +44,29 @@
                         <h2>And we're skipping..</h2>
                         <ul>
                             <li>Clusterization (docker swarm / kubernetes)</li>
+                            <li>Command by command analysis</li>
                             <li>Thorough FS analysis</li>
                             <li>CI/CD workflows</li>
                             <li>Deployment strategies</li>
+                            <li>Logging</li>
+                            <li>Heartbeat/restart policies</li>
                         </ul>
                         <p>Maybe another presentation on these topics?</p>
                         <p>(This one is long enough)</p>
                     </section>
                     
-                    <section data-menu-title="So what is it?">
-                        <h2>And we're skipping..</h2>
+                    <section data-menu-title="Docker">
+                        <h2>Docker</h2>
                         <ul>
-                            <li>Clusterization (docker swarm / kubernetes)</li>
-                            <li>Thorough FS analysis</li>
-                            <li>CI/CD workflows</li>
-                            <li>Deployment strategies</li>
+                            <li>create extendable images with self-sufficent environment</li>
+                            <li>image is an unit of deployment</li>
+                            <li>manage inter-container dependencies/communication and storage</li>
+                            <li>create multi-image test environments</li>
+                            <li>handle deployement at scale (swarm clusters)</li>
+                            <li>rather secure, than not</li>
+                            <li>it just works for new team members</li>
                         </ul>
-                        <p>Maybe another presentation on these topics?</p>
-                        <p>(This one is long enough)</p>
+                        <p>and more, as you shall see</p>
                     </section>
                     
                 </section>
@@ -158,64 +163,231 @@
                     
                     <section>
                         <h2>Namespaces</h2>
-                        
+                        <ul>
+                            <li>abstraction of system resources</li>
+                            <li>process is isolated, whilst thinking it owns global resource</li>
+                            <li>process's namespace scope is not penetrable</li>
+                            <li>ex: IPC, network, mounts, pid, time, users</li>
+                            <li><a href="https://man7.org/linux/man-pages/man7/namespaces.7.html" target="_blank">&gt;ns list&lt;</a></li>
+                        </ul>
                     </section>
                     
                 </section>
                 
                 <section>
-                    <p>ecosystem in short</p>
+                
+                    <section>
+                        <h2>Back to docker!</h2>
+                    </section>
+                    
+                    <section>
+                        <h2>Typical flow</h2>
+                        <ol>
+                            <li class="fragment highlight-current-blue">Find base image (OS)</li>
+                            <li class="fragment highlight-current-blue">Extend with your dependencies(libraries)</li>
+                            <li class="fragment highlight-current-blue">Copy your code inside, optionally mark for compilation</li>
+                            <li class="fragment highlight-current-blue">Build image from above (docker build)</li>
+                            <li class="fragment highlight-current-blue">Run to test whever it even works</li>
+                            <li class="fragment highlight-current-blue">Find your external dependency images</li>
+                            <li class="fragment highlight-current-blue">Compose a set of deployment (docker-compose)</li>
+                            <li class="fragment highlight-current-blue">Run it</li>
+                        </ol>
+                    </section>
+                    
+                    <section>
+                        <h2>Find base image</h2>
+                        <img src="images/step_1.png">
+                        <p>that's it</p>
+                    </section>
+                    
+                    <section>
+                        <h2>Extend with your dependencies / copy code</h2>
+                        <pre>
+                            <code data-trim data-noescape>
+                                FROM python:3-alpine
+
+                                ENV PYTHONUNBUFFERED=1
+
+                                # any package here
+                                RUN pip install pytz
+                                RUN mkdir /app
+
+                                WORKDIR /app
+
+                                COPY . /app
+
+                                EXPOSE 8000
+
+                                CMD [ "python", "-m", "http.server"]
+                            </code>
+                        </pre>
+                    </section>
+
+                    <section>
+                        <h2>Build image</h2>
+                        <p>docker build -t prez .</p>
+                    </section>
+                    
+                    <section>
+                        <h2>Run to test whever it even works</h2>
+                        <p>docker run --rm -d -p 8000:8000 prez</p>
+                    </section>
+                    
+                    <section>
+                        <h2>Find dependencies</h2>
+                        <img src="images/step_6.png">
+                        <p>again, thats all</p>
+                    </section>
+
+                    <section>
+                        <h2>Compose a set of deployment</h2>
+                        TODO - docker-compose.yml in here
+                    </section>
+
+                    <section>
+                        <h2>Run it</h2>
+                        <p>docker-compose up</p>
+                    </section>
+                    
+                    <section>
+                        <h2>Quick presentation</h2>
+                        <p>... dockerfile ...</p>
+                    </section>
+                    
+                    <section>
+                        <h2>Before we do anything advanced</h2>
+                        <p>we need to understand whats happening under the hood</p>
+                    </section>
+                    
                 </section>
 
+                
                 <section>
-                    <p>ecosystem in short 2</p>
+                    <section>
+                        <h2>Filesystems, layers, CoW and friends</h2>
+                        <p>Some docker theory and YOU WILL be grateful</p>
+                    </section>
+                    
+                    <section>
+                        <h2>Image layers</h2>
+                        <p> TODO </p>
+                    </section>
+                    
+                    <section>
+                        <h2>Image layers 2</h2>
+                        <p> TODO </p>
+                    </section>
+                    
+                    <section>
+                        <h2>Image layers 3</h2>
+                        <p> TODO </p>
+                    </section>
+                    
+                    <section>
+                        <h2>Filesystems, CopyOnWrite</h2>
+                        <p> TODO </p>
+                    </section>
+                    
+                    <section>
+                        <h2>Overlay, Aufs</h2>
+                        <p> TODO </p>
+                    </section>
+                    
+                    <section>
+                        <h2>Btrfs</h2>
+                        <p> TODO </p>
+                    </section>
+                    
+                    <section>
+                        <h2>Again, why images are so resource-savvy</h2>
+                        <p> TODO </p>
+                    </section>
                 </section>
                 
                 <section>
-                    <p>persistance</p>
+                    <section>
+                        <h2>Persistance in docker</h2>
+                        <p> TODO </p>
+                    </section>
+
+                    <section>
+                        <h2>Just image, no mounts</h2>
+                        <p> TODO </p>
+                    </section>
+                    
+                    <section>
+                        <h2>Volumes</h2>
+                        <p> TODO </p>
+                    </section>
+                    
+                    <section>
+                        <h2>Binds</h2>
+                        <p> TODO </p>
+                    </section>
+                    
+                    <section>
+                        <h2>Tmpfs</h2>
+                        <p> TODO </p>
+                    </section>
                 </section>
                 
                 <section>
-                    <p>Docker Filesystems && layers / copy on write</p>
+                    <section>
+                        <h2>Docker Networking</h2>
+                        <p> TODO </p>
+                    </section>
+                    
+                    <section>
+                        <h2>Docker Networking Bridge</h2>
+                        <p> TODO </p>
+                    </section>
+                    
+                    <section>
+                        <h2>Docker Networking Overlay</h2>
+                        <p> TODO </p>
+                    </section>
+                    
+                    <section>
+                        <h2>Docker Networking Host</h2>
+                        <p> TODO </p>
+                    </section>
+                    
+                    <section>
+                        <h2>Docker Networking Macvlan</h2>
+                        <p> TODO </p>
+                    </section>
+                    
+                    <section>
+                        <h2>Docker Networking ???</h2>
+                        <p> TODO </p>
+                    </section>
                 </section>
                 
                 <section>
-                    <p>Docker Networking</p>
+                    <section>
+                        <h2>Build process</h2>
+                        <p>.dockerignore == .gitignore / svn:ignore</p>
+                        <p><a href="https://docs.docker.com/engine/reference/builder/#from">reference</a></p>
+                    </section>
+                </section>
+                
+                
+                <section>
+                    <h2>Environment composition</h2>
+                    <p><a href="https://docs.docker.com/engine/reference/builder/#from">reference</a></p>
                 </section>
                 
                 <section>
-                    <p>dockerfile</p>
-                </section>
-                
-                <section>
-                    <p>docker compose</p>
-                </section>
-                
-                <section>
-                    <p>examples</p>
+                    <h2>example dockerfile + docker-compose.yml</h2>
+                    <p>Sorry github! Here is inner-company stuff, <b>can't share it</b></p>
                 </section>
 
                 <section>
                     <section>
-                        <h2>Example code</h2>
-                        <h3>below</h3>
-                    </section>
-
-                    <section data-menu-title="Yhym">
-                        <h2>frolvlad/alpine-python2</h2>
-                        <pre>
-                            <code data-trim data-noescape>
-                                FROM alpine:3.12
-
-                                ENV PYTHONUNBUFFERED=1
-
-                                RUN apk add --no-cache python2 && \
-                                    python -m ensurepip && \
-                                    rm -r /usr/lib/python*/ensurepip && \
-                                    pip install --upgrade pip setuptools && \
-                                    rm -r /root/.cache
-                            </code>
-                        </pre>
+                        <h2>Image Optimization</h2>
+                        <p>I'll just show by example</p>
+                        <p>DockerfilePy2 vs. DockerfilePy2Opt</p>
+                        <p>tool for analysis: docker history</p>
                     </section>
 
                     <section data-background-image="images/queen.gif" data-menu-title="Yup">
@@ -225,11 +397,26 @@
                 </section>
 
                 <section>
-                    <p>how to develop with docker?</p>
+                    <h2>All in all, how to develop with docker?</h2>
+                    <ul>
+                        <li>Think of architecture</li>
+                        <li>Get your base images</li>
+                        <li>Create simple docker-compose.yml</li>
+                        <li>Bind-mount your code or artifacts</li>
+                        <li>Code, run, fix, test, repeat</li>
+                    </ul>
                 </section>
                 
                 <section>
                     <p>tips and tricks</p>
+                </section>
+                
+                <section>
+                    <h2>Your questions</h2>
+                    <ul>
+                        <li>Jenkins pipeline?</li>
+                        <li>Vagrant vs. docker vs. kubernetes?</li>
+                    </ul>
                 </section>
                 
                 <section>

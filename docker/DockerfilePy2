@@ -1,0 +1,10 @@
+# frolvlad/alpine-python2 de-optimized ;d
+FROM alpine:3.12
+
+ENV PYTHONUNBUFFERED=1
+
+RUN apk add --no-cache python2
+RUN python -m ensurepip
+RUN rm -r /usr/lib/python*/ensurepip
+RUN pip install --upgrade pip setuptools
+RUN rm -r /root/.cache
