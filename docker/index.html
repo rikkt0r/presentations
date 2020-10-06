@@ -57,15 +57,24 @@
                     <section data-menu-title="Docker">
                         <h2>Docker</h2>
                         <ul>
-                            <li>create extendable images with self-sufficent environment</li>
+                            <li>immutable, extendable images with self-sufficent environment</li>
                             <li>image is an unit of deployment</li>
-                            <li>manage inter-container dependencies/communication and storage</li>
-                            <li>create multi-image test environments</li>
+                            <li>virtualize infrastructure: network, storage, dependencies</li>
                             <li>handle deployement at scale (swarm clusters)</li>
                             <li>rather secure, than not</li>
                             <li>it just works for new team members</li>
                         </ul>
                         <p>and more, as you shall see</p>
+                    </section>
+                    
+                    <section data-menu-title="Docker dict">
+                        <h2>Docker dict</h2>
+                        <ul>
+                            <li>Image - ro, immutable, like rpm</li>
+                            <li>Container - "instance" of image, emphemereal</li>
+                            <li>Network</li>
+                            <li>Storage</li>
+                        </ul>
                     </section>
                     
                 </section>
@@ -78,13 +87,7 @@
                         <p class="fragment highlight-red grow">Container</p>
                         <p class="fragment highlight-current-blue">VM</p>
                     </section>
-                    
-                    <section data-menu-title="Btw.">
-                        <h2>Just so you know</h2>
-                        <p>CPU does one thing at a time</p>
-                        <p class="fragment">ok, right...</p>
-                    </section>
-                    
+
                     <section>
                         <h2>Thread</h2>
                         <ul>
@@ -103,7 +106,7 @@
                             <li>Has program memory: instructions, static/global data, opened descriptors, uid, gid</li>
                             <li>Has own memory (heap)</li>
                             <li>Communicates with other processes (ipc, sockets)</li>
-                            <li>Adheres to GDT/LDT and kernel-enforced limitations (capabilities 4ex: fs permissions)</li>
+                            <li>Adheres to kernel-enforced limitations (LDT/TSS / capabilities ex: fs permissions)</li>
                         </ul>
                     </section>
                     
@@ -120,7 +123,9 @@
                         <p>More on that later</p>
                     </section>
                     
-                    <section data-background-image="images/container.png" data-menu-title="Container schema">
+                    <section>
+                        <h2>Container schema</h2>
+                        <img src="images/container.png" style="max-height: 600px">
                     </section>
                     
                     <section>
@@ -130,11 +135,13 @@
                             <li>Hypervisor</li>
                             <li>Emulated architecture</li>
                             <li>GuestOS</li>
-                            <li>Separate address space</li>
+                            <li>Bound resources</li>
                         </ul>
                     </section>
                     
-                    <section data-background-image="images/vm.png" data-menu-title="VM schema">
+                    <section>
+                        <h2>Vm schema</h2>
+                        <img src="images/vm.png" style="max-height: 600px">
                     </section>
                     
                     <section>
@@ -145,6 +152,7 @@
                         <p class="fragment highlight-current-blue">ex: CAP_NET_RAW - use raw/packet sockets (ex: ping)</p>
                         <a  class="fragment highlight-current-blue" href="https://man7.org/linux/man-pages/man7/capabilities.7.html" target="_blank">&gt;cap list&lt;</a>
                         <p class="fragment highlight-current-blue">with docker you can enable/disable capabilities per container</p>
+                        <p>side note: you can only remove capbs on running process</p>
                     </section>
                     
                     <section>
@@ -277,13 +285,14 @@
                 <section>
                     <section>
                         <h2>Persistance in docker</h2>
-                        <p> first a quick overview how docker stores data </p>
+                        <p>but first a quick overview how docker stores data </p>
                         <img src="images/types-of-mounts.png">
                     </section>
 
                     <section>
                         <h2>Just image, no mounts</h2>
-                        <p> data is written in onto container writable layer</p>
+                        <p> data is written onto container writable layer</p>
+                        <p>(so it exists as long as container exists)</p>
                         <p>it's rather inefective (driver) and loitering running image</p>
                         <p>AS TO WHY will get to that in a minute</p>
                     </section>
@@ -319,7 +328,7 @@
                 <section>
                     <section>
                         <h2>Filesystems, layers, CoW and friends</h2>
-                        <p>Some docker theory and YOU WILL be grateful</p>
+                        <p>Some docker theory and YOU WILL be amazed</p>
                     </section>
                     
                     <section>
@@ -333,8 +342,8 @@
                         <p class="fragment highlight-current-blue">Final image is read only</p>
                         <p class="fragment highlight-current-blue">Container FS has two layers, read-only image and writable thin layer</p>
                         <p class="fragment highlight-current-blue">Upon write onto existing file IT IS COPIED to uppermost layer</p>
-                        <p class="fragment highlight-current-blue">directory renaming is in practice unusable</p>
                         <p class="fragment highlight-current-blue">upon removal, files/dirs are substituted with "special files"</p>
+                        <p class="fragment highlight-current-blue">directory renaming is in practice unusable</p>
                     </section>
                     
                     <section data-menu-title="Image layers 3">
@@ -353,7 +362,7 @@
                     <section>
                         <h2>Overlay, Aufs</h2>
                         <img src="images/overlay_fs.jpg">
-                        <p>Max 128 layers, copies whole files</p>
+                        <p>Max 128 layers(inode exhaustion), copies whole files</p>
                     </section>
                     
                     <section>
@@ -436,11 +445,6 @@
                 </section>
                 
                 <section>
-                    <h2>example dockerfile + docker-compose.yml</h2>
-                    <p>Sorry github! Here is inner-company stuff, <br/><b>I can't share it</b></p>
-                </section>
-
-                <section>
                     <h2>Image Optimization</h2>
                     <p>I'll just show by example</p>
                     <p>DockerfilePy2 vs. DockerfilePy2Opt</p>
@@ -456,6 +460,11 @@
                         <li>Bind-mount your code or artifacts</li>
                         <li>Code, run, fix, test, repeat</li>
                     </ul>
+                </section>
+                
+                <section>
+                    <h2>example dockerfile + docker-compose.yml</h2>
+                    <p>Sorry github! Here is inner-company stuff, <br/><b>I can't share it</b></p>
                 </section>
                 
                 <section>
