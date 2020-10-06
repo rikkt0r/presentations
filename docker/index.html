@@ -43,13 +43,12 @@
                     <section data-menu-title="What not">
                         <h2>And we're skipping..</h2>
                         <ul>
-                            <li>Clusterization (docker swarm / kubernetes)</li>
-                            <li>Command by command analysis</li>
-                            <li>Thorough FS analysis</li>
                             <li>CI/CD workflows</li>
-                            <li>Deployment strategies</li>
+                            <li>Deployment strategies (docker swarm / kubernetes)</li>
                             <li>Logging</li>
                             <li>Heartbeat/restart policies</li>
+                            <li>Multi-stage builds</li>
+                            <li>Security</li>
                         </ul>
                         <p>Maybe another presentation on these topics?</p>
                         <p>(This one is long enough)</p>
@@ -260,6 +259,7 @@
                     <section>
                         <h2>Run it</h2>
                         <p>docker-compose up</p>
+                        <p>(ps. everything you do with compose may be done by hand using regular cmd)</p>
                     </section>
                     
                     <section>
@@ -274,6 +274,47 @@
                     
                 </section>
 
+                <section>
+                    <section>
+                        <h2>Persistance in docker</h2>
+                        <p> first a quick overview how docker stores data </p>
+                        <img src="images/types-of-mounts.png">
+                    </section>
+
+                    <section>
+                        <h2>Just image, no mounts</h2>
+                        <p> data is written in onto container writable layer</p>
+                        <p>it's rather inefective (driver) and loitering running image</p>
+                        <p>AS TO WHY will get to that in a minute</p>
+                    </section>
+                    
+                    <section>
+                        <h2>Volumes</h2>
+                        <ul>
+                            <li>Storage units managed by Docker</li>
+                            <li>Persistent</li>
+                            <li>Shareable between nodes on same machine</li>
+                        </ul>
+                    </section>
+                    
+                    <section>
+                        <h2>Binds</h2>
+                        <ul>
+                            <li>Standard linux mount, connecting dir from container to outside</li>
+                            <li>Has same subtree propagation as linux kernel mounts</li>
+                            <li>shared, slave, private etc..</li>
+                        </ul>
+                    </section>
+                    
+                    <section>
+                        <h2>Tmpfs</h2>
+                        <ul>
+                            <li>Aye, it's just tmpfs. Stored in host memory</li>
+                            <li>So it's transparent for container</li>
+                            <li>Good for: keeping process volatile state data</li>
+                        </ul>
+                    </section>
+                </section>
                 
                 <section>
                     <section>
@@ -283,64 +324,47 @@
                     
                     <section>
                         <h2>Image layers</h2>
-                        <p> TODO </p>
+                        <img src="images/container-layers.jpg">
                     </section>
                     
-                    <section>
-                        <h2>Image layers 2</h2>
-                        <p> TODO </p>
+                    <section  data-menu-title="Image layers 2">
+                        <h2>Image layers</h2>
+                        <p class="fragment highlight-current-blue">Each write operation creates new layer</p>
+                        <p class="fragment highlight-current-blue">Final image is read only</p>
+                        <p class="fragment highlight-current-blue">Container FS has two layers, read-only image and writable thin layer</p>
+                        <p class="fragment highlight-current-blue">Upon write onto existing file IT IS COPIED to uppermost layer</p>
+                        <p class="fragment highlight-current-blue">directory renaming is in practice unusable</p>
+                        <p class="fragment highlight-current-blue">upon removal, files/dirs are substituted with "special files"</p>
                     </section>
                     
-                    <section>
-                        <h2>Image layers 3</h2>
-                        <p> TODO </p>
+                    <section data-menu-title="Image layers 3">
+                        <h2>Image layers</h2>
+                        <p> We will see how layers are created near the end in section "Image Optimization" </p>
                     </section>
                     
                     <section>
                         <h2>Filesystems, CopyOnWrite</h2>
-                        <p> TODO </p>
+                        <ul>
+                            <li>Why copy on write? - immutable</li>
+                            <li>Layers are shared between multiple images and containers
+                        </ul>
                     </section>
                     
                     <section>
                         <h2>Overlay, Aufs</h2>
-                        <p> TODO </p>
+                        <img src="images/overlay_fs.jpg">
+                        <p>Max 128 layers, copies whole files</p>
                     </section>
                     
                     <section>
                         <h2>Btrfs</h2>
-                        <p> TODO </p>
+                        <img src="images/btrfs_fs.jpg">
+                        <p>Subvolume or snapshots, copies blocks, keeps track in metadata</p>
                     </section>
                     
                     <section>
                         <h2>Again, why images are so resource-savvy</h2>
-                        <p> TODO </p>
-                    </section>
-                </section>
-                
-                <section>
-                    <section>
-                        <h2>Persistance in docker</h2>
-                        <p> TODO </p>
-                    </section>
-
-                    <section>
-                        <h2>Just image, no mounts</h2>
-                        <p> TODO </p>
-                    </section>
-                    
-                    <section>
-                        <h2>Volumes</h2>
-                        <p> TODO </p>
-                    </section>
-                    
-                    <section>
-                        <h2>Binds</h2>
-                        <p> TODO </p>
-                    </section>
-                    
-                    <section>
-                        <h2>Tmpfs</h2>
-                        <p> TODO </p>
+                        <p> shared layers for the win </p>
                     </section>
                 </section>
                 
@@ -417,23 +441,16 @@
                 </section>
 
                 <section>
-                    <section>
-                        <h2>Image Optimization</h2>
-                        <p>I'll just show by example</p>
-                        <p>DockerfilePy2 vs. DockerfilePy2Opt</p>
-                        <p>tool for analysis: docker history</p>
-                    </section>
-
-                    <section data-background-image="images/queen.gif" data-menu-title="Yup">
-                        <h2>Simple, right?</h2>
-                    </section>
-                    
+                    <h2>Image Optimization</h2>
+                    <p>I'll just show by example</p>
+                    <p>DockerfilePy2 vs. DockerfilePy2Opt</p>
+                    <p>tool for analysis: docker history</p>
                 </section>
 
                 <section>
                     <h2>All in all, how to develop with docker?</h2>
                     <ul>
-                        <li>Think of architecture</li>
+                        <li>Roughly think of architecture</li>
                         <li>Get your base images</li>
                         <li>Create simple docker-compose.yml</li>
                         <li>Bind-mount your code or artifacts</li>
@@ -442,20 +459,19 @@
                 </section>
                 
                 <section>
-                    <h2>tips and tricks</h2>
-                </section>
-                
-                <section>
                     <h2>Your questions</h2>
                     <ul>
                         <li>Jenkins pipeline?</li>
                         <li>Vagrant vs. docker vs. kubernetes?</li>
+                        <li>Windows?</li>
                         <li>Behind corporate proxy and aggresive VPN route propagation?</li>
+                        <li><i>GO BACK to skipped content and a few words about each of them</i></li>
                     </ul>
                 </section>
                 
                 <section>
                     <h2>The end; &copy; rikkt0r</h2>
+                    <p>&copy;Images from docker doc</p>
                     <p>(╯°□°）╯︵ ┻━┻        ┬──┬ ノ( ゜-゜ノ)  </p>
                     <ul>
                         <li><a href="https://man7.org/linux/man-pages/man7/namespaces.7.html" target="_blank">man 7 namespaces</a></li>
@@ -464,6 +480,7 @@
                         <li><a href="https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt" target="_blank">more on cgroups</a></li>
                         <li><a href="https://docs.docker.com/network/" target="_blank">docker networking</a></li>
                         <li><a href="https://docs.docker.com/storage/volumes/" target="_blank">docker volumes</a></li>
+                        <li><a href="https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt" target="_blank">mount propagation</a></li>
                     </ul>
                 </section>
 
