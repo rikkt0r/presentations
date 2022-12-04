@@ -1,41 +1,399 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+    <title>Drive crypt workshops</title>
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/black.css">
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css">
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section>
+            <section data-menu-title="Intro">
+                <h1>Howto!</h1>
+                <h3 class="r-fit-text">Effectively (auto-)nuke your storage?</h3>
+                <h3>（╯°□°）╯︵(\ .o.)\</h3>
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script src="plugin/menu/menu.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+                <aside class="notes">
+                    S - speaker mode // B - blank screen
+                </aside>
+            </section>
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMenu ]
-			});
-		</script>
-	</body>
+            <section data-menu-title="Preface">
+                <h2>Why encrypt</h2>
+                <p class="fragment fade-in-then-out">when you have nothing to hide? (づ｡◕‿‿◕｡)づ</p>
+                <p class="fragment fade-in-then-semi-out">Develop a good practice</p>
+                <p><span class="fragment fade-in-then-semi-out">At work: GDPR ?</span> <span
+                        class="fragment fade-in-then-semi-out">Sensitive data?</span></p>
+                <p class="fragment fade-in-then-semi-out">Selling your drive or removable storage?</p>
+                <p class="fragment">Or you didn't even know...</p>
+
+                <aside class="notes">
+                    Good practice - cover window when parading naked around the house. Same analogy here. You never know
+                    when someone is gonna use your data
+                </aside>
+            </section>
+
+            <section data-menu-title="Oh, I didn't know officer">
+                <video src="assets/Is_Chocola_Legal.mp4" controls></video>
+            </section>
+
+            <section>
+                <h2>Workshop plans</h2>
+                <ul>
+                    <li>Software vs. hardware erasure</li>
+                    <li>HDD sanitization</li>
+                    <li>SSD low level</li>
+                    <li>SSD sanitization</li>
+                    <li>Special case: memory sticks</li>
+                    <li>A few drive curiosities</li>
+                    <li>Software encryption: Luks</li>
+                    <li>Triggering: D-bus and other ideas</li>
+                    <li>Creating opus magnum</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Before we begin</h2>
+                <img src="assets/xkcd-security.png" />
+            </section>
+
+            <section>
+                <h2>Fortunately for us!</h2>
+                <p class="r-fit-text">https://en.wikipedia.org/wiki/Key_disclosure_law#Poland</p>
+                <blockquote class="small r-fit-text">
+                    In relatively few known cases in which police or prosecutor requested cryptographic keys from those
+                    formally accused and these requests were not fulfilled, no further consequences were imposed on the
+                    accused. There's no specific law in this matter, as e.g. in the UK. It is generally assumed that the
+                    Polish Criminal Procedure Code (Kodeks Postępowania Karnego Dz.U. 1997 nr 89 poz. 555.) provides
+                    means of protecting against self-incrimination, including lack of penalization for refusing to
+                    answer any question which would enable law enforcement agencies to obtain access to potential
+                    evidence, which could be used against testifying person.
+                </blockquote>
+            </section>
+
+        </section>
+
+        <section>
+            <section data-menu-title="Software vs. hardware erasure">
+                <h2>Erasure types</h2>
+                <h3>Hardware</h3>
+                <ul>
+                    <li>ATA-3 compliant command SECURE ERASE</li>
+                    <li>ATA-3 compliant command SECURE ERASE ENHANCED</li>
+                    <li>BLKDISCARD</li>
+                    <li>PCIe</li>
+                    <li>SCSI SANITIZE</li>
+                </ul>
+
+                <h3>Software</h3>
+                <ul>
+                    <li>DoD xxxx</li>
+                    <li>Airforce costam</li>
+                    <li>Gunther</li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </section>
+        </section>
+
+        <section>
+            <section data-menu-title="HDD sanitization">
+                <h2>hdd sanitization</h2>
+                - how sectors work
+                - password on drive
+                - ATA commands
+                - force reload partition table
+
+
+                <aside class="notes">
+                    LBA == Logical block addressing
+                    HDD == Hard Disk Drive
+                    SSD == Solid
+                </aside>
+            </section>
+
+            <section>
+                aaaaaaaa
+            </section>
+        </section>
+
+
+        <section>
+            <section>
+                <h2>SSD low level</h2>
+                <ul>
+                    <li>blocks, pages</li>
+                    <li>FTL</li>
+                    <li>GC process</li>
+                    <li>TRIM</li>
+                </ul>
+
+                <aside class="notes">
+                    FTL == Flash Translation Layer
+                </aside>
+            </section>
+
+            <section>
+                <h2>How data is stored</h2>
+                blocks: 4-24MB, pages: 2-32kB
+            </section>
+
+            <section>
+                OVERPROVISIONING, 3 types, just mention them
+            </section>
+
+            <section>
+                GC IMAGE 1
+            </section>
+
+            <section>
+                GC IMAGE 2
+            </section>
+
+            <section>
+                GC IMAGE 3
+            </section>
+
+            <section>
+                GC IMAGE 4
+            </section>
+
+            <section>
+                TRIM IMAGE 1
+            </section>
+
+            <section>
+                TRIM IMAGE 2
+            </section>
+
+
+        </section>
+
+        <section>
+            <section>
+                <h2>SSD sanitization</h2>
+                <ul>
+                    <li>hdd methods ineffective (including degaussing)</li>
+                    <li>dumping flash is easier(& cheaper) than magnetic</li>
+                    <li>pcie/ata/scsi commands</li>
+                    <li>BLKDISCARD / BLKSECDISCARD</li>
+                </ul>
+            </section>
+
+            <section>
+                about ineffective methods
+            </section>
+
+            <section>
+                <img src="assets/passd.png" style="max-height: 600px;"/>
+                <span class="r-fit-text">IEEE Access, D. Lee et al. October 2020, Improving Write Performance Through Reliable Asynchronous Operation in Physically-Addressable SSD</span>
+                <aside class="notes">
+                    Patent publication by Google, discarded (first published 2011)
+                    Now samsung is trying its best on the topic
+                </aside>
+            </section>
+
+            <section>
+                FLASH DUMPER IMAGE
+            </section>
+
+            <section>
+                FLASH DUMPER IMAGE
+            </section>
+
+
+        </section>
+
+
+        <section>
+            <h2>Special case: memory sticks</h2>
+            - it's generally an SSD
+            - before: BOT protocol
+            - now: UAS / UASP --> usb attached scsi (protocol)
+            - show hdparam & smart here
+        </section>
+
+        <section>
+            <h2>A few drive curiosities</h2>
+            - lol @ tech blogs for giving <b>shit</b> advice on secure SSD wipe
+            - boost HDD performance: I/O scheduler (scheduler && blocks)
+            - boost HDD performance: Unused blocks
+            - Smart: pen-drive likely to fail (life story & plasma5 notice)
+        </section>
+
+        <section>
+            <h2>Luks</h2>
+            - high level
+            - header analysis
+            - ciphers & benchmarks
+            - header wipe, key wipe, cold boot attack - attack on grub/boot (secure with: secure boot kernel sign or checksums)
+            - hands on: create your luks container (pass / key)
+            - hands on: unlock it
+            - hands on: erase
+            - hands on: the other way around, let's crack luks :3
+
+            >> create sub-workshop from this:
+            https://diverto.github.io/2019/11/18/Cracking-LUKS-passphrases
+
+            Luks ideas: remote key: https://withblue.ink/2020/01/19/auto-mounting-encrypted-drives-with-a-remote-key-on-linux.html
+            Luks ideas: SSH unlock: https://tqdev.com/2022-luks-with-ssh-unlock
+            Luks ideas: USB unlock: https://tqdev.com/2022-luks-with-usb-unlock
+
+            multiple systems depending on password (ex. veracrypt)
+
+            <section>
+                <h2>Nuke it with predefined password :*</h2>
+                <code data-trim data-noescape>
+                    dpkg-reconfigure cryptsetup-nuke-password
+
+                    cryptsetup luksHeaderBackup --header-backup-file luks_header.bin /dev/nvme0n1p3
+                    file luks_header.bin
+                    luks_header.bin: LUKS encrypted file, ver 2 [, , sha256] UUID: XXXXXXXXXXXXXXXXXXXXXXXXXX
+                    cryptsetup luksDump luks_header.bin
+
+                    luksHeaderRestore --header-backup-file luks_header.bin /dev/nvme0n1p3
+                </code>
+            </section>
+        </section>
+
+        <section>
+            <section>
+                <h2>Time to automate...</h2>
+                - dbus, simulate evdev trigger manually
+                - any chosen option from before
+                - let's try it
+                - being dual? triple? OCTA-SURE about wiping key
+                - <p class="fragment">why?</p>
+            </section>
+
+            <section data-menu-title="FBI Raid">
+                <img src="assets/fbi-open-up-fbi-meme.gif"/>
+                <h2>Coz this happens..</h2>
+            </section>
+
+            <section data-menu-title="FBI Raid goes on">
+                <img src="assets/fbi-swat.gif"/>
+                <h2>.. and then that</h2>
+            </section>
+
+        </section>
+
+        <section>
+            <code>
+
+                util-linux: blkdiscard
+                cryptsetup: cryptsetup
+
+                apt install cryptsetup cryptsetup-nuke-password
+
+                hdparm -I /dev/sda
+                # check available states
+                cat /sys/power/state
+                # freeze to mem
+                echo -n mem > /sys/power/state
+
+                # hdparm --trim-sector-ranges --> EXCEPTIONALLY DANGEROUS. DO NOT USE THIS FLAG!! (͡° ͜ʖ ͡°)
+
+                # Erase
+                hdparm --user-master u --security-erase-enhanced tmppass /dev/sda
+
+                nvme list
+                nvme sanitize-log /dev/nvme0n1
+                nvme id-ctrl /dev/nvme0n1 -H | grep -v " Not Supported" | egrep --color "Sanitize|Format|Crypto Erase"
+                nvme format /dev/nvme0n1 -s 1 -n 1
+                nvme format /dev/nvme0n1 -s 2 -n 1
+
+                # Optional for USB
+                blkdiscard -f --secure /dev/sda
+                blkdiscard -f -z /dev/sda
+
+                blkdiscard: /dev/nvme0n1: BLKSECDISCARD ioctl failed: Operation not supported
+
+
+                FILE SYSTEM NEEDS TO SUPPORT TRIM!
+
+
+                https://en.wikipedia.org/wiki/Trim_(computing)#Operation
+
+                TRIM tells the SSD to mark a LBA region as invalid and subsequent reads on the region will not return
+                any meaningful data. For a very brief time, the data could still reside on the flash internally.
+                However, after the TRIM command is issued and garbage collection has taken place, it's highly unlikely
+                that even a forensic scientist would be able to recover the data.
+
+
+            </code>
+
+        </section>
+
+        <section data-menu-title="TODO BEFORE PRESENTATION">
+            <h2>TODO (for self, PL)</h2>
+            <ol>
+                <li>Przygotować obraz do klonu pendrive</li>
+                <li>Standardy NIST DoD07</li>
+                <li>Pogadać o kolejnych etapach zakładania partycji</li>
+                <li>memtest @ grub</li>
+                <li>cold boot attack, czas wygasania ramu</li>
+                <li>patch na luksa z hasłem orającym dysk</li>
+                <li>różny system/boot zależny od hasła</li>
+                <li>HARDCORE TIN FOIL HAT MODE: header luks oraz klucz oddzielnie montowane</li>
+                <li>dopicować luks, dmcrypt, dm, lvm</li>
+                <li>cache kontrolera dysku - ile tam mogą dane leżeć?</li>
+                <li>Mechanika luksa, co gdzie z czym. Instrukcje CPU. Klucz gdzie? Ram? L3?Czy L3 da się sterować?</li>
+                <li>Trigger z dbus'a? HID może puścic sygnał?</li>
+                <li>Bieda-program w C/pythonie? który powoduje trigger</li>
+                <li>Gdzie klucz trzymać w przypadku SSD? - więcej ezoterycznych pomysłów</li>
+                <li>force controller write(program) on cells - prezentacja Wei'a</li>
+                <li>HDD nadpisywanie danych - jaką mam pewność?</li>
+                <li>jak partycje zarządzają danymi</li>
+                <li>sys plików, ext4 przykładowo</li>
+                <li>kasowanie przez soft producenta np. samsung</li>
+                <li>--------</li>
+                <li>Prezentacja: luks partycja, luks na pliku</li>
+                <li>Prezentacja: haslo vs klucz. pokazac headery</li>
+                <li>Prezentacja: pokazać jak się szuka headerów luks. na hexach</li>
+                <li>Prezentacja: trigger -> panic button</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>The end; &copy; rikkt0r</h2>
+            <p>(づ｡◕‿‿◕｡)づ Bibliography</p>
+            <ul>
+                <li><a href="https://www.usenix.org/legacy/events/fast11/tech/full_papers/Wei.pdf" target="_blank">[Usenix]
+                    Reliably Erasing Data From Flash-Based Solid State Drives</a></li>
+                <li><a href="https://www.smartmontools.org/wiki/USB">SCSI/ATA/SATA -> USB adapter support</a></li>
+                <li>manpages for: smartmontools, hdparm, nvme-cli</li>
+                <li>Truly deniable: https://www.cl.cam.ac.uk/~rja14/Papers/stego-fs.pdf</li>
+            </ul>
+        </section>
+    </div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script src="plugin/menu/menu.js"></script>
+<script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMenu ]
+    });
+
+</script>
+</body>
 </html>
