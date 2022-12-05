@@ -43,6 +43,7 @@
         .max300 {
             max-height: 300px !important;
         }
+
     </style>
 </head>
 <body>
@@ -175,7 +176,7 @@
                 <ul class="left">
                     <li>BLKDISCARD</li>
                     <li>ATA SECURE ERASE (ENHANCED)</li>
-                    <li>PCIe/NVMe </li>
+                    <li>PCIe/NVMe</li>
                     <li>SCSI SANITIZE</li>
                 </ul>
 
@@ -209,11 +210,6 @@
                     <li>Manufacturer sanitization</li>
                     <li>Software shredding</li>
                 </ul>
-                - how sectors work
-                - password on drive
-                - ATA commands
-                - force reload partition table == partprobe
-
 
                 <aside class="notes">
                     LBA == Logical block addressing
@@ -223,7 +219,34 @@
             </section>
 
             <section>
-                <h2>Blocks, sectors, LBA</h2>
+                <h2>TODO Blocks, sectors, LBA</h2>
+                <b>TODO</b>
+                how sectors work
+            </section>
+
+            <section>
+                <h2>TODO Reading controller data</h2>
+                <b>TODO</b>
+                <code>
+                    Commands here
+                </code>
+            </section>
+
+            <section>
+                <h2>TODO Manufacturer sanitization</h2>
+                <b>TODO</b>
+                password on drive
+            </section>
+
+            <section>
+                <h2>TODO Manufacturer sanitization</h2>
+                <b>TODO</b>
+                ata/sas/scsi commands
+            </section>
+
+            <section>
+                <h2>TODO Software shredding</h2>
+                <b>TODO</b>
             </section>
         </section>
 
@@ -245,9 +268,11 @@
 
             <section>
                 <h2>How data is stored</h2>
-                blocks: 4-24MB, pages: 2-32kB
-
-                IMAGE HERE
+                <p>Reads pages, writes blocks</p>
+                <p>blocks: 256kB-4MB, pages: 2-32kB</p>
+                <p>Typically 128 pages per block with 4kB page size</p>
+                <img class="max300" src="assets/ssd_blocks_pages.png"/>
+                <small class="left">Source: [1] M. Wei et al. - Reliably erasing SSDs</small>
             </section>
 
             <section>
@@ -267,24 +292,24 @@
 
             <section>
                 <h2>Garbage collection</h2>
-                <img src="assets/hdd_ssd_write_1.png" />
+                <img src="assets/hdd_ssd_write_1.png"/>
                 <small class="left">Source: [1] M. Wei et al. - Reliably erasing SSDs</small>
             </section>
 
             <section data-menu-title="Garbage collection 2">
                 <h2>Garbage collection</h2>
-                <img src="assets/hdd_ssd_write_2.png" />
+                <img src="assets/hdd_ssd_write_2.png"/>
                 <small class="left">Source: [1] M. Wei et al. - Reliably erasing SSDs</small>
             </section>
 
             <section data-menu-title="Garbage collection 3">
                 <h2>Garbage collection</h2>
-                <img src="assets/hdd_ssd_write_3.png" />
+                <img src="assets/hdd_ssd_write_3.png"/>
                 <small class="left">Source: [1] M. Wei et al. - Reliably erasing SSDs</small>
             </section>
 
             <section data-menu-title="TRIM">
-                <img class="max600" src="assets/ssd_trim.png" />
+                <img class="max600" src="assets/ssd_trim.png"/>
                 <small>TRIM[2], an ATA/PCIe SSD GarbageCollect extension command</small>
             </section>
 
@@ -309,13 +334,13 @@
                     <li>Multiple disk overwrites? <span class="fragment">Nope</span></li>
                 </ul>
                 <p class="fragment">
-                    <img class="max300" src="assets/ssd_overwrite_recovery.png" />
+                    <img class="max300" src="assets/ssd_overwrite_recovery.png"/>
                     <small class="left">Source: [1] M. Wei et al. - Reliably erasing SSDs</small>
                 </p>
             </section>
 
             <section>
-                <img class="max550" src="assets/passd.png" />
+                <img class="max550" src="assets/passd.png"/>
                 <span class="r-fit-text">IEEE Access, D. Lee et al. October 2020, Improving Write Performance Through Reliable Asynchronous Operation in Physically-Addressable SSD</span>
                 <aside class="notes">
                     Patent publication by Google, discarded (first published 2011)
@@ -324,27 +349,73 @@
             </section>
 
             <section data-menu-title="FPGA dumper">
-                <img src="assets/fpga.png" class="max550" />
+                <img src="assets/fpga.png" class="max550"/>
                 <p>Fpga flash dumper</p>
             </section>
 
+            <section>
+                <h2>TODO pcie/ata/scsi commands</h2>
+                <b>TODO</b>
+            </section>
+
+            <section>
+                <h2>TODO pcie/ata/scsi commands 2</h2>
+                <b>TODO</b>
+                <code>
+                    smart,
+                    nvme-cli,
+                    hdparm
+                </code>
+            </section>
 
         </section>
 
-
         <section>
-            <h2>Special flash case: memory sticks</h2>
-            - it's generally an SSD
-            - before: BOT protocol
-            - now: UAS / UASP --> usb attached scsi (protocol)
-            - show hdparam & smart here
+            <section>
+                <h2 class="r-fit-text">Special flash case: memory sticks</h2>
+                <p>Protocols</p>
+                <p>Talking with controller?</p>
+            </section>
+
+            <section>
+                <h2>Protocols</h2>
+                <b>TODO</b>
+                - before: BOT(mlp) protocol
+                - now: UAS / UASP --> usb attached scsi (protocol)
+                - show dmesg && lsusb && wireshark
+            </section>
+
+            <section>
+                <h2>Talking with controller</h2>
+                <b>TODO</b>
+                - an activity with hdparam & smart here
+            </section>
         </section>
 
         <section>
-            <h2>A few drive curiosities</h2>
-            - lol @ tech blogs for giving <b>shit</b> advice on secure SSD wipe
-            - boost HDD performance: Unused blocks
-            - Smart: pen-drive likely to fail (life story & plasma5 notice)
+            <section>
+                <h2>A few drive curiosities</h2>
+                <p>Tech blogs giving shitty advice</p>
+                <p>Boost HDD performance: Choose outer blocks</p>
+                <p>S.M.A.R.T. on thumb drives (a life's story)</p>
+            </section>
+
+            <section>
+                <h2>Tech blogs giving shitty advice</h2>
+                <b>TODO</b>
+            </section>
+
+            <section>
+                <h2>Boost HDD performance: Choose outer blocks</h2>
+                <b>TODO</b>
+            </section>
+
+            <section>
+                <h2>S.M.A.R.T. on pendrives</h2>
+                <b>TODO</b>
+                plasma5 notice, real life sample
+                add link to driveBlaze article on smart params
+            </section>
         </section>
 
         <section>
@@ -459,19 +530,14 @@
             <ol>
                 <li>code data-line-numbers="3-5|8-10|13-15"</li>
                 <li>Przygotować obraz do klonu pendrive</li>
-                <li>Standardy NIST DoD07</li>
                 <li>Pogadać o kolejnych etapach zakładania partycji</li>
                 <li>memtest @ grub</li>
                 <li>cold boot attack, czas wygasania ramu</li>
-                <li>różny system/boot zależny od hasła</li>
                 <li>HARDCORE TIN FOIL HAT MODE: header luks oraz klucz oddzielnie montowane</li>
-                <li>dopicować luks, dmcrypt, dm, lvm</li>
                 <li>cache kontrolera dysku - ile tam mogą dane leżeć?</li>
-                <li>Mechanika luksa, co gdzie z czym. Instrukcje CPU. Klucz gdzie? Ram? L3?Czy L3 da się sterować?</li>
                 <li>Trigger z dbus'a? HID może puścic sygnał?</li>
                 <li>Bieda-program w C/pythonie? który powoduje trigger</li>
                 <li>Gdzie klucz trzymać w przypadku SSD? - więcej ezoterycznych pomysłów</li>
-                <li>HDD nadpisywanie danych - jaką mam pewność?</li>
                 <li>jak partycje zarządzają danymi</li>
                 <li>sys plików, ext4 przykładowo</li>
                 <li>kasowanie przez soft producenta np. samsung</li>
@@ -514,6 +580,7 @@
         // Learn about plugins: https://revealjs.com/plugins/
         plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMenu ]
     });
+
 
 </script>
 </body>
