@@ -12,6 +12,30 @@
 
     <!-- Theme used for syntax highlighted code -->
     <link rel="stylesheet" href="plugin/highlight/monokai.css">
+
+    <style>
+        .left {
+            text-align: left;
+        }
+        .reveal ul {
+            display: block;
+        }
+        .reveal ol {
+            display: block;
+        }
+
+        .max-550 {
+            max-height: 550px;
+        }
+
+        .max-500 {
+            max-height: 500px;
+        }
+
+        .max-450 {
+            max-height: 450px;
+        }
+    </style>
 </head>
 <body>
 <div class="reveal">
@@ -34,7 +58,8 @@
                 <p><span class="fragment fade-in-then-semi-out">At work: GDPR ?</span> <span
                         class="fragment fade-in-then-semi-out">Sensitive data?</span></p>
                 <p class="fragment fade-in-then-semi-out">Selling your drive or removable storage?</p>
-                <p class="fragment">Or you didn't even know...</p>
+                <p class="fragment fade-in-then-semi-out">What if someone steals your laptop?</p>
+                <p class="fragment">Or sometimes this happens...</p>
 
                 <aside class="notes">
                     Good practice - cover window when parading naked around the house. Same analogy here. You never know
@@ -49,21 +74,22 @@
             <section>
                 <h2>Workshop plans</h2>
                 <ul>
-                    <li>Software vs. hardware erasure</li>
+                    <li>Software vs. hardware encryption</li>
                     <li>HDD sanitization</li>
                     <li>SSD low level</li>
                     <li>SSD sanitization</li>
                     <li>Special case: memory sticks</li>
-                    <li>A few drive curiosities</li>
+                    <li>A few drive-related curiosities</li>
                     <li>Software encryption: Luks</li>
                     <li>Triggering: D-bus and other ideas</li>
-                    <li>Creating opus magnum</li>
+                    <li>Creating an opus magnum</li>
                 </ul>
             </section>
 
             <section>
                 <h2>Before we begin</h2>
-                <img src="assets/xkcd-security.png" />
+                <img src="assets/xkcd-security.png"/>
+                <p class="fragment">We don't want that, do we?</p>
             </section>
 
             <section>
@@ -83,35 +109,102 @@
         </section>
 
         <section>
-            <section data-menu-title="Software vs. hardware erasure">
-                <h2>Erasure types</h2>
+            <section>
+                <h2 class="r-fit-text">Software vs. Hardware encryption</h2>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Software</th>
+                        <th>Hardware</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>Transparent</td>
+                        <td>X</td>
+                        <td>X</td>
+                    </tr>
+                    <tr>
+                        <td>Hardware-bound auth</td>
+                        <td>option</td>
+                        <td>X</td>
+                    </tr>
+                    <tr>
+                        <td>Overhead</td>
+                        <td>X</td>
+                        <td>*</td>
+                    </tr>
+                    <tr>
+                        <td>Fast termination</td>
+                        <td>X</td>
+                        <td>X</td>
+                    </tr>
+                    <tr>
+                        <td>Auditable</td>
+                        <td>X</td>
+                        <td>¯\_(ツ)_/¯</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <small>* - Hardware: non-legacy solutions</small>
+
+                <aside class="notes">
+                    SED == Self-encrypting drive<br/>
+                    TPM - trusted platform module, hash from hardware, RNG, key storage<br/>
+                    Pre-boot authentication<br/>
+                    Attack vectors: HDD/SSD: key in memory whilst power-on. <br/>
+                    Soft: key in memory<br/>
+                    Both: brute force<br/>
+                </aside>
+            </section>
+
+            <section>
+                <h2>Erasure by crypto type</h2>
                 <h3>Hardware</h3>
-                <ul>
-                    <li>ATA-3 compliant command SECURE ERASE</li>
-                    <li>ATA-3 compliant command SECURE ERASE ENHANCED</li>
+                <ul class="left">
                     <li>BLKDISCARD</li>
-                    <li>PCIe</li>
+                    <li>ATA SECURE ERASE (ENHANCED)</li>
+                    <li>PCIe/NVMe </li>
                     <li>SCSI SANITIZE</li>
                 </ul>
 
                 <h3>Software</h3>
                 <ul>
-                    <li>DoD xxxx</li>
-                    <li>Airforce costam</li>
-                    <li>Gunther</li>
-                    <li></li>
-                    <li></li>
+                    <li>US DoD 5220.22-M and other wipe methodologies</li>
+                    <li>Free space (HDD only, past files)</li>
                 </ul>
+
+                <aside class="notes">
+                    Hardware == whole disk,<br/>
+                    software == whole or single file
+                </aside>
             </section>
+
+            <section>
+                <h2>When a file is deleted</h2>
+                <p>It's just marked as so in filesystem</p>
+                <p>On HDD it can be now overwritten by the system</p>
+                <p>On SSD - (╯°□°）╯︵ ┻━┻</p>
+            </section>
+
         </section>
 
         <section>
-            <section data-menu-title="HDD sanitization">
-                <h2>hdd sanitization</h2>
+            <section>
+                <h2>HDD sanitization</h2>
+                <ul>
+                    <li>Blocks, sectors, LBA</li>
+                    <li>Reading controller data</li>
+                    <li>Manufacturer sanitization</li>
+                    <li>Software shredding</li>
+                </ul>
                 - how sectors work
                 - password on drive
                 - ATA commands
-                - force reload partition table
+                - force reload partition table == partprobe
 
 
                 <aside class="notes">
@@ -122,7 +215,7 @@
             </section>
 
             <section>
-                aaaaaaaa
+                <h2>Blocks, sectors, LBA</h2>
             </section>
         </section>
 
@@ -133,38 +226,53 @@
                 <ul>
                     <li>blocks, pages</li>
                     <li>FTL</li>
-                    <li>GC process</li>
-                    <li>TRIM</li>
+                    <li>GC process (P/E Cycle)</li>
+                    <li>TRIM (SAS: UNMAP)</li>
                 </ul>
 
                 <aside class="notes">
-                    FTL == Flash Translation Layer
+                    FTL == Flash Translation Layer, i.e. controller
                 </aside>
             </section>
 
             <section>
                 <h2>How data is stored</h2>
                 blocks: 4-24MB, pages: 2-32kB
+
+                IMAGE HERE
             </section>
 
             <section>
-                OVERPROVISIONING, 3 types, just mention them
+                <h2>Flash Translation Layer</h2>
+                <p>i.e. controller operations</p>
             </section>
 
             <section>
-                GC IMAGE 1
+                <h2>Over-provisioning</h2>
+                <p>Reserved for controller, rest available to host</p>
+                <p class="fragment">Used for:</p>
+                <p class="fragment">Garbage collection</p>
+                <p class="fragment">Wear leveling</p>
+                <p class="fragment">TRIM</p>
+                <p class="fragment">Background manufacturer-specific tasks</p>
             </section>
 
             <section>
-                GC IMAGE 2
+                <h2>Garbage collection</h2>
+                <img src="assets/hdd_ssd_write_1.png" />
+                <small class="left">Source: [1] M. Wei et al. - Reliably erasing SSDs</small>
             </section>
 
-            <section>
-                GC IMAGE 3
+            <section data-menu-title="Garbage collection 2">
+                <h2>Garbage collection</h2>
+                <img src="assets/hdd_ssd_write_2.png" />
+                <small class="left">Source: [1] M. Wei et al. - Reliably erasing SSDs</small>
             </section>
 
-            <section>
-                GC IMAGE 4
+            <section data-menu-title="Garbage collection 3">
+                <h2>Garbage collection</h2>
+                <img src="assets/hdd_ssd_write_3.png" />
+                <small class="left">Source: [1] M. Wei et al. - Reliably erasing SSDs</small>
             </section>
 
             <section>
@@ -190,7 +298,14 @@
             </section>
 
             <section>
-                about ineffective methods
+                <h2 class="r-fit-text">HDD Sanitization methods don't work well on SSDs</h2>
+                <ul>
+                    <li>Degaussing? <span class="fragment">Nope</span></li>
+                    <li>Single file overwrite? <span class="fragment">Nope</span></li>
+                    <li>Multiple disk overwrites? <span class="fragment">Nope</span></li>
+                    <li class="fragment"><img class="max-550" src="assets/ssd_overwrite_recovery.png" /></li>
+                </ul>
+                <small class="left">Source: [1] M. Wei et al. - Reliably erasing SSDs</small>
             </section>
 
             <section>
@@ -203,11 +318,8 @@
             </section>
 
             <section>
-                FLASH DUMPER IMAGE
-            </section>
-
-            <section>
-                FLASH DUMPER IMAGE
+                <img src="assets/fpga.png" style="max-height: 550px;"/>
+                <p>Fpga flash dumper</p>
             </section>
 
 
@@ -215,7 +327,7 @@
 
 
         <section>
-            <h2>Special case: memory sticks</h2>
+            <h2>Special flash case: memory sticks</h2>
             - it's generally an SSD
             - before: BOT protocol
             - now: UAS / UASP --> usb attached scsi (protocol)
@@ -225,7 +337,6 @@
         <section>
             <h2>A few drive curiosities</h2>
             - lol @ tech blogs for giving <b>shit</b> advice on secure SSD wipe
-            - boost HDD performance: I/O scheduler (scheduler && blocks)
             - boost HDD performance: Unused blocks
             - Smart: pen-drive likely to fail (life story & plasma5 notice)
         </section>
@@ -235,7 +346,8 @@
             - high level
             - header analysis
             - ciphers & benchmarks
-            - header wipe, key wipe, cold boot attack - attack on grub/boot (secure with: secure boot kernel sign or checksums)
+            - header wipe, key wipe, cold boot attack - attack on grub/boot (secure with: secure boot kernel sign or
+            checksums)
             - hands on: create your luks container (pass / key)
             - hands on: unlock it
             - hands on: erase
@@ -244,9 +356,11 @@
             >> create sub-workshop from this:
             https://diverto.github.io/2019/11/18/Cracking-LUKS-passphrases
 
-            Luks ideas: remote key: https://withblue.ink/2020/01/19/auto-mounting-encrypted-drives-with-a-remote-key-on-linux.html
+            Luks ideas: remote key:
+            https://withblue.ink/2020/01/19/auto-mounting-encrypted-drives-with-a-remote-key-on-linux.html
             Luks ideas: SSH unlock: https://tqdev.com/2022-luks-with-ssh-unlock
             Luks ideas: USB unlock: https://tqdev.com/2022-luks-with-usb-unlock
+            Luks ideas: smart card
 
             multiple systems depending on password (ex. veracrypt)
 
@@ -337,6 +451,7 @@
         <section data-menu-title="TODO BEFORE PRESENTATION">
             <h2>TODO (for self, PL)</h2>
             <ol>
+                <li>code data-line-numbers="3-5|8-10|13-15"</li>
                 <li>Przygotować obraz do klonu pendrive</li>
                 <li>Standardy NIST DoD07</li>
                 <li>Pogadać o kolejnych etapach zakładania partycji</li>
@@ -367,13 +482,13 @@
         <section>
             <h2>The end; &copy; rikkt0r</h2>
             <p>(づ｡◕‿‿◕｡)づ Bibliography</p>
-            <ul>
+            <ol>
                 <li><a href="https://www.usenix.org/legacy/events/fast11/tech/full_papers/Wei.pdf" target="_blank">[Usenix]
                     Reliably Erasing Data From Flash-Based Solid State Drives</a></li>
                 <li><a href="https://www.smartmontools.org/wiki/USB">SCSI/ATA/SATA -> USB adapter support</a></li>
                 <li>manpages for: smartmontools, hdparm, nvme-cli</li>
                 <li>Truly deniable: https://www.cl.cam.ac.uk/~rja14/Papers/stego-fs.pdf</li>
-            </ul>
+            </ol>
         </section>
     </div>
 </div>
