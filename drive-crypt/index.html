@@ -118,6 +118,12 @@
         </section>
 
         <section>
+            <h2>Prerequisites</h2>
+            <p class="r-fit-text">apt install cryptsetup cryptsetup-nuke-password smartmontools</p>
+            <p class="r-fit-text">& download: https://asap.solutions/training/drive-crypt/images/</p>
+        </section>
+
+        <section>
             <section>
                 <h2 class="r-fit-text">Software vs. Hardware encryption</h2>
                 <table>
@@ -311,6 +317,10 @@
             <section data-menu-title="TRIM">
                 <img class="max600" src="assets/ssd_trim.png"/>
                 <small>TRIM[2], an ATA/PCIe SSD GarbageCollect extension command</small>
+
+                <aside class="notes">
+                    Filesystem needs to support TRIM!
+                </aside>
             </section>
 
         </section>
@@ -401,17 +411,17 @@
             </section>
 
             <section>
-                <h2>Tech blogs giving shitty advice</h2>
+                <h2>TODO Tech blogs giving shitty advice</h2>
                 <b>TODO</b>
             </section>
 
             <section>
-                <h2>Boost HDD performance: Choose outer blocks</h2>
+                <h2>TODO Boost HDD performance: Choose outer blocks</h2>
                 <b>TODO</b>
             </section>
 
             <section>
-                <h2>S.M.A.R.T. on pendrives</h2>
+                <h2>TODO S.M.A.R.T. on pendrives</h2>
                 <b>TODO</b>
                 plasma5 notice, real life sample
                 add link to driveBlaze article on smart params
@@ -419,27 +429,31 @@
         </section>
 
         <section>
-            <h2>Luks</h2>
-            - high level
-            - header analysis
-            - ciphers & benchmarks
-            - header wipe, key wipe, cold boot attack - attack on grub/boot (secure with: secure boot kernel sign or
-            checksums)
-            - hands on: create your luks container (pass / key)
-            - hands on: unlock it
-            - hands on: erase
-            - hands on: the other way around, let's crack luks :3
+            <section>
+                <h2>TODO Luks</h2>
+                <pre>
+- high level
+- header analysis
+- ciphers & benchmarks
+- header wipe, key wipe, cold boot attack - attack on grub/boot
+    (secure with: secure boot kernel sign or checksums)
+- hands on: create your luks container (pass / key)
+- hands on: unlock it
+- hands on: erase
+- hands on: the other way around, let's crack luks :3
 
-            >> create sub-workshop from this:
-            https://diverto.github.io/2019/11/18/Cracking-LUKS-passphrases
+>> create sub-workshop from this:
+https://diverto.github.io/2019/11/18/Cracking-LUKS-passphrases
 
-            Luks ideas: remote key:
-            https://withblue.ink/2020/01/19/auto-mounting-encrypted-drives-with-a-remote-key-on-linux.html
-            Luks ideas: SSH unlock: https://tqdev.com/2022-luks-with-ssh-unlock
-            Luks ideas: USB unlock: https://tqdev.com/2022-luks-with-usb-unlock
-            Luks ideas: smart card
+Luks ideas: remote key:
+https://withblue.ink/2020/01/19/auto-mounting-encrypted-drives-with-a-remote-key-on-linux.html
+Luks ideas: SSH unlock: https://tqdev.com/2022-luks-with-ssh-unlock
+Luks ideas: USB unlock: https://tqdev.com/2022-luks-with-usb-unlock
+Luks ideas: smart card
 
-            multiple systems depending on password (ex. veracrypt)
+multiple systems depending on password (ex. veracrypt)
+                </pre>
+            </section>
 
             <section>
                 <h2>Nuke it with predefined password :*</h2>
@@ -458,12 +472,13 @@
 
         <section>
             <section>
-                <h2>Time to automate...</h2>
-                - dbus, simulate evdev trigger manually
-                - any chosen option from before
-                - let's try it
-                - being dual? triple? OCTA-SURE about wiping key
-                - <p class="fragment">why?</p>
+                <h2>TODO Time to automate...</h2>
+                <p>Dbus</p>
+                <p>Triggers</p>
+                <p>Choose your poison (wipe method)</p>
+                <p>Do it!</p>
+                <p>Being dual? triple? OCTA-SURE about wiping key</p>
+                <p class="fragment">why do this?</p>
             </section>
 
             <section data-menu-title="FBI Raid">
@@ -474,54 +489,71 @@
             <section data-menu-title="FBI Raid goes on">
                 <img src="assets/fbi-swat.gif"/>
                 <h2>.. and then that</h2>
+                <h3>Gotta act fast ✌</h3>
+            </section>
+
+            <section>
+                <h2>TODO Dbus & trigger friends</h2>
+                <b>TODO</b>
+            </section>
+
+            <section>
+                <h2>Your turn</h2>
+                <p>Create
             </section>
 
         </section>
 
         <section>
-            <code>
+            <section>
+                <h2>Wet dream of a crypto-nerd</h2>
+                <p>Let's create an YOUR opus magnum of cryptography</p>
+                <p>(Well, without possible deniability)</p>
+            </section>
 
-                util-linux: blkdiscard
-                cryptsetup: cryptsetup
+            <section>
+                <h2>The crypto-plan</h2>
+                <p>Choose your favourite sanitization methods</p>
+                <p>Create luks on top of that</p>
+                <p>Add a sprinkle of magic</p>
+                <p>Call the police (´・ω・)っ由</p>
+                <img src="assets/fbi-anime.gif" />
+            </section>
 
-                apt install cryptsetup cryptsetup-nuke-password
+            <section>
+                <h2>Open workshop</h2>
+                <p>Creating opus magnum of crypto</p>
+                <img class="fragment fade-out" src="assets/fbi-fbi-typing.gif" />
+            </section>
+        </section>
 
-                hdparm -I /dev/sda
-                # check available states
-                cat /sys/power/state
-                # freeze to mem
-                echo -n mem > /sys/power/state
+        <section>
+            <h2>Some Commands</h2>
+            <pre>
 
-                # hdparm --trim-sector-ranges --> EXCEPTIONALLY DANGEROUS. DO NOT USE THIS FLAG!! (͡° ͜ʖ ͡°)
+hdparm -I /dev/sda
+# check available states
+cat /sys/power/state
+# freeze to mem
+echo -n mem > /sys/power/state
 
-                # Erase
-                hdparm --user-master u --security-erase-enhanced tmppass /dev/sda
+# hdparm --trim-sector-ranges --> EXCEPTIONALLY DANGEROUS. DO NOT USE THIS FLAG!! (͡° ͜ʖ ͡°)
 
-                nvme list
-                nvme sanitize-log /dev/nvme0n1
-                nvme id-ctrl /dev/nvme0n1 -H | grep -v " Not Supported" | egrep --color "Sanitize|Format|Crypto Erase"
-                nvme format /dev/nvme0n1 -s 1 -n 1
-                nvme format /dev/nvme0n1 -s 2 -n 1
+# Erase
+hdparm --user-master u --security-erase-enhanced tmppass /dev/sda
 
-                # Optional for USB
-                blkdiscard -f --secure /dev/sda
-                blkdiscard -f -z /dev/sda
+nvme list
+nvme sanitize-log /dev/nvme0n1
+nvme id-ctrl /dev/nvme0n1 -H | grep -v " Not Supported" | egrep --color "Sanitize|Format|Crypto Erase"
+nvme format /dev/nvme0n1 -s 1 -n 1
+nvme format /dev/nvme0n1 -s 2 -n 1
 
-                blkdiscard: /dev/nvme0n1: BLKSECDISCARD ioctl failed: Operation not supported
+# Optional for USB
+blkdiscard -f --secure /dev/sda
+blkdiscard -f -z /dev/sda
 
-
-                FILE SYSTEM NEEDS TO SUPPORT TRIM!
-
-
-                https://en.wikipedia.org/wiki/Trim_(computing)#Operation
-
-                TRIM tells the SSD to mark a LBA region as invalid and subsequent reads on the region will not return
-                any meaningful data. For a very brief time, the data could still reside on the flash internally.
-                However, after the TRIM command is issued and garbage collection has taken place, it's highly unlikely
-                that even a forensic scientist would be able to recover the data.
-
-
-            </code>
+blkdiscard: /dev/nvme0n1: BLKSECDISCARD ioctl failed: Operation not supported
+            </pre>
 
         </section>
 
