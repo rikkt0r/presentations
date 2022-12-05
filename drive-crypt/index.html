@@ -24,16 +24,24 @@
             display: block;
         }
 
-        .max-550 {
-            max-height: 550px;
+        .max600 {
+            max-height: 600px !important;
         }
 
-        .max-500 {
-            max-height: 500px;
+        .max550 {
+            max-height: 550px !important;
         }
 
-        .max-450 {
-            max-height: 450px;
+        .max500 {
+            max-height: 500px !important;
+        }
+
+        .max450 {
+            max-height: 450px !important;
+        }
+
+        .max300 {
+            max-height: 300px !important;
         }
     </style>
 </head>
@@ -275,14 +283,10 @@
                 <small class="left">Source: [1] M. Wei et al. - Reliably erasing SSDs</small>
             </section>
 
-            <section>
-                TRIM IMAGE 1
+            <section data-menu-title="TRIM">
+                <img class="max600" src="assets/ssd_trim.png" />
+                <small>TRIM[2], an ATA/PCIe SSD GarbageCollect extension command</small>
             </section>
-
-            <section>
-                TRIM IMAGE 2
-            </section>
-
 
         </section>
 
@@ -298,18 +302,20 @@
             </section>
 
             <section>
-                <h2 class="r-fit-text">HDD Sanitization methods don't work well on SSDs</h2>
+                <h2 class="r-fit-text">Do HDD Sanitization methods work well on SSDs?</h2>
                 <ul>
                     <li>Degaussing? <span class="fragment">Nope</span></li>
                     <li>Single file overwrite? <span class="fragment">Nope</span></li>
                     <li>Multiple disk overwrites? <span class="fragment">Nope</span></li>
-                    <li class="fragment"><img class="max-550" src="assets/ssd_overwrite_recovery.png" /></li>
                 </ul>
-                <small class="left">Source: [1] M. Wei et al. - Reliably erasing SSDs</small>
+                <p class="fragment">
+                    <img class="max300" src="assets/ssd_overwrite_recovery.png" />
+                    <small class="left">Source: [1] M. Wei et al. - Reliably erasing SSDs</small>
+                </p>
             </section>
 
             <section>
-                <img src="assets/passd.png" style="max-height: 600px;"/>
+                <img class="max550" src="assets/passd.png" />
                 <span class="r-fit-text">IEEE Access, D. Lee et al. October 2020, Improving Write Performance Through Reliable Asynchronous Operation in Physically-Addressable SSD</span>
                 <aside class="notes">
                     Patent publication by Google, discarded (first published 2011)
@@ -317,8 +323,8 @@
                 </aside>
             </section>
 
-            <section>
-                <img src="assets/fpga.png" style="max-height: 550px;"/>
+            <section data-menu-title="FPGA dumper">
+                <img src="assets/fpga.png" class="max550" />
                 <p>Fpga flash dumper</p>
             </section>
 
@@ -457,7 +463,6 @@
                 <li>Pogadać o kolejnych etapach zakładania partycji</li>
                 <li>memtest @ grub</li>
                 <li>cold boot attack, czas wygasania ramu</li>
-                <li>patch na luksa z hasłem orającym dysk</li>
                 <li>różny system/boot zależny od hasła</li>
                 <li>HARDCORE TIN FOIL HAT MODE: header luks oraz klucz oddzielnie montowane</li>
                 <li>dopicować luks, dmcrypt, dm, lvm</li>
@@ -466,11 +471,11 @@
                 <li>Trigger z dbus'a? HID może puścic sygnał?</li>
                 <li>Bieda-program w C/pythonie? który powoduje trigger</li>
                 <li>Gdzie klucz trzymać w przypadku SSD? - więcej ezoterycznych pomysłów</li>
-                <li>force controller write(program) on cells - prezentacja Wei'a</li>
                 <li>HDD nadpisywanie danych - jaką mam pewność?</li>
                 <li>jak partycje zarządzają danymi</li>
                 <li>sys plików, ext4 przykładowo</li>
                 <li>kasowanie przez soft producenta np. samsung</li>
+                <li>write blocker</li>
                 <li>--------</li>
                 <li>Prezentacja: luks partycja, luks na pliku</li>
                 <li>Prezentacja: haslo vs klucz. pokazac headery</li>
@@ -485,6 +490,7 @@
             <ol>
                 <li><a href="https://www.usenix.org/legacy/events/fast11/tech/full_papers/Wei.pdf" target="_blank">[Usenix]
                     Reliably Erasing Data From Flash-Based Solid State Drives</a></li>
+                <li>https://www.techtarget.com/searchstorage/definition/TRIM</li>
                 <li><a href="https://www.smartmontools.org/wiki/USB">SCSI/ATA/SATA -> USB adapter support</a></li>
                 <li>manpages for: smartmontools, hdparm, nvme-cli</li>
                 <li>Truly deniable: https://www.cl.cam.ac.uk/~rja14/Papers/stego-fs.pdf</li>
