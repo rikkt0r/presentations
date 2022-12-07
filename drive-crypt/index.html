@@ -119,8 +119,9 @@
 
         <section>
             <h2>Prerequisites</h2>
-            <p class="r-fit-text">apt install cryptsetup cryptsetup-nuke-password smartmontools</p>
-            <p class="r-fit-text">& download: https://asap.solutions/training/drive-crypt/images/</p>
+            <p class="r-fit-text">apt install cryptsetup cryptsetup-nuke-password smartmontools wireshark-qt
+                bruteforce-luks</p>
+            <p class="r-fit-text">git clone https://github.com/openwall/john.git</p>
         </section>
 
         <section>
@@ -200,7 +201,7 @@
 
             <section>
                 <h2>When a file is deleted</h2>
-                <p>It's just marked as so in filesystem</p>
+                <p>It's just marked as so in filesystem &</p>
                 <p>On HDD it can be now overwritten by the system</p>
                 <p>On SSD - (╯°□°）╯︵ ┻━┻</p>
             </section>
@@ -212,7 +213,7 @@
                 <h2>HDD sanitization</h2>
                 <ul>
                     <li>Blocks, sectors, LBA</li>
-                    <li>Reading controller data</li>
+                    <li>Talking with controller</li>
                     <li>Manufacturer sanitization</li>
                     <li>Software shredding</li>
                 </ul>
@@ -227,32 +228,122 @@
             <section>
                 <h2>TODO Blocks, sectors, LBA</h2>
                 <b>TODO</b>
-                how sectors work
+                <p>In a magnetic drive OS has the direct access to physical sectors</p>
+                <p>That translates directly to filesystem</p>
             </section>
 
             <section>
-                <h2>TODO Reading controller data</h2>
-                <b>TODO</b>
-                <code>
-                    Commands here
-                </code>
+                <h2>Controller stuff: HPA, DCO</h2>
+                <p>Fun stuff you probably haven't heard off</p>
+                <p>HPA == host protected area</p>
+                <p>DCO == Device configuration overlay</p>
+
+                <p>Those hide sectors from bios/efi, system and user</p>
+                <p>(survives everything but secure erase)</p>
+
+                <pre class="bash">
+                    <code data-trim>
+                        # Your OS may ignore this already
+                        cat /sys/module/libata/parameters/ignore_hpa
+                    </code>
+                </pre>
+
             </section>
 
             <section>
-                <h2>TODO Manufacturer sanitization</h2>
-                <b>TODO</b>
-                password on drive
+                <h2 class="r-fit-text">Controller stuff: Hardware password</h2>
+                <p>Master password == for IT admins, higher order*</p>
+                <p>User password == self explanatory</p>
+                <p>We'll be using <i>hdparm</i> for that</p>
+                <small>*- depends on security mode (high or max), let me show you</small>
             </section>
 
             <section>
-                <h2>TODO Manufacturer sanitization</h2>
-                <b>TODO</b>
-                ata/sas/scsi commands
+                <h2 class="r-fit-text">Hands on: set hardware password</h2>
+                <p><u>Remember</u> and <u>double-check</u> the password otherwise you'll brick the drive</p>
+                <pre class="bash">
+                    <code data-trim data-noescape>
+                        hdparm --user-master u --set-security-pass pass /dev/sda
+                        # unplug drive, plug in again, notice that kernel throws read errors!
+                        dmesg -c
+                        # Notice, that drive now appears locked!
+                        hdparm -I /dev/sda
+                        # unlock the device
+                        hdparm --user-master u --security-unlock pass /dev/sda
+                        mount /dev/sda1 /mnt/something
+                        dmesg -c
+                        hdparm --user-master u --security-disable pass /dev/sda
+                        # unplug, plug in again. Now there should be no password left
+                        dmesg -c
+                    </code>
+                </pre>
             </section>
 
             <section>
-                <h2>TODO Software shredding</h2>
-                <b>TODO</b>
+                <h2 class="r-fit-text">Hands on: when drive is frozen</h2>
+                <pre>
+                    <code data-trim>
+                        # Suspend and wake up
+                        echo -n mem > /sys/power/state
+                    </code>
+                </pre>
+                <p>or hotplug SATA</p>
+                <p>(AHCI must be enabled for SATA hotplugging)</p>
+            </section>
+
+            <section>
+                <h2>Manufacturer sanitization</h2>
+                <p>Be warned, this takes time</p>
+                <pre class="bash">
+                    <code data-trim data-noescape>
+                        # We need to set password first
+                        $ hdparm --user-master u --security-set-pass pass /dev/sda
+
+                        # Then wipe
+                        $ hdparm --user-master u --security-erase-enhanced pass /dev/sda
+
+                        $ hdparm --security-help
+
+                        ATA Security Commands:
+                         Most of these are VERY DANGEROUS (͡° ͜ʖ ͡°) and can destroy all of your data!
+                         Due to bugs in older Linux kernels, use of these commands may even
+                         trigger kernel segfaults or worse.  EXPERIMENT AT YOUR OWN RISK! ᕕ( ͡°ᴥ ͡°)ᕗ
+
+                         --security-freeze           Freeze security settings until reset.
+
+                         --security-set-pass PASSWD  Lock drive, using password PASSWD:
+                                                          Use 'NULL' to set empty password.
+                                                          Drive gets locked if user-passwd is selected.
+                         --security-prompt-for-password   Prompt user to enter the drive password.
+
+                         --security-unlock   PASSWD  Unlock drive.
+                         --security-disable  PASSWD  Disable drive locking.
+                         --security-erase    PASSWD  Erase a (locked) drive.
+                         --security-erase-enhanced PASSWD   Enhanced-erase a (locked) drive.
+
+                         The above four commands may optionally be preceded by these options:
+                         --security-mode  LEVEL      Use LEVEL to select security level:
+                                                          h   high security (default).
+                                                          m   maximum security.
+                         --user-master    WHICH      Use WHICH to choose password type:
+                                                          u   user-password (default).
+                                                          m   master-password
+                    </code>
+                </pre>
+            </section>
+
+            <section>
+                <h2>Software shredding</h2>
+                <p>As the OS has direct access to physical sectors we could just..</p>
+                <pre class="bash">
+                    <code data-trim data-noescape>
+                        # -u; deallocate and remove file after overwriting
+                        # -z; --zero; add a final overwrite with zeros to hide shredding
+                        shred -zu /some/file
+                    </code>
+                </pre>
+                <p class="r-fit-text">It's their own algorithm, described in sources. Self-tested with oscilloscope</p>
+                <p class="r-fit-text">https://git.savannah.gnu.org/cgit/coreutils.git/tree/src/shred.c#n626</p>
             </section>
         </section>
 
@@ -264,7 +355,7 @@
                     <li>blocks, pages</li>
                     <li>FTL</li>
                     <li>GC process (P/E Cycle)</li>
-                    <li>TRIM (SAS: UNMAP)</li>
+                    <li>TRIM (SAS: UNMAP, PCIe: DEALLOCATE)</li>
                 </ul>
 
                 <aside class="notes">
@@ -274,7 +365,7 @@
 
             <section>
                 <h2>How data is stored</h2>
-                <p>Reads pages, writes blocks</p>
+                <p class="r-fit-text">Reads pages, erases blocks, writes to empty pages</p>
                 <p>blocks: 256kB-4MB, pages: 2-32kB</p>
                 <p>Typically 128 pages per block with 4kB page size</p>
                 <img class="max300" src="assets/ssd_blocks_pages.png"/>
@@ -384,21 +475,77 @@
             <section>
                 <h2 class="r-fit-text">Special flash case: memory sticks</h2>
                 <p>Protocols</p>
-                <p>Talking with controller?</p>
+                <p>Talking with controller?? <span class="fragment">Or not ;(</span></p>
             </section>
 
             <section>
                 <h2>Protocols</h2>
-                <b>TODO</b>
-                - before: BOT(mlp) protocol
-                - now: UAS / UASP --> usb attached scsi (protocol)
-                - show dmesg && lsusb && wireshark
+                <p>Previously mass storages were using BOT (Bulk-only transport)</p>
+                <p>Nowadays it was(should be?) superseded by UAS/UASP</p>
+                <p>i.e. USB Attached SCSI (Protocol)</p>
+                <p>SCSI == Small Computer System Interface ノ( ゜-゜ノ)</p>
             </section>
 
             <section>
-                <h2>Talking with controller</h2>
-                <b>TODO</b>
-                - an activity with hdparam & smart here
+                <h2>Hands on: first impression</h2>
+                <p>Run these few commands, try <u>different</u> thumb drives</p>
+                <pre>
+                    <code data-trim data-noescape>
+                        sudo dmesg -c
+                        # plug in
+                        sudo dmesg -c
+                        lsusb
+                        # example: Bus 004 Device 004: ID 13fe:5200 Kingston [...]
+                        lsusb -d 13fe:5200 -v
+                        hdparm -I /dev/sda  # Assuming sda was assigned
+                        smartctl -a /dev/sda
+                        # plug out
+                        sudo dmesg -c
+                    </code>
+                </pre>
+            </section>
+
+            <section>
+                <h2>Hands on: if first impressions were bad</h2>
+                <p>change usb driver from uas to bot ;)</p>
+                <pre>
+                    <code data-trim data-noescape>
+                        lsusb -t  # check driver here, usb_storage or uas
+                        lsusb
+                        # example: Bus 004 Device 007: ID 090c:1000 Silicon Motion [...]
+                        echo "090c:1000:u" > /sys/module/usb_storage/parameters/quirks
+                    </code>
+                </pre>
+                <p>And try again</p>
+            </section>
+
+            <section>
+                <h2>Hands on: wireshark time</h2>
+                <pre>
+                    <code data-trim data-noescape>
+                        sudo dmesg -c
+                        # Requires relogging
+                        sudo adduser $USER wireshark
+                        sudo dpkg-reconfigure wireshark-common
+                        modprobe usbmon
+                        sudo setfacl -m u:$USER:r /dev/usbmon*
+                        lsusb
+                        # example: Bus 004 Device 004: ID 13fe:5200 Kingston [...]
+                        # so then run capture on usbmon4
+                        # ----> IMPORTANT: notice SCSI dumps !
+                    </code>
+                </pre>
+            </section>
+
+            <section>
+                <h2>Summing up the USB stuff</h2>
+                <p>Can we talk with flash controller?</p>
+                <p><span class="fragment">Well yes</span> <span class="fragment">...but no ;/</span></p>
+                <p class="fragment r-fit-text">Manufacturers smart & scsi is implementation is rather poor</p>
+                <p class="fragment r-fit-text">Let me show you a few examples on different pendrives</p>
+                <p class="fragment r-fit-text">Exception to the rule: SSD over USB sticks, i.e. SAT (USB SATA
+                    bridge)</p>
+                <small class="fragment">(Example: SanDisk Extreme Pro 128GB stick)</small>
             </section>
         </section>
 
@@ -406,23 +553,33 @@
             <section>
                 <h2>A few drive curiosities</h2>
                 <p>Tech blogs giving shitty advice</p>
-                <p>Boost HDD performance: Choose outer blocks</p>
-                <p>S.M.A.R.T. on thumb drives (a life's story)</p>
+                <p>Boost HDD performance/p>
+                <p>S.M.A.R.T. saving lives, kind of</p>
             </section>
 
             <section>
-                <h2>TODO Tech blogs giving shitty advice</h2>
-                <b>TODO</b>
+                <h2>Tech blogs giving shitty advice</h2>
+                <p>Now you know some stuff</p>
+                <p>Google: "howto securely erase SSD"</p>
+                <p>Enjoy</p>
+                <p class="fragment">(͡° ͜ʖ ͡°) <span class="fragment">(͡° ͜ʖ ͡°)</span> <span class="fragment">(͡° ͜ʖ ͡°)</span>
+                    <span class="fragment">(͡° ͜ʖ ͡°)</span> <span class="fragment">(͡° ͜ʖ ͡°)</span></p>
+
             </section>
 
             <section>
-                <h2>TODO Boost HDD performance: Choose outer blocks</h2>
-                <b>TODO</b>
+                <h2>Boosting HDD seek time</h2>
+                <h3>Db-admin secret ^_^</h3>
+                <img class="max450" src="assets/header_overview.png"/>
             </section>
 
             <section>
-                <h2>TODO S.M.A.R.T. on pendrives</h2>
-                <b>TODO</b>
+                <h2>TODO S.M.A.R.T. saving lives</h2>
+                <p>Plugged SSD-based pendrive into laptop</p>
+                <p>Notice appeared!</p>
+
+                TODO
+
                 plasma5 notice, real life sample
                 add link to driveBlaze article on smart params
             </section>
@@ -430,28 +587,23 @@
 
         <section>
             <section>
+                <aside class="notes">
+                    @/etc/modprobe.d/more_loopz.conf:<br/>
+                    options loop max_loop=123
+
+                    luks2 - kernel keyring
+
+                    https://en.wikipedia.org/wiki/Comparison_of_disk_encryption_software
+                </aside>
+
                 <h2>TODO Luks</h2>
                 <pre>
-- high level
-- header analysis
-- ciphers & benchmarks
-- header wipe, key wipe, cold boot attack - attack on grub/boot
-    (secure with: secure boot kernel sign or checksums)
-- hands on: create your luks container (pass / key)
-- hands on: unlock it
-- hands on: erase
-- hands on: the other way around, let's crack luks :3
-
->> create sub-workshop from this:
-https://diverto.github.io/2019/11/18/Cracking-LUKS-passphrases
-
-Luks ideas: remote key:
-https://withblue.ink/2020/01/19/auto-mounting-encrypted-drives-with-a-remote-key-on-linux.html
-Luks ideas: SSH unlock: https://tqdev.com/2022-luks-with-ssh-unlock
-Luks ideas: USB unlock: https://tqdev.com/2022-luks-with-usb-unlock
-Luks ideas: smart card
-
-multiple systems depending on password (ex. veracrypt)
+1. luks header luks1 vs. luks2 // OKTETA view
+2. create loop, cryptsetup luks1, dump header, erase, restore header
+3. create luks1, restore master password from memory
+4. create luks with key unlock
+5. mention many unlocking possibilities - like ssh, pen during pre-boot, TPM
+6. TPM, signed kernels ---> root of trust, otherwise someone might poison /boot
                 </pre>
             </section>
 
@@ -472,13 +624,65 @@ multiple systems depending on password (ex. veracrypt)
 
         <section>
             <section>
-                <h2>TODO Time to automate...</h2>
-                <p>Dbus</p>
+                <h2>Time to automate...</h2>
+                <p>Dbus!</p>
                 <p>Triggers</p>
-                <p>Choose your poison (wipe method)</p>
-                <p>Do it!</p>
-                <p>Being dual? triple? OCTA-SURE about wiping key</p>
-                <p class="fragment">why do this?</p>
+            </section>
+
+            <section>
+                <h2>Dbus</h2>
+                <b>TODO</b>
+            </section>
+
+            <section>
+                <h2>Sample dbus client</h2>
+                <small>https://github.com/rikkt0r/presentations/tree/main/drive-crypt</small>
+                <pre>
+                    <code data-trim data-noescape>
+                        #!/usr/bin/python3
+
+                        import dbus
+                        from gi.repository import GLib
+                        from dbus.mainloop.glib import DBusGMainLoop
+
+
+                        keys = ["app_name", "replaces_id", "app_icon", "summary", "body", "actions", "hints", "expire_timeout"]
+
+
+                        def print_notification(bus, message):
+                            args = message.get_args_list()
+                            if len(args) == 8:
+                                notification = dict([(keys[i], args[i]) for i in range(8)])
+                                print(f'{notification["app_name"]} :::: {notification["summary"]} - {notification["body"]}')
+                            else:
+                                print("Unparsable", args)
+
+
+                        if __name__ == "__main__":
+                            loop = DBusGMainLoop(set_as_default=True)
+                            session_bus = dbus.SessionBus()
+                            session_bus.add_match_string("type='method_call',interface='org.freedesktop.Notifications',member='Notify',eavesdrop=true")
+                            session_bus.add_message_filter(print_notification)
+                            GLib.MainLoop().run()
+                    </code>
+                </pre>
+            </section>
+
+            <section>
+                <h2>Hands on: Your turn</h2>
+                <p>Run script, notice what happens</p>
+                <small>Side node: for final script we're gonna use SystemBus, not SessionBus</small>
+
+            </section>
+
+        </section>
+
+        <section>
+            <section>
+                <h2>Wet dream of a crypto-nerd</h2>
+                <p>Let's create YOUR opus magnum of cryptography</p>
+                <p>(Well, without possible deniability)</p>
+                <p class="fragment">why do this you ask?</p>
             </section>
 
             <section data-menu-title="FBI Raid">
@@ -493,93 +697,43 @@ multiple systems depending on password (ex. veracrypt)
             </section>
 
             <section>
-                <h2>TODO Dbus & trigger friends</h2>
-                <b>TODO</b>
-            </section>
-
-            <section>
-                <h2>Your turn</h2>
-                <p>Create
-            </section>
-
-        </section>
-
-        <section>
-            <section>
-                <h2>Wet dream of a crypto-nerd</h2>
-                <p>Let's create an YOUR opus magnum of cryptography</p>
-                <p>(Well, without possible deniability)</p>
-            </section>
-
-            <section>
-                <h2>The crypto-plan</h2>
+                <h2>The master-plan</h2>
                 <p>Choose your favourite sanitization methods</p>
                 <p>Create luks on top of that</p>
                 <p>Add a sprinkle of magic</p>
                 <p>Call the police (´・ω・)っ由</p>
-                <img src="assets/fbi-anime.gif" />
+                <img src="assets/fbi-anime.gif"/>
             </section>
 
             <section>
                 <h2>Open workshop</h2>
                 <p>Creating opus magnum of crypto</p>
-                <img class="fragment fade-out" src="assets/fbi-fbi-typing.gif" />
+                <p>Remember - Be dual? triple? OCTA-SURE about wiping keys!</p>
+                <img class="fragment fade-out" src="assets/fbi-fbi-typing.gif"/>
             </section>
         </section>
 
         <section>
-            <h2>Some Commands</h2>
-            <pre>
-
-hdparm -I /dev/sda
-# check available states
-cat /sys/power/state
-# freeze to mem
-echo -n mem > /sys/power/state
-
-# hdparm --trim-sector-ranges --> EXCEPTIONALLY DANGEROUS. DO NOT USE THIS FLAG!! (͡° ͜ʖ ͡°)
-
-# Erase
-hdparm --user-master u --security-erase-enhanced tmppass /dev/sda
-
-nvme list
-nvme sanitize-log /dev/nvme0n1
-nvme id-ctrl /dev/nvme0n1 -H | grep -v " Not Supported" | egrep --color "Sanitize|Format|Crypto Erase"
-nvme format /dev/nvme0n1 -s 1 -n 1
-nvme format /dev/nvme0n1 -s 2 -n 1
-
-# Optional for USB
-blkdiscard -f --secure /dev/sda
-blkdiscard -f -z /dev/sda
-
-blkdiscard: /dev/nvme0n1: BLKSECDISCARD ioctl failed: Operation not supported
-            </pre>
-
+            <h2>Over-the-top forensics</h2>
+            <ol>
+                <li>Arrive with liquid nitrogen and external battery PSU</li>
+                <li>Stabilize power</li>
+                <li>Freeze and dump RAM</li>
+                <li>Attach write blocker to disk, dump</li>
+                <li>Do forensics™ on disk clone</li>
+            </ol>
         </section>
 
-        <section data-menu-title="TODO BEFORE PRESENTATION">
-            <h2>TODO (for self, PL)</h2>
-            <ol>
-                <li>code data-line-numbers="3-5|8-10|13-15"</li>
-                <li>Przygotować obraz do klonu pendrive</li>
-                <li>Pogadać o kolejnych etapach zakładania partycji</li>
-                <li>memtest @ grub</li>
-                <li>cold boot attack, czas wygasania ramu</li>
-                <li>HARDCORE TIN FOIL HAT MODE: header luks oraz klucz oddzielnie montowane</li>
-                <li>cache kontrolera dysku - ile tam mogą dane leżeć?</li>
-                <li>Trigger z dbus'a? HID może puścic sygnał?</li>
-                <li>Bieda-program w C/pythonie? który powoduje trigger</li>
-                <li>Gdzie klucz trzymać w przypadku SSD? - więcej ezoterycznych pomysłów</li>
-                <li>jak partycje zarządzają danymi</li>
-                <li>sys plików, ext4 przykładowo</li>
-                <li>kasowanie przez soft producenta np. samsung</li>
-                <li>write blocker</li>
-                <li>--------</li>
-                <li>Prezentacja: luks partycja, luks na pliku</li>
-                <li>Prezentacja: haslo vs klucz. pokazac headery</li>
-                <li>Prezentacja: pokazać jak się szuka headerów luks. na hexach</li>
-                <li>Prezentacja: trigger -> panic button</li>
-            </ol>
+        <section data-menu-title="Tin foil hat ideas">
+            <h2>TIN FOIL HAT IDEAS ┬─┬ ︵ /(.□. \）</h2>
+            <ul>
+                <li>always have a bootable pendrive containing memtest86 plugged-in. HDD/SSD has higher priority, so
+                    that this
+                    boots after disk sanitization
+                </li>
+                <li>For how long the key is recoverable from disk eeprom?</li>
+                <li>Ram alive for ... TODO ... after powerdown ?</li>
+            </ul>
         </section>
 
         <section>
@@ -590,6 +744,8 @@ blkdiscard: /dev/nvme0n1: BLKSECDISCARD ioctl failed: Operation not supported
                     Reliably Erasing Data From Flash-Based Solid State Drives</a></li>
                 <li>https://www.techtarget.com/searchstorage/definition/TRIM</li>
                 <li><a href="https://www.smartmontools.org/wiki/USB">SCSI/ATA/SATA -> USB adapter support</a></li>
+                <li><a href="https://ata.wiki.kernel.org/index.php/ATA_Secure_Erase">Kernel wiki - ATA Secure erase</a>
+                </li>
                 <li>manpages for: smartmontools, hdparm, nvme-cli</li>
                 <li>Truly deniable: https://www.cl.cam.ac.uk/~rja14/Papers/stego-fs.pdf</li>
             </ol>
