@@ -488,9 +488,41 @@
                         hdparm -I /dev/sda | egrep -i "erase|sanitize|format|crypt"
                         blkdiscard --verbose [--secure]
                         # Other ATA commands are the same as in case of HDD
+                        # see next slide
                     </code>
                 </pre>
                 <a href="#/manufacturer-sanitization">Back to "Manufacturer sanitization"</a>
+            </section>
+
+            <section>
+                <h2>Hands on: SATA SSD 2</h2>
+                <pre>
+                    <code data-trim data-noescape class="nohighlight">
+                        # hdparm -I /dev/sda | egrep -i "erase|sanitize|format|crypt"
+                               *	SANITIZE_ANTIFREEZE_LOCK_EXT command
+                               *	SANITIZE feature set
+                               *	CRYPTO_SCRAMBLE_EXT command
+                               *	BLOCK_ERASE_EXT command
+                               *	Device encrypts all user data
+                                supported: enhanced erase
+                            2min for SECURITY ERASE UNIT. 2min for ENHANCED SECURITY ERASE UNIT.
+
+                        # hdparm --yes-i-know-what-i-am-doing --sanitize-crypto-scramble /dev/sda
+
+                        /dev/sda:
+                        Issuing SANITIZE_CRYPTO_SCRAMBLE command
+                        Operation started in background
+                        You may use `--sanitize-status` to check progress
+
+                        # hdparm --sanitize-status /dev/sda
+
+                        /dev/sda:
+                        Issuing SANITIZE_STATUS command
+                        Sanitize status:
+                            State:    SD0 Sanitize Idle
+                            Last Sanitize Operation Completed Without Error
+                    </code>
+                </pre>
             </section>
 
             <section>
@@ -615,21 +647,77 @@
 
         <section>
             <section>
-                <h2>TODO Luks intro</h2>
-                v1, v2, benchmark, ciphers, hash mode, unlocking possibilities like ssh, pen during pre-boot, TPM, smart card
+                <h2>Luks intro</h2>
+                <ul>
+                    <li><span class="r-fit-text">Transparent block cryptography based on linux device mapper</span></li>
+                    <li><span class="r-fit-text">Currently two parallel version available: luks1 & luks2</span></li>
+                    <li>Many unlock possibilities; for example:
+                        <ol>
+                            <li>Password or key</li>
+                            <li>SSH</li>
+                            <li>Pendrive with key during pre-boot</li>
+                            <li>Smart card</li>
+                            <li>New stuff: TPM - Trusted Platform Module</li>
+                        </ol>
+                    </li>
+                    <li>OFC, <a href="https://en.wikipedia.org/wiki/Comparison_of_disk_encryption_software" target="_blank">there are alternatives</a></li>
+                </ul>
 
                 <aside class="notes">
-                    Theres a lot of alternatives, though luks is my personal preference<br/>
-                    https://en.wikipedia.org/wiki/Comparison_of_disk_encryption_software<br/><br/>
+                    Though luks is my personal preference ¯\_(ツ)_/¯
                 </aside>
             </section>
 
             <section>
+                <h2>Hands on: Luks benchmark</h2>
+                <pre>
+                    <code data-trim data-noescape>
+                        $ cat /proc/cpuinfo | grep "model name" | uniq
+                        model name	: AMD Ryzen 7 4700U with Radeon Graphics
+
+                        $ cryptsetup benchmark
+                        # Tests are approximate using memory only (no storage IO).
+                        PBKDF2-sha1      1533005 iterations per second for 256-bit key
+                        PBKDF2-sha256    2892623 iterations per second for 256-bit key
+                        PBKDF2-sha512    1424695 iterations per second for 256-bit key
+                        PBKDF2-ripemd160  740519 iterations per second for 256-bit key
+                        PBKDF2-whirlpool  657826 iterations per second for 256-bit key
+                        argon2i       4 iterations, 1048576 memory, 4 parallel threads (CPUs) for 256-bit key (requested 2000 ms time)
+                        argon2id      4 iterations, 1048576 memory, 4 parallel threads (CPUs) for 256-bit key (requested 2000 ms time)
+                        #     Algorithm |       Key |      Encryption |      Decryption
+                                aes-cbc        128b      1113.3 MiB/s      3096.0 MiB/s
+                            serpent-cbc        128b       111.7 MiB/s       699.9 MiB/s
+                            twofish-cbc        128b       231.6 MiB/s       413.6 MiB/s
+                                aes-cbc        256b       895.3 MiB/s      2662.2 MiB/s
+                            serpent-cbc        256b       117.6 MiB/s       697.4 MiB/s
+                            twofish-cbc        256b       238.7 MiB/s       412.7 MiB/s
+                                aes-xts        256b      2602.4 MiB/s      2596.9 MiB/s
+                            serpent-xts        256b       604.2 MiB/s       604.6 MiB/s
+                            twofish-xts        256b       377.6 MiB/s       381.1 MiB/s
+                                aes-xts        512b      2265.6 MiB/s      2269.9 MiB/s
+                            serpent-xts        512b       616.0 MiB/s       604.5 MiB/s
+                            twofish-xts        512b       381.8 MiB/s       380.8 MiB/s
+                    </code>
+                </pre>
+
+                <aside class="notes">
+                    Mention: ciphers, hash mode
+                </aside>
+            </section>
+
+            <section>
+                <h2>Hands on: Create your first Luks</h2>
+
+                <pre>
+                    <code data-trim data-noescape>
+
+                    </code>
+                </pre>
+
                 <aside class="notes">
                     @/etc/modprobe.d/more_loopz.conf:<br/>
                     options loop max_loop=123
                 </aside>
-                <h2>TODO Hands on: Create your first Luks</h2>
             </section>
 
             <section>
