@@ -723,20 +723,28 @@
                 <pre>
                     <code data-trim data-noescape>
                         #!/usr/bin/python3
+                        from collections import namedtuple
 
                         import dbus
                         from gi.repository import GLib
                         from dbus.mainloop.glib import DBusGMainLoop
 
-
-                        keys = ["app_name", "replaces_id", "app_icon", "summary", "body", "actions", "hints", "expire_timeout"]
-
+                        Notification = namedtuple("Notification", [
+                            "app_name",
+                            "replaces_id",
+                            "app_icon",
+                            "summary",
+                            "body",
+                            "actions",
+                            "hints",
+                            "expire_timeout"
+                        ])
 
                         def print_notification(bus, message):
                             args = message.get_args_list()
                             if len(args) == 8:
-                                notification = dict([(keys[i], args[i]) for i in range(8)])
-                                print(f'{notification["app_name"]} :::: {notification["summary"]} - {notification["body"]}')
+                                notification = Notification(*args)
+                                print(f'{notification.app_name} :::: {notification.summary} - {notification.body}')
                             else:
                                 print("Unparsable", args)
 
@@ -744,9 +752,31 @@
                         if __name__ == "__main__":
                             loop = DBusGMainLoop(set_as_default=True)
                             session_bus = dbus.SessionBus()
-                            session_bus.add_match_string("type='method_call',interface='org.freedesktop.Notifications',member='Notify',eavesdrop=true")
+                            session_bus.add_match_string(
+                                "type='method_call',interface='org.freedesktop.Notifications',member='Notify',eavesdrop=true")
                             session_bus.add_message_filter(print_notification)
                             GLib.MainLoop().run()
+
+
+                        """Run output:
+                        Spotify :::: Better Place - Super Flu Remix - Godford - Better Place (Super Flu Remix)
+                        Spotify :::: Hiding - Hidden Empire - Hiding
+                        Spotify :::: Cappadocia - Ben Böhmer - Cappadocia
+                        Spotify :::: How Often - Ben Böhmer Remix - Lane 8 - Brightest Lights Remixed
+                        Spotify :::: Yahyel - Morttagua - Yahyel
+                        Spotify :::: Subjection - Submelody - Subjection
+                        Spotify :::: Lost In You - Marsh - Lost In You EP
+                        Spotify :::: Ascendance - Eynka - Ascendance / Give It Up
+                        Spotify :::: Unite - Yeadon - Unite
+                        Spotify :::: Breathe Out - Just Her - Beautiful Nothing EP
+                        Spotify :::: White Ghost - J_ulio - Far Away Connections
+                        Plasma Workspace :::: Gwenview Closed Unexpectedly - Please report this error to help improve this software.
+                        Signal :::: Sąsiadka Katarzyna - Video
+                        Network Management :::: pvpn-ipv6leak-protection - Connection 'pvpn-ipv6leak-protection' activated.
+                        Network Management :::: pvpn-ipv6leak-protection - Connection 'pvpn-ipv6leak-protection' activated.
+                        Network Management :::: Proton VPN CH#41 - VPN connection 'Proton VPN CH#41' activated.
+                        Network Management :::: Proton VPN CH#41 - VPN connection 'Proton VPN CH#41' activated.
+                        """
                     </code>
                 </pre>
             </section>

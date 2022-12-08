@@ -1,17 +1,27 @@
 #!/usr/bin/python3
+from collections import namedtuple
 
 import dbus
 from gi.repository import GLib
 from dbus.mainloop.glib import DBusGMainLoop
 
-keys = ["app_name", "replaces_id", "app_icon", "summary", "body", "actions", "hints", "expire_timeout"]
+Notification = namedtuple("Notification", [
+    "app_name",
+    "replaces_id",
+    "app_icon",
+    "summary",
+    "body",
+    "actions",
+    "hints",
+    "expire_timeout"
+])
 
 
 def print_notification(bus, message):
     args = message.get_args_list()
     if len(args) == 8:
-        notification = dict([(keys[i], args[i]) for i in range(8)])
-        print(f'{notification["app_name"]} :::: {notification["summary"]} - {notification["body"]}')
+        notification = Notification(*args)
+        print(f'{notification.app_name} :::: {notification.summary} - {notification.body}')
     else:
         print("Unparsable", args)
 
