@@ -121,7 +121,7 @@
             <h2>Prerequisites</h2>
             <p class="r-fit-text">apt install cryptsetup cryptsetup-nuke-password smartmontools wireshark-qt
                 bruteforce-luks</p>
-            <p class="r-fit-text">git clone https://github.com/openwall/john.git</p>
+            <p class="r-fit-text">git clone https://github.com/cryptcoffee/skul</p>
         </section>
 
         <section>
@@ -750,7 +750,7 @@
 
             <section>
                 <h2>TODO Hands on: Howto recover keyslot</h2>
-                <img src="assets/kono_healer_mendokusai.png" />
+                <img class="max500" src="assets/kono_healer_mendokusai.png" />
             </section>
 
             <section>
@@ -799,11 +799,115 @@
             </section>
 
             <section>
-                <h2>TODO https://github.com/cryptcoffee/skul</h2>
+                <h2 class="r-fit-text">Hands on: Cracking luks - attempt 1</h2>
+                <pre>
+                    <code class="shell" data-trim data-noescape>
+                        git clone https://github.com/cryptcoffee/skul
+                        cd skul ; ./configure ; make skul
+                        ./skul disks/test_disk_py
+                    </code>
+                </pre>
+
+                <pre>
+                    <code class="nohighlight" data-trim data-noescape>
+                                 --[ CRYPTCOFFEE ]--
+
+                              ██████  ██ ▄█▀ █    ██  ██▓
+                            ▒██    ▒  ██▄█▒  ██  ▓██▒▓██▒
+                            ░ ▓██▄   ▓███▄░ ▓██  ▒██░▒██░
+                              ▒   ██▒▓██ █▄ ▓▓█  ░██░▒██░
+                            ▒██████▒▒▒██▒ █▄▒▒█████▓ ░██████▒
+                            ▒ ▒▓▒ ▒ ░▒ ▒▒ ▓▒░▒▓▒ ▒ ▒ ░ ▒░▓  ░
+                            ░ ░▒  ░ ░░ ░▒ ▒░░░▒░ ░ ░ ░ ░ ▒  ░
+                            ░  ░  ░  ░ ░░ ░  ░░░ ░ ░   ░ ░
+                                  ░  ░  ░      ░         ░  ░
+
+                        Disk UUID:         6b552406-c2bf-441e-a451-f8cfd8c3f1e2
+                        Magic:             LUKS 0xba 0xbe
+                        Version:           1
+                        Cipher name:       aes
+                        Cipher mode:       cbc-essiv:sha256
+                        Hash spec:         sha1
+                        Master key len:    32 byte (256 bit)
+                        Master key digest: d7 a1 59 78 c3 cb 06 a1 cb 22 19 7b a6 bb 1f 0c 43 5c 9e da
+                        Master key salt:   24 d3 e4 84 72 74 f3 ec 3e 34 e9 dd 84 48 2e f7
+                                           64 77 5d 3b 13 57 0d 17 0f d1 81 09 24 c5 5a 08
+                        Iterations:        7375
+
+                        KEYSLOTS:
+
+                        KEYSLOT 0: ACTIVE
+                            Iterations:            29667
+                            Salt:                  fb d6 c9 13 1e de 7e 42 32 70 ff 45 6f 86 51 1d
+                                                   31 75 7c b1 1e d8 7a 37 77 31 3b 95 f7 29 61 9b
+                            Key material offset:   8 sectors
+                            Stripes:               4000
+                        KEYSLOT 1: INACTIVE
+                        KEYSLOT 2: INACTIVE
+                        KEYSLOT 3: INACTIVE
+                        KEYSLOT 4: INACTIVE
+                        KEYSLOT 5: INACTIVE
+                        KEYSLOT 6: INACTIVE
+                        KEYSLOT 7: INACTIVE
+
+                        Threads:     8
+                        Fast check:  Enabled
+                        Attack mode: Password List first, then Bruteforce
+
+                        Settings for Bruteforce:
+                        Min len:     2 characters
+                        Max len:     6 characters
+                        Alphabet:    1
+
+                        Press enter to start cracking!
+
+                        Attacking keyslot: 0
+                        Password list: 306308 passwords
+                        Tried: 306308    100%
+                        Password not found
+                        Time: 00:17:24
+
+                        Bruteforce: 2 chars
+                        Tried: 599        88%
+
+                        Password found!!
+                        Keyslot: 0
+                        The password is: py
+
+                        TOTAL TIME: 00:17:26
+                    </code>
+                </pre>
             </section>
 
             <section>
-                <h2>TODO bruteforce luks</h2>
+                <h2>Hands on: bruteforce luks</h2>
+                <pre>
+                    <code data-trim>
+                        $ bruteforce-luks -t 4 -l 3 -m 4 -s abcdefgh -v 15 /dev/loop2
+                        Tried / Total passwords: 1 / 4608
+                        Tried passwords per second: 0.500000
+                        Last tried password: aae
+                        Total space searched: 0.021701%
+                        ETA: Tue 06 Dec 2022 10:35:56 AM CET
+
+                        Password found: aaa
+                    </code>
+                </pre>
+            </section>
+
+            <section>
+                <h2>Luks homework</h2>
+                <p class="r-fit-text">cryptsetup luksFormat --type luks1 -c aes-cbc-essiv:sha256 -h sha1 _device_</p>
+                <p>Break it with john the ripper or hashcat. <br/>This config highly suspectivle to brute force</p>
+                <pre>
+# ./apps/john-bleeding-jumbo/run/luks2john.py luks2
+luks2 : Only LUKS1 is supported. Used version: 2
+
+# ./apps/john-bleeding-jumbo/run/luks2john.py luks1
+luks1 : Only cbc-essiv:sha256 mode is supported.
+Used mode: b'xts-plain64\x00\x00\x00\x00[...]\x00\x00\x00\x00\x00\x00'
+                </pre>
+                <span>(ノಠ益ಠ)ノ彡┻━┻</span>
             </section>
         </section>
 
@@ -929,7 +1033,7 @@
                 <p>Creating opus magnum of crypto</p>
                 <p class="r-fit-text">Remember - Be dual? triple? <u>OCTA-SURE about wiping keys!</u></p>
                 <img class="fragment fade-in-then-out" src="assets/fbi-fbi-typing.gif"/>
-                <p class="r-fit-text fragment">Current this presentation for reference:<br/>https://github.com/rikkt0r/presentations/tree/main/drive-crypt</p>
+                <p class="r-fit-text fragment">Current presentation for reference:<br/>https://github.com/rikkt0r/presentations/tree/main/drive-crypt</p>
             </section>
         </section>
 
