@@ -641,7 +641,9 @@
                 <p class="r-fit-text">Plasma5 notice appeared! "Hey, your disk is gonna die"</p>
 
                 <p>Note to self: show smart of bricked pendrive</p>
-                <a class="r-fit-text" target="_blank" href="https://www.backblaze.com/blog/what-smart-stats-indicate-hard-drive-failures/">(I wholeheartedly recommend reading this article from BackBlaze.com)</a>
+                <a class="r-fit-text" target="_blank"
+                   href="https://www.backblaze.com/blog/what-smart-stats-indicate-hard-drive-failures/">(I
+                    wholeheartedly recommend reading this article from BackBlaze.com)</a>
             </section>
         </section>
 
@@ -660,7 +662,8 @@
                             <li>New stuff: TPM - Trusted Platform Module</li>
                         </ol>
                     </li>
-                    <li>OFC, <a href="https://en.wikipedia.org/wiki/Comparison_of_disk_encryption_software" target="_blank">there are alternatives</a></li>
+                    <li>OFC, <a href="https://en.wikipedia.org/wiki/Comparison_of_disk_encryption_software"
+                                target="_blank">there are alternatives</a></li>
                 </ul>
 
                 <aside class="notes">
@@ -710,7 +713,7 @@
 
                 <pre>
                     <code data-trim data-noescape>
-
+                        TODO
                     </code>
                 </pre>
 
@@ -728,46 +731,72 @@
                     https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup + file in assets for
                 </aside>
 
-                <h2>TODO Hands on: luks1 luks2 header + okteta</h2>
-
+                <h2>Hands on: luks1 luks2 header + hex view</h2>
                 <p>Pro tip, never allocate luks on zeroed medium :D</p>
+                <small>(Like we do here)</small>
                 <pre>
                     <code data-trim data-noescape>
-
+                        TODO
                     </code>
                 </pre>
             </section>
 
             <section>
-                <h2>TODO Hands on: luks by key</h2>
+                <h2 class="r-fit-text">Hands on: Lul. it wasn't the police</h2>
+                <pre class="sh">
+                    <code data-trim data-noescape>
+                        cryptsetup erase /dev/loop0  # Yup, that's all.
+                        cryptsetup luksDump /dev/loop0 # No keyslots !
+                    </code>
+                </pre>
+                <img class="max450" src="assets/scream2.jpg"/>
             </section>
 
             <section>
-                <h2>TODO Hands on: Lul. it wasn't the police</h2>
-                Luks erase!
-                <img class="max450" src="assets/scream2.jpg" />
+                <h2 class="r-fit-text">Hands on: Howto recover keyslot</h2>
+                <img class="max500" src="assets/kono_healer_mendokusai.png"/>
             </section>
 
             <section>
-                <h2>TODO Hands on: Howto recover keyslot</h2>
-                <img class="max500" src="assets/kono_healer_mendokusai.png" />
+                <h2 class="r-fit-text">Hands on: Howto recover keyslot</h2>
+                <p>Ofc you could just back the header up beforehand...</p>
+                <pre class="sh">
+                    <code data-trim data-noescape>
+                        cryptsetup luksHeaderBackup --header-backup-file luks_header.bin /dev/loop1
+                        file luks_header.bin
+                        # --> luks_header.bin: LUKS encrypted file, ver 2 [, , sha256] UUID: XXXXXXXXXXXXXXXXXX
+                        # And then restore
+                        cryptsetup luksHeaderRestore --header-backup-file luks_header.bin /dev/loop1
+                        # Oh, or just the master key (you'll see why in a second)
+                        cryptsetup luksDump -q --dump-master-key /dev/loop1 > master.key.dump
+                        cat master.key.dump | grep -A 3 'MK dump' | sed -e 's/MK dump://g' -e 's/\s//g' | xxd -r -p > master.key
+                    </code>
+                </pre>
+            </section>
+
+            <section>
+                <h2 class="r-fit-text">Hands on: Howto recover keyslot</h2>
+                <p>But there is a way! (If luks is still mapped)</p>
+                <pre class="sh">
+                    <code data-trim data-noescape>
+                    cryptsetup luksAddKey /dev/loop2 --master-key-file <(dmsetup table --showkey /dev/mapper/test2 | awk '{print$5}' | xxd -r -p)
+                    Enter new passphrase for key slot:
+                    Verify passphrase:
+                    </code>
+                </pre>
             </section>
 
             <section>
                 <h2>Nuke it with predefined password :*</h2>
-                <code data-trim data-noescape>
-                    dpkg-reconfigure cryptsetup-nuke-password
+                <pre>
+                    <code data-trim data-noescape>
+                        dpkg-reconfigure cryptsetup-nuke-password
+                        # now your boot is armored with fake password
 
-                    cryptsetup luksHeaderBackup --header-backup-file luks_header.bin /dev/nvme0n1p3
-                    file luks_header.bin
-                    # --> luks_header.bin: LUKS encrypted file, ver 2 [, , sha256] UUID: XXXXXXXXXXXXXXXXXXXXXXXXXX
-                    cryptsetup luksDump luks_header.bin
-
-                    luksHeaderRestore --header-backup-file luks_header.bin /dev/nvme0n1p3
-                    cryptsetup luksDump -q --dump-master-key /dev/nvme0n1p3 > /master.key
-
-                    https://diverto.github.io/2019/11/18/Cracking-LUKS-passphrases#backup-of-master-key
-                </code>
+                        # When you'll be quitting your job... just type it in ;)
+                        # It erases luks key slots
+                    </code>
+                </pre>
             </section>
 
             <section>
@@ -789,13 +818,15 @@
             </section>
 
             <section>
-                <h2>TODO Luks problems</h2>
-                NEED TPM, signed kernels ---> root of trust, Mitigate /boot poisoning
-                RAM dump == your key is retrieved
+                <h2>Luks problems</h2>
+                <p>You need TPM, Secure boot & signed kernels (gain root of trust). Required to mitigate /boot
+                    poisoning</p>
+                <p>RAM dump == your key is retrieved</p>
+                <p class="r-fit-text">Without truly wiped SSD keys are <strike>easily</strike> cheaply retrievable</p>
             </section>
 
             <section>
-                <h2>TODO Let's do the reverse, now we crack luks</h2>
+                <h2>Let's do the reverse,<br/>now we crack luks</h2>
             </section>
 
             <section>
@@ -920,7 +951,7 @@ Used mode: b'xts-plain64\x00\x00\x00\x00[...]\x00\x00\x00\x00\x00\x00'
 
             <section>
                 <h2>Dbus</h2>
-                <img class="max550" src="assets/wikipedia_dbus.png" />
+                <img class="max550" src="assets/wikipedia_dbus.png"/>
             </section>
 
             <section>
@@ -1033,7 +1064,8 @@ Used mode: b'xts-plain64\x00\x00\x00\x00[...]\x00\x00\x00\x00\x00\x00'
                 <p>Creating opus magnum of crypto</p>
                 <p class="r-fit-text">Remember - Be dual? triple? <u>OCTA-SURE about wiping keys!</u></p>
                 <img class="fragment fade-in-then-out" src="assets/fbi-fbi-typing.gif"/>
-                <p class="r-fit-text fragment">Current presentation for reference:<br/>https://github.com/rikkt0r/presentations/tree/main/drive-crypt</p>
+                <p class="r-fit-text fragment">Current presentation for reference:<br/>https://github.com/rikkt0r/presentations/tree/main/drive-crypt
+                </p>
             </section>
         </section>
 
@@ -1059,13 +1091,17 @@ Used mode: b'xts-plain64\x00\x00\x00\x00[...]\x00\x00\x00\x00\x00\x00'
                 <li><a class="r-fit-text" href="https://www.usenix.org/legacy/events/fast11/tech/full_papers/Wei.pdf"
                        target="_blank">[Usenix]
                     Reliably Erasing Data From Flash-Based Solid State Drives</a></li>
-                <li><a target="_blank" href="https://www.techtarget.com/searchstorage/definition/TRIM">[Techtarget®] Nice TRIM
+                <li><a target="_blank" href="https://www.techtarget.com/searchstorage/definition/TRIM">[Techtarget®]
+                    Nice TRIM
                     definition</a></li>
-                <li><a target="_blank" href="https://www.smartmontools.org/wiki/USB">SCSI/ATA/SATA -> USB adapter support</a></li>
-                <li><a target="_blank" href="https://ata.wiki.kernel.org/index.php/ATA_Secure_Erase">[Kernel wiki] ATA Secure erase</a>
+                <li><a target="_blank" href="https://www.smartmontools.org/wiki/USB">SCSI/ATA/SATA -> USB adapter
+                    support</a></li>
+                <li><a target="_blank" href="https://ata.wiki.kernel.org/index.php/ATA_Secure_Erase">[Kernel wiki] ATA
+                    Secure erase</a>
                 </li>
                 <li>manpages for: smartmontools, hdparm, nvme-cli</li>
-                <li><span class="r-fit-text">Truly deniable: https://www.cl.cam.ac.uk/~rja14/Papers/stego-fs.pdf</span>
+                <li><a href="https://diverto.github.io/2019/11/18/Cracking-LUKS-passphrases">[github->diverto] Cracking
+                    Luks passphrases</a>
                 </li>
                 <li>& everything in assets/ directory to this presentation</li>
             </ol>
