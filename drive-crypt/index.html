@@ -709,17 +709,31 @@
             </section>
 
             <section>
-                <h2>Hands on: Create your first Luks</h2>
+                <h2 class="r-fit-text">Hands on: Create your first Luks</h2>
 
                 <pre>
                     <code data-trim data-noescape>
-                        TODO
+                        fallocate -l 100M test0
+                        losetup -f test0
+                        # let's assume, we've got assigned loop0
+                        cryptsetup luksCreate /dev/loop0
+                        cryptsetup luksOpen /dev/loop0 crypt0
+                        mkfs.ext4 /dev/mapper/crypt0
+                        mkdir /mnt/crypt0 ; mount /dev/mapper/crypt0 /mnt/crypt0
+                        echo "my first crypto whatever" > /mnt/crypto/it_works.txt
+                        # Hurray!
+                        cryptsetup luksDump /dev/loop0
                     </code>
                 </pre>
 
                 <aside class="notes">
                     @/etc/modprobe.d/more_loopz.conf:<br/>
-                    options loop max_loop=123
+                    options loop max_loop=123<br/><br/>
+
+                    mknod /dev/loopX b 7 X<br/>
+                    chown --reference=/dev/loop0 /dev/loopX<br/>
+                    chmod --reference=/dev/loop0 /dev/loopX<br/>
+                    <br/><br/>or just use -f flag... creates those automatically ;)
                 </aside>
             </section>
 
@@ -731,14 +745,19 @@
                     https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup + file in assets for
                 </aside>
 
-                <h2>Hands on: luks1 luks2 header + hex view</h2>
-                <p>Pro tip, never allocate luks on zeroed medium :D</p>
-                <small>(Like we do here)</small>
+                <h2 class="r-fit-text">Hands on: luks1 & 2 header + hex view</h2>
+                <p>Pro tip, never allocate luks on zeroed medium</p>
+                <small>(Like we do here - for better hex analysis)</small>
                 <pre>
                     <code data-trim data-noescape>
-                        TODO
+                        # Steps like before, but!
+                        cryptsetup luksCreate /dev/loop1
+                        cryptsetup luksCreate --type luks1 /dev/loop2
+                        cryptsetup luksFormat --type luks1 -c aes-cbc-essiv:sha256 -h sha1 /dev/loop3
+                        cryptsetup luksDump /dev/loop1
                     </code>
                 </pre>
+                <br/><small>Note to self: okteta / hexdump</small>
             </section>
 
             <section>
@@ -779,9 +798,13 @@
                 <p>But there is a way! (If luks is still mapped)</p>
                 <pre class="sh">
                     <code data-trim data-noescape>
-                    cryptsetup luksAddKey /dev/loop2 --master-key-file <(dmsetup table --showkey /dev/mapper/test2 | awk '{print$5}' | xxd -r -p)
-                    Enter new passphrase for key slot:
-                    Verify passphrase:
+                        dmsetup table /dev/mapper/test --showkeys
+                        # Yup, master key is still in memory. Let's grab it
+                        cryptsetup luksAddKey /dev/loop2 --master-key-file <(dmsetup table --showkey /dev/mapper/test2 | awk '{print$5}' | xxd -r -p)
+                        Enter new passphrase for key slot:
+                        Verify passphrase:
+
+                        # Wohoooooo! Saved
                     </code>
                 </pre>
             </section>
@@ -823,6 +846,7 @@
                     poisoning</p>
                 <p>RAM dump == your key is retrieved</p>
                 <p class="r-fit-text">Without truly wiped SSD keys are <strike>easily</strike> cheaply retrievable</p>
+                <p>Higher density drives give you a higher "chance of survival"</p>
             </section>
 
             <section>
