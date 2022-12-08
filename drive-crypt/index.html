@@ -44,6 +44,10 @@
             max-height: 300px !important;
         }
 
+        .max100 {
+            max-height: 100px !important;
+        }
+
     </style>
 </head>
 <body>
@@ -667,7 +671,8 @@
                 </ul>
 
                 <aside class="notes">
-                    Though luks is my personal preference ¯\_(ツ)_/¯
+                    Though luks is my personal preference<br />
+                    Mention multiple layers of crypto! Possible deniability there.
                 </aside>
             </section>
 
@@ -762,13 +767,23 @@
 
             <section>
                 <h2 class="r-fit-text">Hands on: Lul. it wasn't the police</h2>
-                <pre class="sh">
+                <pre class="sh max100">
                     <code data-trim data-noescape>
                         cryptsetup erase /dev/loop0  # Yup, that's all.
+                        # or brick the header:
+                        dd if=/dev/urandom of=/dev/sdb1 bs=1M count=4 conv=sync
+                        # Now check
                         cryptsetup luksDump /dev/loop0 # No keyslots !
+                        # https://www.kernel.org/doc/html/v4.10/admin-guide/sysrq.html
+                        # Will immediately reboot the system without syncing or unmounting your disks.
+                        echo b > /proc/sysrq-trigger
                     </code>
                 </pre>
                 <img class="max450" src="assets/scream2.jpg"/>
+
+                <aside class="notes">
+                    Mention luksSuspend - it deletes key from memory.
+                </aside>
             </section>
 
             <section>
@@ -823,7 +838,7 @@
             </section>
 
             <section>
-                <h2>Over-the-top forensics</h2>
+                <h2>Hollywood-style-raid & forensics</h2>
                 <ol>
                     <li>Arrive with liquid nitrogen and external battery PSU</li>
                     <li class="fragment">Stabilize power</li>
