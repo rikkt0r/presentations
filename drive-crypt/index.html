@@ -173,7 +173,7 @@
                     Pre-boot authentication<br/>
                     Attack vectors: HDD/SSD: key in memory whilst power-on. <br/>
                     Soft: key in memory<br/>
-                    Both: brute force<br/>
+                    Both: brute force, though hardware BF is tougher<br/>
                 </aside>
             </section>
 
@@ -226,10 +226,32 @@
             </section>
 
             <section>
-                <h2>TODO Blocks, sectors, LBA</h2>
-                <b>TODO</b>
-                <p>In a magnetic drive OS has the direct access to physical sectors</p>
-                <p>That translates directly to filesystem</p>
+                <h2>Blocks, sectors, LBA</h2>
+                <ul>
+                    <li>In a magnetic drive OS has the direct access to physical sectors. That translates directly to
+                        filesystem. i.e. Logical == Physical
+                    </li>
+                    <li>Typical sector size: 512B in the past, now 4kB</li>
+                    <li>Blocks == minimal information chunks size on FS.<br/>Shouldn't be lower than drive sector</li>
+                </ul>
+                <pre>
+                    <code data-trim data-noescape>
+                        blockdev --getbsz /dev/nvme0n1
+                        fdisk -l | grep "Sector size"
+                    </code>
+                </pre>
+            </section>
+
+            <section>
+                <h2 class="r-fit-text">Hands on: Controller stuff, intro</h2>
+                <p>We'll be using <u>hdparm</u> and <u>smartctl</u> a lot. Let's get used to them. First, let us analyze
+                    a typical output</p>
+                <pre class="bash">
+                    <code>
+                        hdparm -I /dev/sda
+                        smartctl -a /dev/sda
+                    </code>
+                </pre>
             </section>
 
             <section>
@@ -291,7 +313,7 @@
                 <p>(AHCI must be enabled for SATA hotplugging)</p>
             </section>
 
-            <section>
+            <section id="manufacturer-sanitization">
                 <h2>Manufacturer sanitization</h2>
                 <p>Be warned, this takes time</p>
                 <pre class="bash">
@@ -420,10 +442,9 @@
             <section>
                 <h2>SSD sanitization</h2>
                 <ul>
-                    <li>hdd methods ineffective (including degaussing)</li>
+                    <li>hdd methods ineffective (unfortunate!)</li>
                     <li>dumping flash is easier(& cheaper) than magnetic</li>
-                    <li>pcie/ata/scsi commands</li>
-                    <li>BLKDISCARD / BLKSECDISCARD</li>
+                    <li>Talking with controller, again ;)</li>
                 </ul>
             </section>
 
@@ -440,7 +461,7 @@
                 </p>
             </section>
 
-            <section>
+            <section data-menu-title="Physical Access SSD">
                 <img class="max550" src="assets/passd.png"/>
                 <span class="r-fit-text">IEEE Access, D. Lee et al. October 2020, Improving Write Performance Through Reliable Asynchronous Operation in Physically-Addressable SSD</span>
                 <aside class="notes">
@@ -455,18 +476,31 @@
             </section>
 
             <section>
-                <h2>TODO pcie/ata/scsi commands</h2>
-                <b>TODO</b>
+                <h2>Hands on: SATA SSD</h2>
+                <p>Closely related to HDD controller stuff from before, though we have more options in this case</p>
+                <p>Btw. BIOS/EFI nowadays has secure erase optionm no need to fully boot</p>
+                <pre class="bash">
+                    <code data-trim data-noescape>
+                        hdparm -I /dev/sda | egrep -i "erase|sanitize|format|crypt"
+                        blkdiscard --verbose [--secure]
+                        # Other ATA commands are the same as in case of HDD
+                    </code>
+                </pre>
+                <a href="#/manufacturer-sanitization">Back to "Manufacturer sanitization"</a>
             </section>
 
             <section>
-                <h2>TODO pcie/ata/scsi commands 2</h2>
-                <b>TODO</b>
-                <code>
-                    smart,
-                    nvme-cli,
-                    hdparm
-                </code>
+                <h2>Hands on: PCIe NVMe SSD</h2>
+                <pre class="bash">
+                    <code data-trim data-noescape>
+                        nvme list
+                        nvme id-ctrl /dev/nvme0n1 -H | grep -v " Not Supported" | egrep --color "Sanitize|Format|Erase"
+                        man 1 nvme-format
+                        # DON'T! Not on your employee laptops anyway
+                        nvme format /dev/nvme0n1 -s 1 -n 1
+                        nvme format /dev/nvme0n1 -s 2 -n 1
+                    </code>
+                </pre>
             </section>
 
         </section>
@@ -475,13 +509,13 @@
             <section>
                 <h2 class="r-fit-text">Special flash case: memory sticks</h2>
                 <p>Protocols</p>
-                <p>Talking with controller?? <span class="fragment">Or not ;(</span></p>
+                <p>Talking with controller?? Or not ;(</p>
             </section>
 
             <section>
                 <h2>Protocols</h2>
-                <p>Previously mass storages were using BOT (Bulk-only transport)</p>
-                <p>Nowadays it was(should be?) superseded by UAS/UASP</p>
+                <p class="r-fit-text">Previously mass storages were using BOT (Bulk-only transport)</p>
+                <p class="r-fit-text">Nowadays it was(should be?) superseded by UAS/UASP</p>
                 <p>i.e. USB Attached SCSI (Protocol)</p>
                 <p>SCSI == Small Computer System Interface ノ( ゜-゜ノ)</p>
             </section>
@@ -545,26 +579,15 @@
                 <p class="fragment r-fit-text">Let me show you a few examples on different pendrives</p>
                 <p class="fragment r-fit-text">Exception to the rule: SSD over USB sticks, i.e. SAT (USB SATA
                     bridge)</p>
-                <small class="fragment">(Example: SanDisk Extreme Pro 128GB stick)</small>
+                <small class="fragment">(Example: SanDisk Extreme Pro 128GB stick). Btw. I just bricked it (ಥ﹏ಥ)</small>
             </section>
         </section>
 
         <section>
             <section>
                 <h2>A few drive curiosities</h2>
-                <p>Tech blogs giving shitty advice</p>
-                <p>Boost HDD performance/p>
+                <p>Boost HDD performance</p>
                 <p>S.M.A.R.T. saving lives, kind of</p>
-            </section>
-
-            <section>
-                <h2>Tech blogs giving shitty advice</h2>
-                <p>Now you know some stuff</p>
-                <p>Google: "howto securely erase SSD"</p>
-                <p>Enjoy</p>
-                <p class="fragment">(͡° ͜ʖ ͡°) <span class="fragment">(͡° ͜ʖ ͡°)</span> <span class="fragment">(͡° ͜ʖ ͡°)</span>
-                    <span class="fragment">(͡° ͜ʖ ͡°)</span> <span class="fragment">(͡° ͜ʖ ͡°)</span></p>
-
             </section>
 
             <section>
@@ -574,37 +597,58 @@
             </section>
 
             <section>
-                <h2>TODO S.M.A.R.T. saving lives</h2>
+                <h2>S.M.A.R.T. saving lives</h2>
                 <p>Plugged SSD-based pendrive into laptop</p>
-                <p>Notice appeared!</p>
+                <p class="r-fit-text">Plasma5 notice appeared! "Hey, your disk is gonna die"</p>
 
-                TODO
-
-                plasma5 notice, real life sample
-                add link to driveBlaze article on smart params
+                <p>Note to self: show smart of bricked pendrive</p>
+                <a class="r-fit-text" target="_blank" href="https://www.backblaze.com/blog/what-smart-stats-indicate-hard-drive-failures/">(I wholeheartedly recommend reading this article from BackBlaze.com)</a>
             </section>
         </section>
 
         <section>
             <section>
+                <h2>TODO Luks intro</h2>
+                v1, v2, benchmark, ciphers, hash mode, unlocking possibilities like ssh, pen during pre-boot, TPM, smart card
+
+                <aside class="notes">
+                    Theres a lot of alternatives, though luks is my personal preference<br/>
+                    https://en.wikipedia.org/wiki/Comparison_of_disk_encryption_software<br/><br/>
+                </aside>
+            </section>
+
+            <section>
                 <aside class="notes">
                     @/etc/modprobe.d/more_loopz.conf:<br/>
                     options loop max_loop=123
+                </aside>
+                <h2>TODO Hands on: Create your first Luks</h2>
+            </section>
 
-                    luks2 - kernel keyring
+            <section>
+                <aside class="notes">
+                    luks2 - kernel keyring<br/><br/>
 
-                    https://en.wikipedia.org/wiki/Comparison_of_disk_encryption_software
+                    header ref<br/>
+                    https://en.wikipedia.org/wiki/Linux_Unified_Key_Setup + file in assets for
                 </aside>
 
-                <h2>TODO Luks</h2>
-                <pre>
-1. luks header luks1 vs. luks2 // OKTETA view
-2. create loop, cryptsetup luks1, dump header, erase, restore header
-3. create luks1, restore master password from memory
-4. create luks with key unlock
-5. mention many unlocking possibilities - like ssh, pen during pre-boot, TPM
-6. TPM, signed kernels ---> root of trust, otherwise someone might poison /boot
-                </pre>
+                <h2>TODO Hands on: luks1 luks2 header + okteta</h2>
+            </section>
+
+            <section>
+                <h2>TODO Hands on: luks by key</h2>
+            </section>
+
+            <section>
+                <h2>TODO Hands on: Lul. it wasn't the police</h2>
+                Luks erase!
+                <img class="max450" src="assets/scream2.jpg" />
+            </section>
+
+            <section>
+                <h2>TODO Hands on: Howto recover keyslot</h2>
+                <img src="assets/kono_healer_mendokusai.png" />
             </section>
 
             <section>
@@ -614,11 +658,50 @@
 
                     cryptsetup luksHeaderBackup --header-backup-file luks_header.bin /dev/nvme0n1p3
                     file luks_header.bin
-                    luks_header.bin: LUKS encrypted file, ver 2 [, , sha256] UUID: XXXXXXXXXXXXXXXXXXXXXXXXXX
+                    # --> luks_header.bin: LUKS encrypted file, ver 2 [, , sha256] UUID: XXXXXXXXXXXXXXXXXXXXXXXXXX
                     cryptsetup luksDump luks_header.bin
 
                     luksHeaderRestore --header-backup-file luks_header.bin /dev/nvme0n1p3
+                    cryptsetup luksDump -q --dump-master-key /dev/nvme0n1p3 > /master.key
+
+                    https://diverto.github.io/2019/11/18/Cracking-LUKS-passphrases#backup-of-master-key
                 </code>
+            </section>
+
+            <section>
+                <h2>Over-the-top forensics</h2>
+                <ol>
+                    <li>Arrive with liquid nitrogen and external battery PSU</li>
+                    <li class="fragment">Stabilize power</li>
+                    <li class="fragment">Freeze RAM</li>
+                    <li class="fragment">Either boot mini-OS or move sticks to another machine</li>
+                    <li class="fragment">Attach write blocker to disk, dump</li>
+                    <li class="fragment">Do forensics™ on disk clone</li>
+                </ol>
+            </section>
+
+            <section>
+                <h2>And the thing with RAM is..</h2>
+                <img src="assets/ram_fading.png"/>
+                <small>Source: A. Halderman et al. - Lest We Remember: Cold Boot Attacks on Encryption Keys</small>
+            </section>
+
+            <section>
+                <h2>TODO Luks problems</h2>
+                NEED TPM, signed kernels ---> root of trust, Mitigate /boot poisoning
+                RAM dump == your key is retrieved
+            </section>
+
+            <section>
+                <h2>TODO Let's do the reverse, now we crack luks</h2>
+            </section>
+
+            <section>
+                <h2>TODO https://github.com/cryptcoffee/skul</h2>
+            </section>
+
+            <section>
+                <h2>TODO bruteforce luks</h2>
             </section>
         </section>
 
@@ -631,7 +714,7 @@
 
             <section>
                 <h2>Dbus</h2>
-                <b>TODO</b>
+                <img class="max550" src="assets/wikipedia_dbus.png" />
             </section>
 
             <section>
@@ -669,10 +752,14 @@
             </section>
 
             <section>
-                <h2>Hands on: Your turn</h2>
-                <p>Run script, notice what happens</p>
-                <small>Side node: for final script we're gonna use SystemBus, not SessionBus</small>
+                <h2>Sample dbus server</h2>
+                <a href="https://github.com/rhinstaller/dasbus" target="_blank">TODO Server here</a>
+            </section>
 
+            <section>
+                <h2>Hands on: Your turn</h2>
+                <p>Run the script, notice what happens</p>
+                <small>Side node: for final script we're gonna use SystemBus, not SessionBus</small>
             </section>
 
         </section>
@@ -713,26 +800,18 @@
             </section>
         </section>
 
-        <section>
-            <h2>Over-the-top forensics</h2>
-            <ol>
-                <li>Arrive with liquid nitrogen and external battery PSU</li>
-                <li>Stabilize power</li>
-                <li>Freeze and dump RAM</li>
-                <li>Attach write blocker to disk, dump</li>
-                <li>Do forensics™ on disk clone</li>
-            </ol>
-        </section>
-
         <section data-menu-title="Tin foil hat ideas">
-            <h2>TIN FOIL HAT IDEAS ┬─┬ ︵ /(.□. \）</h2>
+            <h2 class="r-fit-text">TIN FOIL HAT IDEAS ┬─┬ ︵ /(.□. \）</h2>
             <ul>
-                <li>always have a bootable pendrive containing memtest86 plugged-in. HDD/SSD has higher priority, so
-                    that this
-                    boots after disk sanitization
+                <li><span class="r-fit-text">For how long the key is recoverable from disk eeprom?</span></li>
+                <li>Ram is alive for some time after power down, so...</li>
+                <li>Ram: Use BIOS POST (Power-On Self Test)</li>
+                <li><span class="r-fit-text">Ram: TRESOR: TRESOR Runs Encryption Securely Outside RAM</span></li>
+                <li><span class="r-fit-text">RamCrypt: Kernel-based Address Space Encryption for User-mode Processes
+                </span></li>
+                <li><span class="r-fit-text" style="padding-top: 10px;">Always have a bootable pendrive containing memtest86 plugged-in.<br/> HDD/SSD has higher priority, so that this boots after disk sanitization</span>
                 </li>
-                <li>For how long the key is recoverable from disk eeprom?</li>
-                <li>Ram alive for ... TODO ... after powerdown ?</li>
+                <li>Use explosives, lul.</li>
             </ul>
         </section>
 
@@ -740,14 +819,18 @@
             <h2>The end; &copy; rikkt0r</h2>
             <p>(づ｡◕‿‿◕｡)づ Bibliography</p>
             <ol>
-                <li><a href="https://www.usenix.org/legacy/events/fast11/tech/full_papers/Wei.pdf" target="_blank">[Usenix]
+                <li><a class="r-fit-text" href="https://www.usenix.org/legacy/events/fast11/tech/full_papers/Wei.pdf"
+                       target="_blank">[Usenix]
                     Reliably Erasing Data From Flash-Based Solid State Drives</a></li>
-                <li>https://www.techtarget.com/searchstorage/definition/TRIM</li>
-                <li><a href="https://www.smartmontools.org/wiki/USB">SCSI/ATA/SATA -> USB adapter support</a></li>
-                <li><a href="https://ata.wiki.kernel.org/index.php/ATA_Secure_Erase">Kernel wiki - ATA Secure erase</a>
+                <li><a target="_blank" href="https://www.techtarget.com/searchstorage/definition/TRIM">[Techtarget®] Nice TRIM
+                    definition</a></li>
+                <li><a target="_blank" href="https://www.smartmontools.org/wiki/USB">SCSI/ATA/SATA -> USB adapter support</a></li>
+                <li><a target="_blank" href="https://ata.wiki.kernel.org/index.php/ATA_Secure_Erase">[Kernel wiki] ATA Secure erase</a>
                 </li>
                 <li>manpages for: smartmontools, hdparm, nvme-cli</li>
-                <li>Truly deniable: https://www.cl.cam.ac.uk/~rja14/Papers/stego-fs.pdf</li>
+                <li><span class="r-fit-text">Truly deniable: https://www.cl.cam.ac.uk/~rja14/Papers/stego-fs.pdf</span>
+                </li>
+                <li>& everything in assets/ directory to this presentation</li>
             </ol>
         </section>
     </div>
