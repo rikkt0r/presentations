@@ -252,6 +252,10 @@
                         smartctl -a /dev/sda
                     </code>
                 </pre>
+
+                <aside class="notes">
+                    https://en.wikipedia.org/wiki/SCSI_command && T13-spec from assets
+                </aside>
             </section>
 
             <section>
@@ -542,12 +546,15 @@
             <section>
                 <h2>Hands on: if first impressions were bad</h2>
                 <p>change usb driver from uas to bot ;)</p>
-                <pre>
+                <pre class="bash">
                     <code data-trim data-noescape>
                         lsusb -t  # check driver here, usb_storage or uas
                         lsusb
                         # example: Bus 004 Device 007: ID 090c:1000 Silicon Motion [...]
                         echo "090c:1000:u" > /sys/module/usb_storage/parameters/quirks
+
+                        # https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
+                        #     ---> usb-storage.quirks
                     </code>
                 </pre>
                 <p>And try again</p>
@@ -555,7 +562,7 @@
 
             <section>
                 <h2>Hands on: wireshark time</h2>
-                <pre>
+                <pre class="bash">
                     <code data-trim data-noescape>
                         sudo dmesg -c
                         # Requires relogging
@@ -634,6 +641,13 @@
                 </aside>
 
                 <h2>TODO Hands on: luks1 luks2 header + okteta</h2>
+
+                <p>Pro tip, never allocate luks on zeroed medium :D</p>
+                <pre>
+                    <code data-trim data-noescape>
+
+                    </code>
+                </pre>
             </section>
 
             <section>
@@ -782,8 +796,8 @@
             </section>
 
             <section>
-                <h2>Sample dbus server</h2>
-                <a href="https://github.com/rhinstaller/dasbus" target="_blank">TODO Server here</a>
+                <h2>TODO Sample dbus notification spawn</h2>
+                <a href="https://github.com/rhinstaller/dasbus" target="_blank">Server here</a>
             </section>
 
             <section>
@@ -825,8 +839,9 @@
             <section>
                 <h2>Open workshop</h2>
                 <p>Creating opus magnum of crypto</p>
-                <p>Remember - Be dual? triple? OCTA-SURE about wiping keys!</p>
-                <img class="fragment fade-out" src="assets/fbi-fbi-typing.gif"/>
+                <p class="r-fit-text">Remember - Be dual? triple? <u>OCTA-SURE about wiping keys!</u></p>
+                <img class="fragment fade-in-then-out" src="assets/fbi-fbi-typing.gif"/>
+                <p class="r-fit-text fragment">Current this presentation for reference:<br/>https://github.com/rikkt0r/presentations/tree/main/drive-crypt</p>
             </section>
         </section>
 
@@ -846,7 +861,7 @@
         </section>
 
         <section>
-            <h2>The end; &copy; rikkt0r</h2>
+            <h2>The end; &copy; rikkt0r; @:priv@asap.solutions</h2>
             <p>(づ｡◕‿‿◕｡)づ Bibliography</p>
             <ol>
                 <li><a class="r-fit-text" href="https://www.usenix.org/legacy/events/fast11/tech/full_papers/Wei.pdf"
