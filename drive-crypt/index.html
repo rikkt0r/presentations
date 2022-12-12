@@ -293,7 +293,7 @@
                 <p><u>Remember</u> and <u>double-check</u> the password otherwise you'll brick the drive</p>
                 <pre class="bash">
                     <code data-trim data-noescape>
-                        hdparm --user-master u --set-security-pass pass /dev/sda
+                        hdparm --user-master u --security-set-pass pass /dev/sda
                         # unplug drive, plug in again, notice that kernel throws read errors!
                         dmesg -c
                         # Notice, that drive now appears locked!
@@ -721,7 +721,7 @@
                         fallocate -l 100M test0
                         losetup -f test0
                         # let's assume, we've got assigned loop0
-                        cryptsetup luksCreate /dev/loop0
+                        cryptsetup luksFormat /dev/loop0
                         cryptsetup luksOpen /dev/loop0 crypt0
                         mkfs.ext4 /dev/mapper/crypt0
                         mkdir /mnt/crypt0 ; mount /dev/mapper/crypt0 /mnt/crypt0
@@ -756,8 +756,8 @@
                 <pre>
                     <code data-trim data-noescape>
                         # Steps like before, but!
-                        cryptsetup luksCreate /dev/loop1
-                        cryptsetup luksCreate --type luks1 /dev/loop2
+                        cryptsetup luksFormat /dev/loop1
+                        cryptsetup luksFormat --type luks1 /dev/loop2
                         cryptsetup luksFormat --type luks1 -c aes-cbc-essiv:sha256 -h sha1 /dev/loop3
                         cryptsetup luksDump /dev/loop1
                     </code>
