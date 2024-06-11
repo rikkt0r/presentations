@@ -8,6 +8,7 @@ A few of my presentations, feel free to use them. CC0 license, as this is not co
 * python2to3 - not finished, and probably never will (2020, polish)
 * docker - introduction && internals (2020, english)
 * drive-crypt - software & hardware drive encryption, sanitization (2022, english)
+* BPF - introduction into system and app performance analysis (2024, polish)
 
 
 ### Created using reveal.js. To read presentations:
