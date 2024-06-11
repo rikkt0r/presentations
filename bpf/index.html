@@ -1,0 +1,452 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Drive crypt workshops</title>
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/black.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css">
+
+    <style>
+        .left {
+            text-align: left;
+        }
+        .reveal ul {
+            display: block;
+        }
+        .reveal ol {
+            display: block;
+        }
+
+        p.tiny {
+            font-size: 0.5em;
+        }
+
+        .max600 {
+            max-height: 600px !important;
+        }
+
+        .max550 {
+            max-height: 550px !important;
+        }
+
+        .max500 {
+            max-height: 500px !important;
+        }
+
+        .max450 {
+            max-height: 450px !important;
+        }
+
+        .max300 {
+            max-height: 300px !important;
+        }
+
+        .max100 {
+            max-height: 100px !important;
+        }
+
+    </style>
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section>
+            <section data-menu-title="Intro">
+                <h1><i style="text-transform: lowercase">e</i>BPF</h1>
+                <h3 class="r-fit-text">wdrożenie do analizy wydajności systemów i aplikacji</h3>
+                <h3>¯\_(ツ)_/¯  ->  ¯\(°_o)/¯</h3>
+
+                <aside class="notes">
+                    S - speaker mode // B - blank screen
+                </aside>
+            </section>
+
+            <section data-menu-title="Preface">
+                <h2>Przedsmak</h2>
+                <p class="fragment highlight-current-blue">BPF -> eBPF -> BPF</p>
+                <p class="fragment highlight-current-blue">Mechanizm kernela</p>
+                <p class="fragment highlight-current-blue">Możliwa nowa klasa aplikacji</p>
+                <p class="fragment highlight-current-blue">Wykonujemy kod z poziomu kernela (づ｡◕‿‿◕｡)づ</p>
+                <p class="fragment highlight-current-blue">Observability, tracing, forwarding, security</p>
+
+                <aside class="notes">
+                    1992 BPF, 2014 eBPF
+                </aside>
+            </section>
+
+            <section data-menu-title="Workshop plans">
+                <h2>Plan prezentacji</h2>
+                <ul>
+                    <li>Intro do kernela</li>
+                    <li>Analiza wydajności, od zera</li>
+                    <li>Zasoby systemowe i punkty pomiaru</li>
+                    <li>60 second win™</li>
+                    <li>BPF - ziemniaczki</li>
+                    <li>BPF - mięsko</li>
+                    <li>BPF - Triple Crown steak</li>
+                    <li>BPF - życiowe przykłady</li>
+                    <li>BPF - narzędzia</li>
+                </ul>
+            </section>
+
+
+            <section data-menu-title="End results">
+                <h2>Po dzisiejszej prezentacji...</h2>
+                <ul>
+                    <li>Wskoczycie na hype train BPF</li>
+                    <li>Zyskacie szerszy obraz deployowanych aplikacji</li>
+                    <li>Poznacie systemowe narzędzia do analizy, profilowania, debugu</li>
+                    <li>Kernel pozostanie blisko Waszego serca</li>
+                    <li>Zyskacie dobre podstawy do dalszego samodoskonalenia</li>
+                </ul>
+            </section>
+
+            <section data-menu-title="Side note">
+                <p>Prezentacja mocno inspirowana materiałami Brandon'a Gregg'a m. in.</p>
+                <img class="max600" src="assets/bpfperftools_bookcover_1348.png"/>
+            </section>
+
+        </section>
+
+        <section> <!-- begin kernel -->
+            <section data-menu-title="Kernel">
+                <h2>Kernel</h2>
+                <p class="small">µ-ankieta</p>
+
+                <aside class="notes">
+                    Quiz jak GJN. Ilu kojarzy? Ilu budowało własny? Ilu grzebało?
+                </aside>
+            </section>
+
+            <section data-menu-title="Kernel overview">
+                <h2>Kernel</h2>
+                <img width="600" src="assets/kernel_overview.jpg"/>
+                <p class="tiny">https://developer.ibm.com/articles/l-linux-kernel/ &copy;</p>
+
+
+                <aside class="notes">
+                    tldr; Kernel odpowiada za zarządzanie procesami i zasobami<br />
+                    Wersja pełna: pamięć, czas procesora, priorytet, kolejkowanie dostępów, bla bla bla..<br />
+                    Konfigurowalny (tutaj wylistować sysctl)
+                </aside>
+            </section>
+
+            <section data-menu-title="Kernel internals">
+                <h2>Kernel internals</h2>
+                <img width="600" src="assets/kernel_internal.jpg"/>
+                <p class="tiny">https://developer.ibm.com/articles/l-linux-kernel/ &copy;</p>
+            </section>
+
+            <section data-menu-title="Kernel internals - storage">
+                <h2>Kernel storage</h2>
+                <img width="600" src="assets/kernel_storage.jpg"/>
+                <p class="tiny">https://developer.ibm.com/articles/l-linux-kernel/ &copy;</p>
+            </section>
+
+            <section data-menu-title="Kernel/user space">
+                <h2>Kernel space / user space</h2>
+                <img width="600" src="assets/kernel_user_space.png"/>
+                <p class="tiny">https://en.wikipedia.org/wiki/User_space_and_kernel_space &copy;</p>
+            </section>
+
+            <section data-menu-title="Syscalls">
+                <h3>Syscalls, grupy (approx)</h3>
+
+                <table style="width: 150%; margin-left: -25%">
+                    <thead>
+                    <tr>
+                        <th>Grupa</th>
+                        <th>Przykłady</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>Zarządzanie procesami</td>
+                        <td>exec, fork, kill, mmap, futex</td>
+                    </tr>
+                    <tr>
+                        <td>Zarządzanie plikami</td>
+                        <td>open, read, rmdir</td>
+                    </tr>
+                    <tr>
+                        <td>Zarządzanie urządzeniami</td>
+                        <td>ioctl, ioperm</td>
+                    </tr>
+                    <tr>
+                        <td>Zarządzanie "informacjami"</td>
+                        <td>gethostname, getpid, clock_gettime</td>
+                    </tr>
+                    <tr>
+                        <td>Komunikacja</td>
+                        <td>pipe, send, connect, listen, dup</td>
+                    </tr>
+                    <tr>
+                        <td>Uprawnienia</td>
+                        <td>capset, chmod, chown</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <small>Check out: man 2 syscalls</small>
+            </section>
+
+        </section> <!-- end kernel -->
+
+
+        <section> <!-- begin performance -->
+
+            <section data-menu-title="TODO Performance">
+                <h2>intro do analizy performanceu</h2>
+            </section>
+
+            <section data-menu-title="TODO What we have">
+                <h2>co mamy: eventy, k/uprobe, ustd, tracepoint, PMC</h2>
+            </section>
+
+            <section data-menu-title="TODO PMC">
+                <h2>Liczniki sprzętowe</h2>
+                <p>PMC, performance monitoring counters</p>
+            </section>
+
+            <section data-menu-title="TODO perf event">
+                <h2>Perf</h2>
+            </section>
+
+            <section data-menu-title="TODO kernel tracepoints">
+                <h2>kernel tracepoints</h2>
+            </section>
+
+            <section data-menu-title="TODO lib tracepoints">
+                <h2>lib tracepoints / ustd</h2>
+            </section>
+
+            <section data-menu-title="TODO kprobe, uprobe">
+                <h2>kprobe, uprobe</h2>
+            </section>
+
+            <section data-menu-title="TODO Stats & graphs magic">
+                <h2>co możemy z tego ciekawego zrobić, np.</h2>
+                <ul>
+                    <li>Statystyki</li>
+                    <li>Rozkład w czasie</li>
+                    <li>Histogram</li>
+                    <li>Flame graph (vs. chart)</li>
+                    <li>Flamescope</li>
+                    <li>Heatmap/saturation</li>
+                </ul>
+            </section>
+
+            <section data-menu-title="TODO Histogram">
+                <h2>Histogram</h2>
+            </section>
+
+            <section data-menu-title="TODO Flame graph">
+                <h2>Flame graph</h2>
+            </section>
+
+            <section data-menu-title="TODO Flame scope">
+                <h2>Flame scope</h2>
+            </section>
+
+        </section> <!-- end performance -->
+
+        <section> <!-- begin resources -->
+
+            <section data-menu-title="TODO Resources">
+                <h2>Zasoby: cpu, mem, disk/fs, network, other i/o</h2>
+            </section>
+
+            <section data-menu-title="TODO What we really want">
+                <h2>Co chcemy sprawdzać, hm?</h2>
+                <p>Tutaj ankietka dla publiczności</p>
+            </section>
+
+            <section data-menu-title="TODO CPU">
+                <h2>CPU - scheduler, taktowanie, evicty wątków, load avg, context switching</h2>
+            </section>
+
+            <section data-menu-title="TODO Mem">
+                <h2>Mem - avail, free, buffered, cached, soft page fail, hard page fail, segmentacja vs. paging</h2>
+            </section>
+
+            <section data-menu-title="TODO Network">
+                <h2>Sieć</h2>
+            </section>
+
+            <section data-menu-title="TODO Block I/O">
+                <h2>DYsk/FS, generalnie bio</h2>
+            </section>
+
+            <section data-menu-title="Getting there!">
+                <h2>Już prawie BPF!!!!</h2>
+                <p>Ostatni slajd wstępu :-)</p>
+            </section>
+
+            <section data-menu-title="TODO Brandon 60s">
+                <h2>60 second easy win by brandon</h2>
+            </section>
+        </section> <!-- end resources -->
+
+
+        <section> <!-- begin bpf -->
+            21. czas na mięsko, BPF
+            21.1 brandon dogadal sie z alexiejem i tak powstał czokapik
+            21.2 stary bpf 1992, ebpf 2012
+            21.3 filmik o historii BPF'a, jak thriller: https://www.youtube.com/watch?v=Wb_vD3XZYOA
+
+            22. Programowalny kernel? Lolololo, patchowanie kernela w locie? czekej.. a czy to nie niebezpieczne?
+            User wdupcy co w kernel? Ale faza. Andrzej, to jebnie
+
+            schemat BPF'a tutaj.
+
+
+            23. ale po co to komu... przecie już jest tyle narzędzi: perf, systemTap, LTTng, Dtrace. spoko nie, żadne nie jest skutecznie stabilne i cool
+            24. narośla BPF czerpią garściami z tych narzędzi
+            24.1 wydajność
+            24.2 umi wincyj
+            23. wykonanie kernel space vs. user space
+            24. ło kurwa, aż taka różnica? -> tak
+            24.1  Pokazać jak wygląda jedna alokacja w kernelu (strace jakiegoś prostego C ?) - i dlaczego w kernel space lepiej coś robić
+            25.
+
+            BPF - struktury w C - dostęp do nich,
+            bpftrace (w tym jezyk) vs bcc
+            dostępne mapy w pamięci
+        </section> <!-- end bpf -->
+
+
+        <section> <!-- begin examples -->
+            26. lock na postgresie
+            27. socket unixowy 108 znaków ścieżka - jenkins umierał
+            28. nie ma jakiegoś pliku
+            29. apka wisi i uj wi na co czeka (tutaj bpf do dnsów się kłania)
+            30. short lived task
+            31. cilium
+            32. log security - bash readline z całego systemu
+            33. TCP splicing - rozrzucanie ruchu :3
+            24. Dockerki - wychwytywanie OOM (bo to się słabo loguje...)
+
+            overscaling - czas oczekiwania na kolej dla wątku rośnie
+        </section> <!-- end examples -->
+
+
+        <section data-menu-title="BPF Tools">
+            <section>
+                <h2>BPF Tools ┬─┬ ︵ /(.□. \）</h2>
+                <pre class="bash">
+                    <code data-trim data-noescape>
+rikkt0r@PP-NB-0124:20:34:26:/usr/sbin$ ls *-bpfcc
+argdist-bpfcc         javaflow-bpfcc        runqlen-bpfcc
+bashreadline-bpfcc    javagc-bpfcc          runqslower-bpfcc
+bindsnoop-bpfcc       javaobjnew-bpfcc      shmsnoop-bpfcc
+biolatency-bpfcc      javastat-bpfcc        slabratetop-bpfcc
+biolatpcts-bpfcc      javathreads-bpfcc     sofdsnoop-bpfcc
+biosnoop-bpfcc        killsnoop-bpfcc       softirqs-bpfcc
+biotop-bpfcc          klockstat-bpfcc       solisten-bpfcc
+bitesize-bpfcc        llcstat-bpfcc         sslsniff-bpfcc
+bpflist-bpfcc         mdflush-bpfcc         stackcount-bpfcc
+btrfsdist-bpfcc       memleak-bpfcc         statsnoop-bpfcc
+btrfsslower-bpfcc     mountsnoop-bpfcc      swapin-bpfcc
+cachestat-bpfcc       mysqld_qslower-bpfcc  syncsnoop-bpfcc
+cachetop-bpfcc        netqtop-bpfcc         syscount-bpfcc
+capable-bpfcc         nfsdist-bpfcc         tclcalls-bpfcc
+cobjnew-bpfcc         nfsslower-bpfcc       tclflow-bpfcc
+compactsnoop-bpfcc    nodegc-bpfcc          tclobjnew-bpfcc
+cpudist-bpfcc         nodestat-bpfcc        tclstat-bpfcc
+cpuunclaimed-bpfcc    offcputime-bpfcc      tcpaccept-bpfcc
+criticalstat-bpfcc    offwaketime-bpfcc     tcpconnect-bpfcc
+dbslower-bpfcc        oomkill-bpfcc         tcpconnlat-bpfcc
+dbstat-bpfcc          opensnoop-bpfcc       tcpdrop-bpfcc
+dcsnoop-bpfcc         perlcalls-bpfcc       tcplife-bpfcc
+dcstat-bpfcc          perlflow-bpfcc        tcpretrans-bpfcc
+deadlock-bpfcc        perlstat-bpfcc        tcprtt-bpfcc
+dirtop-bpfcc          phpcalls-bpfcc        tcpstates-bpfcc
+drsnoop-bpfcc         phpflow-bpfcc         tcpsubnet-bpfcc
+execsnoop-bpfcc       phpstat-bpfcc         tcpsynbl-bpfcc
+exitsnoop-bpfcc       pidpersec-bpfcc       tcptop-bpfcc
+ext4dist-bpfcc        profile-bpfcc         tcptracer-bpfcc
+ext4slower-bpfcc      pythoncalls-bpfcc     threadsnoop-bpfcc
+filelife-bpfcc        pythonflow-bpfcc      tplist-bpfcc
+fileslower-bpfcc      pythongc-bpfcc        trace-bpfcc
+filetop-bpfcc         pythonstat-bpfcc      ttysnoop-bpfcc
+funccount-bpfcc       readahead-bpfcc       vfscount-bpfcc
+funcinterval-bpfcc    reset-trace-bpfcc     vfsstat-bpfcc
+funclatency-bpfcc     rubycalls-bpfcc       wakeuptime-bpfcc
+funcslower-bpfcc      rubyflow-bpfcc        xfsdist-bpfcc
+gethostlatency-bpfcc  rubygc-bpfcc          xfsslower-bpfcc
+hardirqs-bpfcc        rubyobjnew-bpfcc      zfsdist-bpfcc
+inject-bpfcc          rubystat-bpfcc        zfsslower-bpfcc
+javacalls-bpfcc       runqlat-bpfcc
+
+
+rikkt0r@PP-NB-0124:20:35:12:/usr/sbin$ ls *.bt
+bashreadline.bt    mdflush.bt    tcpaccept.bt
+biolatency.bt      naptime.bt    tcpconnect.bt
+biosnoop.bt        oomkill.bt    tcpdrop.bt
+biostacks.bt       opensnoop.bt  tcplife.bt
+bitesize.bt        pidpersec.bt  tcpretrans.bt
+capable.bt         runqlat.bt    tcpsynbl.bt
+cpuwalk.bt         runqlen.bt    threadsnoop.bt
+dcsnoop.bt         setuids.bt    vfscount.bt
+execsnoop.bt       statsnoop.bt  vfsstat.bt
+gethostlatency.bt  swapin.bt     writeback.bt
+killsnoop.bt       syncsnoop.bt  xfsdist.bt
+loads.bt           syscount.bt
+
+
+# Nie jest to BPF
+#  ale chciałem pokazać przodków tych narzędzi :)
+
+rikkt0r@PP-NB-0124:20:35:18:/usr/sbin$ ls *-perf
+bitesize-perf    functrace-perf  perf-stat-hist-perf
+cachestat-perf   iolatency-perf  reset-ftrace-perf
+execsnoop-perf   iosnoop-perf    syscount-perf
+funccount-perf   killsnoop-perf  tcpretrans-perf
+funcgraph-perf   kprobe-perf     tpoint-perf
+funcslower-perf  opensnoop-perf  uprobe-perf
+                    </code>
+                </pre>
+            </section>
+        </section>
+
+        <section>
+            <h2>The end; &copy; rikkt0r; @:priv@asap.solutions</h2>
+            <p>(づ｡◕‿‿◕｡)づ Bibliography</p>
+            <ol>
+                <li><a href="https://www.brendangregg.com/blog/images/2019/bpf_performance_tools_book.png"
+                       target="_blank">[BPF Performance Tools]</a>
+                </li>
+                <li>manpages</li>
+                <li class="r-fit-text">& everything in assets/ directory to this presentation</li>
+            </ol>
+        </section>
+    </div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script src="plugin/menu/menu.js"></script>
+<script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMenu ]
+    });
+
+
+</script>
+</body>
+</html>
