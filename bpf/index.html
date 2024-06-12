@@ -200,6 +200,7 @@
 
             <section data-menu-title="TODO Performance">
                 <h2>intro do analizy performanceu</h2>
+                <p>Zliczanie, samplowanie, traceowanie, benchmarkowanie</p>
             </section>
 
             <section data-menu-title="TODO What we have">
@@ -311,29 +312,134 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
 
         <section> <!-- begin resources -->
 
-            <section data-menu-title="TODO Resources">
-                <h2>Zasoby: cpu, mem, disk/fs, network, other i/o</h2>
+            <section data-menu-title="Resources">
+                <h3>Zasoby mierzalne</h3>
+                <p>(ciekawsze rozkminy w ramach zagrzania do BPF)</p>
+                <ul>
+                    <li>CPU</li>
+                    <li>Pamięć</li>
+                    <li>Dysk/system plików</li>
+                    <li>Sieć</li>
+                    <li>I inne</li>
+                </ul>
             </section>
 
-            <section data-menu-title="TODO What we really want">
-                <h2>Co chcemy sprawdzać, hm?</h2>
-                <p>Tutaj ankietka dla publiczności</p>
+            <section data-menu-title="Side note">
+                <p>Kradnę schematy z książki "BPF Performance Tools"; Brendan Gregg</p>
+                <p>(Nie znalazłem ładniejszych w sieci)</p>
             </section>
 
-            <section data-menu-title="TODO CPU">
-                <h2>CPU - scheduler, taktowanie, evicty wątków, load avg, context switching</h2>
+            <section data-menu-title="CPU">
+                <h3>CPU - stany zadań/wątków</h3>
+                <img class="max500" src="assets/stolen_sorry/cpu_states.jpg" />
+                <small>Shamelessly stolen from Chapter 6, BPF Performance Tools</small>
+            </section>
+
+            <section data-menu-title="CPU">
+                <h3>CPU - coś niecodziennie ciekawego?</h3>
+                <ul>
+                    <li>Może stosy wykonań? captain obvious •_•)</li>
+                    <li>Gdzie CPU przesiaduje? U usera czy w kernelu?</li>
+                    <li>Jakie mamy argumenty syscalli?</li>
+                    <li>Jak długo wątki się wykonują/czekają w kolejce?</li>
+                    <li>Max długość kolejki?</li>
+                    <li>Dla laptopów: czy procek się nie skaluje w dół?</li>
+                    <li>Ezoteryka hypercomputingu - cache procesora ;) ?</li>
+                </ul>
+            </section>
+
+            <section data-menu-title="Mem">
+                <h3>Pamięć</h3>
+                <img class="max500" src="assets/stolen_sorry/mem_allocators.jpg" />
+                <small>Shamelessly stolen from Chapter 7, BPF Performance Tools</small>
+            </section>
+
+            <section data-menu-title="Mem">
+                <h3>Pamięć</h3>
+                <img class="max500" src="assets/stolen_sorry/mem_page_life.jpg" />
+                <small>Shamelessly stolen from Chapter 7, BPF Performance Tools</small>
+            </section>
+
+            <section data-menu-title="Mem">
+                <h3>Pamięć - ciekawe pytania</h3>
+                <ul>
+                    <li>Które procesy swapują?</li>
+                    <li>Jakie stacki prowadzą do "page fault"?</li>
+                    <li>A może by wykryć pamięć bez referencji? (memleak!)</li>
+                    <li>Ile czasu proces czeka na odzyskanie pamięci od page cache?</li>
+                    <li>Ezoteryka - podgląd zarządzania pamięcią kernela (slab model)</li>
+                </ul>
             </section>
 
             <section data-menu-title="TODO Mem">
                 <h2>Mem - avail, free, buffered, cached, soft page fail, hard page fail, segmentacja vs. paging</h2>
             </section>
 
-            <section data-menu-title="TODO Network">
+            <section data-menu-title="Network">
                 <h2>Sieć</h2>
+                <img class="max500" src="assets/stolen_sorry/network_stack.jpg" />
+                <small>Shamelessly stolen from Chapter 10, BPF Performance Tools</small>
             </section>
 
-            <section data-menu-title="TODO Block I/O">
-                <h2>DYsk/FS, generalnie bio</h2>
+            <section data-menu-title="TODO Network">
+                <h3>Sieć - ciekawe pytania</h3>
+                <ul>
+                    <li>Które procesy gdzie się odwołują?</li>
+                </ul>
+            </section>
+
+            <section data-menu-title="FS - I/O stack">
+                <h2>FS - stack I/O</h2>
+                <img class="max500" src="assets/stolen_sorry/io_stack.jpg" />
+                <small>Shamelessly stolen from Chapter 8, BPF Performance Tools</small>
+            </section>
+
+            <section data-menu-title="FS caches">
+                <h2>FS - caches</h2>
+                <img class="max500" src="assets/stolen_sorry/fs_caches.jpg" />
+                <small>Shamelessly stolen from Chapter 8, BPF Performance Tools</small>
+            </section>
+
+            <section data-menu-title="FS">
+                <h3>FS - ciekawe pytania</h3>
+                <ul>
+                    <li>Które procesy gdzie się odwołują?</li>
+                    <li>Czasy dostępu do plików? Z jakego powodu?</li>
+                    <li>Jaki mamy cache hit ratio?</li>
+                    <li>Kiedy i kto czyści "dirty pages"?(tj. zapisuje dane)</li>
+                    <li>Ezoteryka - prefetch (wczytaj zanim proces potrzebuje)</li>
+                </ul>
+            </section>
+
+            <section data-menu-title="Block I/O - stack">
+                <h3>Urządzenia blokowe - stack I/O</h3>
+                <img class="max500" src="assets/stolen_sorry/bio_stack.jpg" />
+                <small>Shamelessly stolen from Chapter 9, BPF Performance Tools</small>
+            </section>
+
+            <section data-menu-title="Block I/O - questions">
+                <h3>Urządzenia blokowe - ciekawe pytania</h3>
+                <ul>
+                    <li>Jakie komendy (nvme, scsi, sata) zostały wysłane?</li>
+                    <li>Ile jest i jakich zapytań do dysku?</li>
+                    <li>Latencja?</li>
+                    <li>Błędy? Timeouty?</li>
+                    <li>Rozkład odczytów sekwencyjnych/losowych?</li>
+                    <li>Ezoteryka - tym razem brak</li>
+                </ul>
+            </section>
+
+
+            <section data-menu-title="Security">
+                <h3>Security - ciekawe pytania</h3>
+                <ul>
+                    <li>Jaki proces gdzie się łączy?</li>
+                    <li>O jakie uprawnienia proszą procesy?</li>
+                    <li>Jakie błędy z braku uprawnień wystąpiły?</li>
+                    <li>Trackowanie sesji PAM</li>
+                    <li>Powtórka: jakie funkcje z jakimi argumentami są wykonywane?</li>
+                    <li>Ezoteryka - sky is the limit</li>
+                </ul>
             </section>
 
             <section data-menu-title="Getting there!">
@@ -442,6 +548,28 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
 
             <section data-menu-title="TODO Typy programów bpf">
                 <h2>Typy programów BPF</h2>
+                <pre>
+BPF map types = {
+    // Picked just a few, all are available @ /usr/include/linux/bpf.h
+
+    BPF_MAP_TYPE_ARRAY,
+    BPF_MAP_TYPE_ARRAY_OF_MAPS,
+    BPF_MAP_TYPE_CGROUP_ARRAY,
+    BPF_MAP_TYPE_CGROUP_STORAGE,
+    // ...
+    BPF_MAP_TYPE_LRU_HASH,
+    BPF_MAP_TYPE_LRU_PERCPU_HASH,
+    // ...
+    BPF_MAP_TYPE_QUEUE,
+    BPF_MAP_TYPE_REUSEPORT_SOCKARRAY,
+    BPF_MAP_TYPE_SOCKHASH,
+    BPF_MAP_TYPE_SOCKMAP,
+    BPF_MAP_TYPE_STACK,
+    BPF_MAP_TYPE_STACK_TRACE,
+    BPF_MAP_TYPE_UNSPEC,  // Reserved, invalid
+    BPF_MAP_TYPE_XSKMAP,
+};
+                </pre>
             </section>
 
             <section data-menu-title="TODO inne">
