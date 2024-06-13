@@ -70,11 +70,10 @@
 
             <section data-menu-title="Quality bait">
                 <h2>Przedsmak</h2>
-                <p class="fragment highlight-current-blue">Będzie dużo teorii, sorry :'&lt;</p>
-                <p class="fragment highlight-current-blue">Mechanizm kernela</p>
-                <p class="fragment highlight-current-blue">Nowa klasa aplikacji!</p>
-                <p class="fragment highlight-current-blue">(づ｡◕‿‿◕｡)づ Wykonujemy kod z poziomu kernela</p>
-                <p class="fragment highlight-current-blue">Observability, tracing, forwarding, security</p>
+                <p class="fragment highlight-blue">Będzie dużo teorii, sorry :'&lt;</p>
+                <p>BPF == Nowa klasa aplikacji!</p>
+                <p>(づ｡◕‿‿◕｡)づ Wykonujemy kod z poziomu kernela</p>
+                <p>Observability, tracing, forwarding, security</p>
 
                 <aside class="notes">
                     No bo BPF bez teorii to bezsens. On umożliwia jej wdrożenie w życie w lepszy sposób :)
@@ -90,7 +89,6 @@
                     <li>60 second win™</li>
                     <li>BPF - ziemniaczki</li>
                     <li>BPF - mięsko</li>
-                    <li>BPF - Triple Crown steak</li>
                     <li>BPF - życiowe przykłady</li>
                     <li>BPF - narzędzia</li>
                 </ul>
@@ -587,6 +585,8 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
 
                 <aside class="notes">
                     Patchowanie kernela na runtime? Przez usera? Andrzej to jebnie.<br />
+                    prof: perf_buffer copy to userspace ---> BPF: final value to userspace (statistics, chart)
+                    <br />
                     --f-no-omit-frame-pointer is love
                 </aside>
             </section>
@@ -627,6 +627,14 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
 
             <section data-menu-title="TODO BCC">
                 <h2>BCC</h2>
+                <p>Wstawić schemat</p>
+            </section>
+
+            <section data-menu-title="TODO BPFtrace">
+                <h2>BPFtrace</h2>
+                <p>Front end BPF</p>
+                <p>Platforma && język programowania do traceingu</p>
+                <p>schemat tutaj???</p>
             </section>
 
             <section data-menu-title="TODO BPFtrace">
@@ -658,7 +666,7 @@ END
                 <small>https://github.com/bpftrace/bpftrace/blob/master/tools/biolatency.bt</small>
             </section>
 
-            <section data-menu-title="TODO Typy programów bpf">
+            <section data-menu-title="Typy programów bpf">
                 <h2>Typy programów BPF</h2>
                 <pre>
 BPF map types = {
