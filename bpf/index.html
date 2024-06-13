@@ -215,9 +215,28 @@
                 </ul>
             </section>
 
-            <section data-menu-title="TODO PMC">
-                <h2>Liczniki sprzętowe, PMC</h2>
-                <p>PMC, performance monitoring counters</p>
+            <section data-menu-title="Linux tracing timeline">
+                <h3 class="r-fit-text">Rozwój narzędzi traceing'owych w czasie</h3>
+                <img src="assets/linux-tracing-timeline.png" />
+                <small>https://leezhenghui.github.io/linux/2019/03/05/exploring-usdt-on-linux.html</small>
+            </section>
+
+            <section data-menu-title="PMC">
+                <h2>PMC; Liczniki sprzętowe</h2>
+                <ul>
+                    <li>UnHaltedCode Cycles</li>
+                    <li>Instructions Retried</li>
+                    <li>UnHalted Reference Cycles</li>
+                    <li>LLC References</li>
+                    <li>LLC Misses</li>
+                    <li>Branch Instruction Retried</li>
+                    <li>Branch Misses Retired</li>
+                </ul>
+                <aside class="notes">
+                    Cache CPU, pamięć, wykorzystanie szyn danych, <br/>
+                    Jest tylko kilka dostępnych rejestrów, więc trzeba wybierać mądrze<br />
+                    Tryby: zliczanie, samplowanie
+                </aside>
             </section>
 
             <section data-menu-title="TODO perf event">
@@ -496,13 +515,14 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
                 <small>Shamelessly stolen from Chapter 10, BPF Performance Tools</small>
             </section>
 
-            <section data-menu-title="TODO Network">
+            <section data-menu-title="Network">
                 <h3>Sieć - ciekawe pytania</h3>
                 <ul>
                     <li>Problemy z L3? L4? Socketami?</li>
                     <li>Dlaczego pakiety są gubione?</li>
                     <li>Latencja TCP? Długość trwania połączenia?</li>
                     <li>Ile pakiety leżakują w kolejce?</li>
+                    <li>Który proces nam szpera po portach?</li>
                 </ul>
             </section>
 
@@ -652,7 +672,7 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
             </section>
 
             <section data-menu-title="BCC, BPFTrace">
-                <h2>Front-end BPF</h2>
+                <h2>Frontendy BPF</h2>
                 <p>Czyste C</p>
                 <p>BCC</p>
                 <p>BPFTrace</p>
