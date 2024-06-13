@@ -208,7 +208,7 @@
             <section data-menu-title="What we have">
                 <h2>Co daje nam kernel</h2>
                 <ul>
-                    <li>perf_event</li>
+                    <li>frameworki: perf_event, ftrace</li>
                     <li>kprobe, uprobe</li>
                     <li>tracepoint, USDT (user statically defined tracing)</li>
                     <li>PMC(performance monitoring counters)</li>
@@ -219,6 +219,16 @@
                 <h3 class="r-fit-text">Rozwój narzędzi traceing'owych w czasie</h3>
                 <img src="assets/linux-tracing-timeline.png" />
                 <small>https://leezhenghui.github.io/linux/2019/03/05/exploring-usdt-on-linux.html</small>
+            </section>
+
+            <section data-menu-title="perf_event">
+                <h2>Z gwiazdką: Perf_event</h2>
+                <img src="assets/linux-tracing-perf_event.png" />
+            </section>
+
+            <section data-menu-title="ftrace">
+                <h2>Z gwiazdką: ftrace</h2>
+                <img src="assets/linux-tracing-ftrace.png" />
             </section>
 
             <section data-menu-title="PMC">
@@ -237,10 +247,6 @@
                     Jest tylko kilka dostępnych rejestrów, więc trzeba wybierać mądrze<br />
                     Tryby: zliczanie, samplowanie
                 </aside>
-            </section>
-
-            <section data-menu-title="TODO perf event">
-                <h2>Perf_event</h2>
             </section>
 
             <section data-menu-title="Tracepoints & USDT">
@@ -692,6 +698,7 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
 
             <section data-menu-title="TODO BPFtrace">
                 <h2>BPFtrace</h2>
+                <p>Przykładowy skrypt w języku BPFtrace</p>
                 <pre>
 BEGIN
 {
@@ -717,6 +724,59 @@ END
 }
                 </pre>
                 <small>https://github.com/bpftrace/bpftrace/blob/master/tools/biolatency.bt</small>
+            </section>
+
+            <section data-menu-title="BPFtrace">
+                <h2>BPFtrace lang</h2>
+<pre>
+    <table style="width: 150%; margin-left: -25%">
+        <thead>
+        <tr>
+            <th>Zmienne</th>
+            <th>Opis</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td>pid, tid, uid, username</td>
+            <td>oczywiste</td>
+        </tr>
+        <tr>
+            <td>nsecs, elapsed</td>
+            <td>w nanosekundach</td>
+        </tr>
+        <tr>
+            <td>cpu, cgroup, comm</td>
+            <td>id cpu, id cgroup, nazwa procesu</td>
+        </tr>
+        <tr>
+            <td>kstack, ustack</td>
+            <td>stosy kernel/user space</td>
+        </tr>
+        <tr>
+            <td>args / arg0,...,argN</td>
+            <td>opcjonalne argumenty funkcji</td>
+        </tr>
+        <tr>
+            <td>$1,...,$N</td>
+            <td>argumenty programu bpf'a</td>
+        </tr>
+        <tr>
+            <td>retval</td>
+            <td>int - zwrotka funkcji</td>
+        </tr>
+        <tr>
+            <td>func, probe</td>
+            <td>nazwa funkcji, probe'a</td>
+        </tr>
+        <tr>
+            <td>curtask</td>
+            <td>task_struct rzutowany na int64</td>
+        </tr>
+        </tbody>
+    </table>
+</pre>
             </section>
 
             <section data-menu-title="Typy programów bpf">
