@@ -1,0 +1,21 @@
+#!/usr/bin/bpftrace
+
+BEGIN
+/$1 == 0/
+{
+    printf("USAGE: shellsnoop.bt PID\n");
+    exit();
+}
+
+tracepoint:sched:sched_process_fork
+/args->parent_id == $1 || @descendent[args->parent_id]/
+{
+    @descendent[args->child_pid] = 1;
+}
+
+tracepoint:syscalls:sys_enter_write
+/(pid == $1 || @descendent[pid]) && (args->fd == 1 || args->fd == 2)/
+{
+    printf("%s", str(args->buf, args->count));
+}
+

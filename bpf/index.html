@@ -236,6 +236,43 @@
             </section>
 
             <section>
+                <h3>Tracepoint in kernel</h3>
+                <p>Przyda się za kilka slajdów :)</p>
+                <pre class="c">
+                    <code>
+// KERNEL-6.5.0-35/include/trace/events/sched.h +372
+/*
+ * Tracepoint for kernel_clone:
+ */
+TRACE_EVENT(sched_process_fork,
+
+        TP_PROTO(struct task_struct *parent, struct task_struct *child),
+
+        TP_ARGS(parent, child),
+
+        TP_STRUCT__entry(
+                __array(        char,   parent_comm,    TASK_COMM_LEN   )
+                __field(        pid_t,  parent_pid                      )
+                __array(        char,   child_comm,     TASK_COMM_LEN   )
+                __field(        pid_t,  child_pid                       )
+        ),
+
+        TP_fast_assign(
+                memcpy(__entry->parent_comm, parent->comm, TASK_COMM_LEN);
+                __entry->parent_pid     = parent->pid;
+                memcpy(__entry->child_comm, child->comm, TASK_COMM_LEN);
+                __entry->child_pid      = child->pid;
+        ),
+
+        TP_printk("comm=%s pid=%d child_comm=%s child_pid=%d",
+                __entry->parent_comm, __entry->parent_pid,
+                __entry->child_comm, __entry->child_pid)
+);
+                    </code>
+                </pre>
+            </section>
+
+            <section>
                 <h3>Przykład USDT</h3>
                 <pre class="bash" style="width: 150%; margin-left: -25%;">
                     <code data-trim data-noescape>
@@ -451,10 +488,6 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
                     <li>Ile czasu proces czeka na odzyskanie pamięci od page cache?</li>
                     <li>Ezoteryka - podgląd zarządzania pamięcią kernela (slab model)</li>
                 </ul>
-            </section>
-
-            <section data-menu-title="TODO Mem">
-                <h2>TODO Mem - avail, free, buffered, cached, soft page fail, hard page fail, segmentacja vs. paging</h2>
             </section>
 
             <section data-menu-title="Network">
@@ -711,17 +744,14 @@ BPF map types = {
                 <p class="fragment">(życiowych dla mnie)</p>
             </section>
 
-            <section data-menu-title="TODO file access">
-                <h2>nie ma jakiegoś pliku (np. konfiguracyjnego)</h2>
-                <h2>albo na odwrót... jest a nie powinno być</h2>
+            <section data-menu-title="File access">
+                <h3>Brakuje jakiegoś pliku np. konfiguracyjnego</h3>
+                <p>Live: opensnoop + missing.py</p>
             </section>
 
             <section data-menu-title="TODO Short lived task">
                 <h2>Short lived task</h2>
-
-                <aside class="notes">
-                    Live prezentacja top vs. execsnoop
-                </aside>
+                <p>Live: top vs. execsnoop</p>
             </section>
 
             <section data-menu-title="TODO Timeout on jenkins job">
@@ -729,6 +759,8 @@ BPF map types = {
                 <p class="fragment">Pomysły??</p>
                 <p class="fragment">Odpalamy ....</p>
                 <p class="fragment">O... ścieżka do unix socket ma ograniczenie na 108 znaków :)</p>
+
+                <p></p>
             </section>
 
             <section data-menu-title="TODO Python GIL psycopg">
@@ -752,8 +784,32 @@ la la la
 
             <section data-menu-title="Intrusive admin :)">
                 <h2>Adminowa zabawa - podglądanie shella</h2>
-                <p>(lub zabieg security, co by lepiej nie brzmiało)</p>
-                <p>Bash readline :)</p>
+                <p>(lub zabieg security, cokolwiek by lepiej nie brzmiało)</p>
+                <p>Live: Bash readline && bash snooping</p>
+
+                <pre class="bpf">
+                    <code>
+BEGIN
+{
+        printf("Tracing bash commands... Hit Ctrl-C to end.\n");
+        printf("%-9s %-6s %s\n", "TIME", "PID", "COMMAND");
+}
+
+uretprobe:/bin/bash:readline
+{
+        time("%H:%M:%S  ");
+        printf("%-6d %s\n", pid, str(retval));
+}
+
+                    </code>
+                </pre>
+
+                <aside class="notes">
+                    bashreadline.bt <br />
+                    shellsnoop.bt (heh, źle przepisałem, copyright Brendan)<br />
+                    shellsnoop_fixed.bt<br />
+                    grep -r sched_process_fork /usr/src/linux-hwe-6.5-headers-6.5.0-35
+                </aside>
             </section>
 
             <section data-menu-title="Cilium">
