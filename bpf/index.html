@@ -60,8 +60,9 @@
         <section>
             <section data-menu-title="Intro">
                 <h1><i style="text-transform: lowercase">e</i>BPF</h1>
-                <h3 class="r-fit-text">wdrożenie do analizy wydajności systemów i aplikacji</h3>
+                <h3 class="r-fit-text">wdrożenie do analizy wydajności systemów i aplikacji</h3><br /><br />
                 <h3>¯\_(ツ)_/¯  ->  ¯\(°_o)/¯</h3>
+                <h3>before &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; after</h3>
 
                 <aside class="notes">
                     S - speaker mode // B - blank screen
@@ -76,7 +77,7 @@
                 <p>Observability, tracing, forwarding, security</p>
 
                 <aside class="notes">
-                    No bo BPF bez teorii to bezsens. On umożliwia jej wdrożenie w życie w lepszy sposób :)
+                    No bo BPF bez teorii to bezsens ;( Teoria to >=89%™
                 </aside>
             </section>
 
@@ -107,7 +108,7 @@
             </section>
 
             <section data-menu-title="Side note">
-                <p>Prezentacja mocno inspirowana materiałami Brandon'a Gregg'a m. in.</p>
+                <p>Prezentacja mocno inspirowana materiałami Brendan'a Gregg'a m. in.</p>
                 <img class="max600" src="assets/bpfperftools_bookcover_1348.png"/>
             </section>
 
@@ -477,19 +478,19 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
                 <h3>CPU - stany zadań/wątków</h3>
                 <img class="max500" src="assets/stolen_sorry/cpu_states.jpg" />
                 <small>Shamelessly stolen from Chapter 6, BPF Performance Tools</small>
-            </section>
 
-            <section data-menu-title="CPU">
-                <h3>CPU - coś niecodziennie ciekawego?</h3>
-                <ul>
-                    <li>Może stosy wykonań? captain obvious •_•)</li>
-                    <li>Gdzie CPU przesiaduje? U usera czy w kernelu?</li>
-                    <li>Jakie mamy argumenty syscalli?</li>
-                    <li>Jak długo wątki się wykonują/czekają w kolejce?</li>
-                    <li>Max długość kolejki?</li>
-                    <li>Dla laptopów: czy procek się nie skaluje w dół?</li>
-                    <li>Ezoteryka hypercomputingu - cache procesora ;) ?</li>
-                </ul>
+                <aside class="notes">
+                    <h4>CPU - coś niecodziennie ciekawego?</h4>
+                    <ul>
+                        <li>Może stosy wykonań? captain obvious •_•)</li>
+                        <li>Gdzie CPU przesiaduje? U usera czy w kernelu?</li>
+                        <li>Jakie mamy argumenty syscalli?</li>
+                        <li>Jak długo wątki się wykonują/czekają w kolejce?</li>
+                        <li>Max długość kolejki?</li>
+                        <li>Dla laptopów: czy procek się nie skaluje w dół?</li>
+                        <li>Ezoteryka hypercomputingu - cache procesora ;) ?</li>
+                    </ul>
+                </aside>
             </section>
 
             <section data-menu-title="Mem">
@@ -502,34 +503,35 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
                 <h3>Pamięć</h3>
                 <img class="max500" src="assets/stolen_sorry/mem_page_life.jpg" />
                 <small>Shamelessly stolen from Chapter 7, BPF Performance Tools</small>
-            </section>
 
-            <section data-menu-title="Mem">
-                <h3>Pamięć - ciekawe pytania</h3>
-                <ul>
-                    <li>Które procesy swapują?</li>
-                    <li>Jakie stacki prowadzą do "page fault"?</li>
-                    <li>A może by wykryć pamięć bez referencji? (memleak!)</li>
-                    <li>Ile czasu proces czeka na odzyskanie pamięci od page cache?</li>
-                    <li>Ezoteryka - podgląd zarządzania pamięcią kernela (slab model)</li>
-                </ul>
+                <aside class="notes">
+                    <h4>Pamięć - ciekawe pytania</h4>
+                    <ul>
+                        <li>Które procesy swapują?</li>
+                        <li>Jakie stacki prowadzą do "page fault"?</li>
+                        <li>A może by wykryć pamięć bez referencji? (memleak!)</li>
+                        <li>Ile czasu proces czeka na odzyskanie pamięci od page cache?</li>
+                        <li>Ezoteryka - podgląd zarządzania pamięcią kernela (slab model)</li>
+                    </ul>
+                </aside>
+
             </section>
 
             <section data-menu-title="Network">
                 <h2>Sieć</h2>
                 <img class="max500" src="assets/stolen_sorry/network_stack.jpg" />
                 <small>Shamelessly stolen from Chapter 10, BPF Performance Tools</small>
-            </section>
 
-            <section data-menu-title="Network">
-                <h3>Sieć - ciekawe pytania</h3>
-                <ul>
-                    <li>Problemy z L3? L4? Socketami?</li>
-                    <li>Dlaczego pakiety są gubione?</li>
-                    <li>Latencja TCP? Długość trwania połączenia?</li>
-                    <li>Ile pakiety leżakują w kolejce?</li>
-                    <li>Który proces nam szpera po portach?</li>
-                </ul>
+                <aside class="notes">
+                    <h4>Sieć - ciekawe pytania</h4>
+                    <ul>
+                        <li>Problemy z L3? L4? Socketami?</li>
+                        <li>Dlaczego pakiety są gubione?</li>
+                        <li>Latencja TCP? Długość trwania połączenia?</li>
+                        <li>Ile pakiety leżakują w kolejce?</li>
+                        <li>Który proces nam szpera po portach?</li>
+                    </ul>
+                </aside>
             </section>
 
             <section data-menu-title="FS - I/O stack">
@@ -542,48 +544,52 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
                 <h2>FS - caches</h2>
                 <img class="max500" src="assets/stolen_sorry/fs_caches.jpg" />
                 <small>Shamelessly stolen from Chapter 8, BPF Performance Tools</small>
-            </section>
 
-            <section data-menu-title="FS">
-                <h3>FS - ciekawe pytania</h3>
-                <ul>
-                    <li>Które procesy gdzie się odwołują?</li>
-                    <li>Czasy dostępu do plików? Z jakego powodu?</li>
-                    <li>Jaki mamy cache hit ratio?</li>
-                    <li>Kiedy i kto czyści "dirty pages"?(tj. zapisuje dane)</li>
-                    <li>Ezoteryka - prefetch (wczytaj zanim proces potrzebuje)</li>
-                </ul>
+                <aside class="notes">
+                    <h4>FS - ciekawe pytania</h4>
+                    <ul>
+                        <li>Które procesy gdzie się odwołują?</li>
+                        <li>Czasy dostępu do plików? Z jakego powodu?</li>
+                        <li>Jaki mamy cache hit ratio?</li>
+                        <li>Kiedy i kto czyści "dirty pages"?(tj. zapisuje dane)</li>
+                        <li>Ezoteryka - prefetch (wczytaj zanim proces potrzebuje)</li>
+                    </ul>
+                </aside>
             </section>
 
             <section data-menu-title="Block I/O - stack">
                 <h3>Urządzenia blokowe - stack I/O</h3>
                 <img class="max500" src="assets/stolen_sorry/bio_stack.jpg" />
                 <small>Shamelessly stolen from Chapter 9, BPF Performance Tools</small>
-            </section>
 
-            <section data-menu-title="Block I/O - questions">
-                <h3>Urządzenia blokowe - ciekawe pytania</h3>
-                <ul>
-                    <li>Jakie komendy (nvme, scsi, sata) zostały wysłane?</li>
-                    <li>Ile jest i jakich zapytań do dysku?</li>
-                    <li>Latencja?</li>
-                    <li>Błędy? Timeouty?</li>
-                    <li>Rozkład odczytów sekwencyjnych/losowych?</li>
-                    <li>Ezoteryka - tym razem brak</li>
-                </ul>
+                <aside class="notes">
+                    <h4>Urządzenia blokowe - ciekawe pytania</h4>
+                    <ul>
+                        <li>Jakie komendy (nvme, scsi, sata) zostały wysłane?</li>
+                        <li>Ile jest i jakich zapytań do dysku?</li>
+                        <li>Latencja?</li>
+                        <li>Błędy? Timeouty?</li>
+                        <li>Rozkład odczytów sekwencyjnych/losowych?</li>
+                        <li>Ezoteryka - tym razem brak</li>
+                    </ul>
+                </aside>
             </section>
-
 
             <section data-menu-title="Security">
-                <h3>Security - ciekawe pytania</h3>
-                <ul>
-                    <li>Jaki proces gdzie się łączy?</li>
-                    <li>O jakie uprawnienia proszą procesy?</li>
-                    <li>Jakie błędy z braku uprawnień wystąpiły?</li>
-                    <li>Trackowanie sesji PAM</li>
-                    <li>Powtórka: jakie funkcje z jakimi argumentami są wykonywane?</li>
-                    <li>Ezoteryka - sky is the limit</li>
-                </ul>
+                <h4>Security</h4>
+                <img class="max600" src="assets/stolen_sorry/security_monitoring.jpg" />
+
+                <aside class="notes">
+                    <h4>Security - ciekawe pytania</h4>
+                    <ul>
+                        <li>Jaki proces gdzie się łączy?</li>
+                        <li>O jakie uprawnienia proszą procesy?</li>
+                        <li>Jakie błędy z braku uprawnień wystąpiły?</li>
+                        <li>Trackowanie sesji PAM</li>
+                        <li>Powtórka: jakie funkcje z jakimi argumentami są wykonywane?</li>
+                        <li>Ezoteryka - sky is the limit</li>
+                    </ul>
+                </aside>
             </section>
 
             <section data-menu-title="Getting there!">
@@ -591,8 +597,8 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
                 <p>Ostatni slajd wstępu :-)</p>
             </section>
 
-            <section data-menu-title="Brandon 60s">
-                <h2>60 second easy win by Brandon</h2>
+            <section data-menu-title="Brendan 60s">
+                <h3>60 second easy win by Brendan</h3>
                 <pre class="bash">
                     <code data-trim data-noescape>
                         uptime
@@ -610,6 +616,8 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
                 <small class="r-fit-text">https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55</small>
 
                 <aside class="notes">
+                    load avg !
+                    <br /><br />
                     Panie admiiiiiiin<br />
                     Nie działa. Żre proca, ramu nie ma, dysk muli, sieć zwisa, kable więdną<br /><br />
                     TCPv4!<br/><br/>
@@ -636,25 +644,6 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
                 <img src="assets/ebpf_logo_glow.png" />
             </section>
 
-            <section data-menu-title="BPF cont.">
-                <h2>BPF</h2>
-                <img src="assets/bpf_libbpf.png" />
-
-                <small>Btw. jest też ebpf.pdf.exe na windowsa: https://github.com/microsoft/ebpf-for-windows</small>
-
-                <aside class="notes">
-                    Patchowanie kernela na runtime? Przez usera? Andrzej to jebnie.<br />
-                    prof: perf_buffer copy to userspace ---> BPF: final value to userspace (statistics, chart)
-                    <br />
-                    --f-no-omit-frame-pointer is love
-                </aside>
-            </section>
-
-            <section data-menu-title="BPF cont.">
-                <h2>BPF Verifier</h2>
-                <img src="assets/bpf_loader.png" />
-            </section>
-
             <section data-menu-title="Alternatives">
                 <h4>Ale przecie istnieją już narzędzia do profilowania/traecingu?</h4>
                 <p class="fragment fade-in-then-semi-out">No tak...</p>
@@ -664,8 +653,8 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
                     <span class="fragment fade-in-then-semi-out">systemTap</span>
                     <span class="fragment fade-in-then-semi-out">LTTng</span>
                     <span class="fragment fade-in-then-semi-out">Dtrace</span>
+                    <span class="fragment fade-in-then-semi-out">...ale</span>
                 </p>
-                <p class="fragment fade-in-then-semi-out">...ale:</p>
                 <p class="fragment fade-in-then-semi-out">Są na poziomie user space (skrót myślowy)</p>
                 <p class="fragment fade-in-then-semi-out">BPF umie więcej niż tylko tracing</p>
                 <p class="fragment fade-in-then-semi-out">BPF umi szybciej</p>
@@ -677,6 +666,55 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
                 </aside>
             </section>
 
+            <section data-menu-title="BPF cont.">
+                <h2>BPF</h2>
+                <img src="assets/bpf_libbpf.png" />
+
+                <small>Btw. jest też ebpf.pdf.exe na windowsa: https://github.com/microsoft/ebpf-for-windows</small>
+
+                <aside class="notes">
+                    Patchowanie kernela na runtime? Przez usera? Andrzej to jebnie.<br />
+                    prof: perf_buffer copy to userspace ---> BPF: final value to userspace (statistics, chart)
+                    <br />
+                    <br />
+                    MAPY MAPY MAPY MAPY!!!!!!
+                    <br />
+                    <br />Ważne! Wspomnieć o strukturach w C, jak dla dtrace i chyba perf'a<br /><br />
+                    --f-no-omit-frame-pointer is love
+                </aside>
+            </section>
+
+            <section data-menu-title="BPF map types">
+                <h3>Typy map dostępnych dla BPF</h3>
+                <pre>
+BPF map types = {
+    // more @ /usr/include/linux/bpf.h
+
+    BPF_MAP_TYPE_ARRAY,
+    BPF_MAP_TYPE_ARRAY_OF_MAPS,
+    BPF_MAP_TYPE_CGROUP_ARRAY,
+    BPF_MAP_TYPE_CGROUP_STORAGE,
+    // ...
+    BPF_MAP_TYPE_LRU_HASH,
+    BPF_MAP_TYPE_LRU_PERCPU_HASH,
+    // ...
+    BPF_MAP_TYPE_QUEUE,
+    BPF_MAP_TYPE_REUSEPORT_SOCKARRAY,
+    BPF_MAP_TYPE_SOCKHASH,
+    BPF_MAP_TYPE_SOCKMAP,
+    BPF_MAP_TYPE_STACK,
+    BPF_MAP_TYPE_STACK_TRACE,
+    BPF_MAP_TYPE_UNSPEC,  // Reserved, invalid
+    BPF_MAP_TYPE_XSKMAP,
+};
+                </pre>
+            </section>
+
+            <section data-menu-title="BPF cont.">
+                <h2>BPF Verifier</h2>
+                <img src="assets/bpf_loader.png" />
+            </section>
+
             <section data-menu-title="BCC, BPFTrace">
                 <h2>Frontendy BPF</h2>
                 <p>Czyste C</p>
@@ -684,21 +722,56 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
                 <p>BPFTrace</p>
             </section>
 
-            <section data-menu-title="TODO BCC">
+            <section data-menu-title="BCC">
                 <h2>BCC</h2>
-                <p>Wstawić schemat</p>
+                <p>Toolkit do tworzenia narzędzi BPF'owych;</p>
+                <p>Wiele gotowców z doskonałą dokumentacją;</p>
+                <p>C + python/lua</p>
             </section>
 
-            <section data-menu-title="TODO BPFtrace">
+            <section data-menu-title="BPFtrace">
                 <h2>BPFtrace</h2>
-                <p>Front end BPF</p>
-                <p>Platforma && język programowania do traceingu</p>
-                <p>schemat tutaj???</p>
+                <p>Front end BPF;</p>
+                <p>Narzędzie && język programowania do traceingu;</p>
+                <p>Wiele gotowców z doskonałą dokumentacją</p>
             </section>
 
-            <section data-menu-title="TODO BPFtrace">
+            <section data-menu-title="BPFtrace">
                 <h2>BPFtrace</h2>
-                <p>TODO - kilka komend tutaj</p>
+                <pre style="width: 150%; margin-left: -25%;">
+                    <code data-trim data-noescape>
+# Files opened by process
+bpftrace -e 'tracepoint:syscalls:sys_enter_open { printf("%s %s\n", comm, str(args->filename)); }'
+
+# Syscall count by program
+bpftrace -e 'tracepoint:raw_syscalls:sys_enter { @[comm] = count(); }'
+
+# Read bytes by process:
+bpftrace -e 'tracepoint:syscalls:sys_exit_read /args->ret/ { @[comm] = sum(args->ret); }'
+
+# Read size distribution by process:
+bpftrace -e 'tracepoint:syscalls:sys_exit_read { @[comm] = hist(args->ret); }'
+
+# Show per-second syscall rates:
+bpftrace -e 'tracepoint:raw_syscalls:sys_enter { @ = count(); } interval:s:1 { print(@); clear(@); }'
+
+# Trace disk size by process
+bpftrace -e 'tracepoint:block:block_rq_issue { printf("%d %s %d\n", pid, comm, args->bytes); }'
+
+# Count page faults by process
+bpftrace -e 'software:faults:1 { @[comm] = count(); }'
+
+# Count LLC cache misses by process name and PID (uses PMCs):
+bpftrace -e 'hardware:cache-misses:1000000 { @[comm, pid] = count(); }'
+
+# Profile user-level stacks at 99 Hertz, for PID 189:
+bpftrace -e 'profile:hz:99 /pid == 189/ { @[ustack] = count(); }'
+
+# Files opened, for processes in the root cgroup-v2
+bpftrace -e 'tracepoint:syscalls:sys_enter_openat /cgroup == cgroupid("/sys/fs/cgroup/unified/mycg")/ { printf("%s\n", str(args->filename)); }'
+                    </code>
+                </pre>
+                <small>1:1 copy of https://github.com/bpftrace/bpftrace/tree/master</small>
             </section>
 
             <section data-menu-title="BPFtrace">
@@ -784,41 +857,6 @@ END
 </pre>
             </section>
 
-            <section data-menu-title="Typy programów bpf">
-                <h2>Typy programów BPF</h2>
-                <pre>
-BPF map types = {
-    // more @ /usr/include/linux/bpf.h
-
-    BPF_MAP_TYPE_ARRAY,
-    BPF_MAP_TYPE_ARRAY_OF_MAPS,
-    BPF_MAP_TYPE_CGROUP_ARRAY,
-    BPF_MAP_TYPE_CGROUP_STORAGE,
-    // ...
-    BPF_MAP_TYPE_LRU_HASH,
-    BPF_MAP_TYPE_LRU_PERCPU_HASH,
-    // ...
-    BPF_MAP_TYPE_QUEUE,
-    BPF_MAP_TYPE_REUSEPORT_SOCKARRAY,
-    BPF_MAP_TYPE_SOCKHASH,
-    BPF_MAP_TYPE_SOCKMAP,
-    BPF_MAP_TYPE_STACK,
-    BPF_MAP_TYPE_STACK_TRACE,
-    BPF_MAP_TYPE_UNSPEC,  // Reserved, invalid
-    BPF_MAP_TYPE_XSKMAP,
-};
-                </pre>
-            </section>
-
-            <section data-menu-title="TODO inne">
-                <p>
-            BPF - struktury w C - dostęp do nich,
-            bpftrace (w tym jezyk) vs bcc
-            dostępne mapy w pamięci
-                </p>
-
-            </section>
-
         </section> <!-- end bpf -->
 
 
@@ -826,7 +864,7 @@ BPF map types = {
 
             <section data-menu-title="Stories">
                 <h2>Kilka życiowych przypadków</h2>
-                <p class="fragment">(życiowych dla mnie)</p>
+                <p>(dla mnie)</p>
             </section>
 
             <section data-menu-title="File access">
@@ -834,41 +872,96 @@ BPF map types = {
                 <p>Live: opensnoop + missing.py</p>
             </section>
 
-            <section data-menu-title="TODO Short lived task">
+            <section data-menu-title="Short lived task">
                 <h2>Short lived task</h2>
+                <small>(zarazem ewentualny przykład aliasingu)</small>
                 <p>Live: top vs. execsnoop</p>
+                <strong>TODO kod do wątków</strong>
             </section>
 
-            <section data-menu-title="TODO Timeout on jenkins job">
-                <h2>Timeout na jobie jenkinsowym</h2>
-                <p class="fragment">Pomysły??</p>
-                <p class="fragment">Odpalamy ....</p>
-                <p class="fragment">O... ścieżka do unix socket ma ograniczenie na 108 znaków :)</p>
-
-                <p></p>
+            <section data-menu-title="Jenkins job hardcore">
+                <h3 class="r-fit-text">Hardcore vegan crossfit w jenkinsie</h3>
+                <p class="fragment">Męczyliśmy się ze strace</p>
+                <p class="fragment">Z BPF poszło by szybciej i przyjemniej :)</p>
+                <p class="fragment">O... ścieżka do unix socketa ma ograniczenie <br /> 108 znaków (╯°□°）╯︵ ┻━┻</p>
             </section>
 
-            <section data-menu-title="TODO Python GIL psycopg">
+            <section data-menu-title="Python GIL psycopg">
                 <h2>lock na postgresie</h2>
+                <small class="fragment">System stawał dęba. Bye bye;</small>
+                <small class="fragment"> GDB poszło w ruch</small>
+                <pre class="fragment" style="width: 150%;margin-left: -25%;">
+                    <code>
+#0  futex_wait (private=0, expected=2, futex_word=0x7f51341cbce0) at ../sysdeps/nptl/futex-internal.h:146
+#1  __GI___lll_lock_wait (futex=futex@entry=0x7f51341cbce0, private=0) at lowlevellock.c:50
+#2  0x00007f516dd696b2 in lll_mutex_lock_optimized (mutex=0x7f51341cbce0) at pthread_mutex_lock.c:49
+#3  ___pthread_mutex_lock (mutex=mutex@entry=0x7f51341cbce0) at pthread_mutex_lock.c:89
+#4  0x00007f515d2cd482 in pthread_mutex_lockDBG (__mutex=__mutex@entry=0x7f51341cbce0, line=line@entry=814, file=file@entry=0x7f515d2e4808 "psycopg/pqpath.c") at psycopg/connection_int.c:40
+#5  0x00007f515d2cbdca in _pq_execute_sync (curs=curs@entry=0x7f51341ce850, query=query@entry=0x7ffd42af7bc0 "CLOSE \"_django_curs_139987710351168_10\"", no_result=no_result@entry=0,
+    no_begin=no_begin@entry=1) at psycopg/pqpath.c:814
+#6  0x00007f515d2cbfc7 in pq_execute (curs=curs@entry=0x7f51341ce850, query=query@entry=0x7ffd42af7bc0 "CLOSE \"_django_curs_139987710351168_10\"", async=async@entry=0,
+    no_result=no_result@entry=0, no_begin=no_begin@entry=1) at psycopg/pqpath.c:944
+#7  0x00007f515d2d2ab8 in curs_close (self=0x7f51341ce850, dummy=&lt; out&gt;) at psycopg/cursor_type.c:106
+#8  0x00007f516dfcb04f in call_function (oparg=&lt; out&gt;, pp_stack=0x7ffd42af7d90) at Python/ceval.c:4360
+#9  PyEval_EvalFrameEx (f=f@entry=0xa268980, throwflag=&lt; out&gt;) at Python/ceval.c:3013
+#10 0x00007f516df4ac65 in gen_send_ex (gen=gen@entry=0x7f511e2aaf00, arg=arg@entry=0x7f516e083de0 &lt;_Py_NoneStruct&gt;, exc=exc@entry=1) at Objects/genobject.c:85
+#11 0x00007f516df4adee in gen_close (gen=gen@entry=0x7f511e2aaf00, args=args@entry=0x0) at Objects/genobject.c:133
+#12 0x00007f516df4aeb9 in gen_del (self=0x7f511e2aaf00) at Objects/genobject.c:168
+#13 0x00007f516df4b2c8 in gen_dealloc (gen=0x7f511e2aaf00) at Objects/genobject.c:32
+#14 0x00007f516df5411c in frame_dealloc (f=0xc89db60) at Objects/frameobject.c:498
+#15 0x00007f516dff05eb in tb_dealloc (tb=0x7f511e348230) at Python/traceback.c:28
+#16 0x00007f516df4ae1b in gen_close (gen=gen@entry=0x7f511e30cf00, args=args@entry=0x0) at Objects/genobject.c:143
+#17 0x00007f516df4aeb9 in gen_del (self=0x7f511e30cf00) at Objects/genobject.c:168
+#18 0x00007f516df4b2c8 in gen_dealloc (gen=0x7f511e30cf00) at Objects/genobject.c:32
+#19 0x00007f516df65d1c in dict_dealloc (mp=0x7f511e37a830) at Objects/dictobject.c:1086
+#20 0x00007f516df82660 in subtype_dealloc (self=0x7f511e36af90) at Objects/typeobject.c:1035
+#21 0x00007f516df65d1c in dict_dealloc (mp=0x7f511e3ccb90) at Objects/dictobject.c:1086
+#22 0x00007f516df81f51 in subtype_clear (self=0x7f511e343dd0) at Objects/typeobject.c:912
+#23 0x00007f516dffbf5c in delete_garbage (old=&lt; out&gt;, collectable=&lt; out&gt;) at Modules/gcmodule.c:817
+#24 collect (generation=generation@entry=0) at Modules/gcmodule.c:981
+#25 0x00007f516dffc760 in collect_generations () at Modules/gcmodule.c:1047
+#26 _PyObject_GC_Malloc (basicsize=&lt; out&gt;) at Modules/gcmodule.c:1511
+#27 _PyObject_GC_Malloc (basicsize=&lt; out&gt;) at Modules/gcmodule.c:1493
+#28 0x00007f516dffc7e6 in _PyObject_GC_NewVar (tp=tp@entry=0x7f516e0897c0 &lt;PyTuple_Type&gt;, nitems=nitems@entry=30) at Modules/gcmodule.c:1531
+#29 0x00007f516df808cf in PyTuple_New (size=&lt; out&gt;) at Objects/tupleobject.c:90
+#30 PyTuple_New (size=size@entry=30) at Objects/tupleobject.c:49
+#31 0x00007f515d2cb5fa in _pq_fetch_tuples (curs=0x7f51341ce550) at psycopg/pqpath.c:1151
+#32 pq_fetch (curs=curs@entry=0x7f51341ce550, no_result=no_result@entry=0) at psycopg/pqpath.c:1801
+#33 0x00007f515d2cbe90 in _pq_execute_sync (curs=curs@entry=0x7f51341ce550,
+    query=0xca6c574 "SELECT \"account\".\"id\", \"account\".\"polymorphic_ctype_id\", \"account\".\"creation_datetime\", \"account\".\"creation_session_id\", \"account\".\"update_datetime\", \"account\".\"update_session_id\", \"account\".\"account_"..., no_result=no_result@entry=0, no_begin=no_begin@entry=0) at psycopg/pqpath.c:868
+#34 0x00007f515d2cbfc7 in pq_execute (curs=curs@entry=0x7f51341ce550, query=&lt; out&gt;, async=async@entry=0, no_result=no_result@entry=0, no_begin=no_begin@entry=0)
+    at psycopg/pqpath.c:944
+#35 0x00007f515d2d35e3 in _psyco_curs_execute (self=self@entry=0x7f51341ce550, query=0xca84d50, vars=&lt; out&gt;, async=0, no_result=no_result@entry=0) at psycopg/cursor_type.c:446
+#36 0x00007f515d2d4177 in curs_execute (self=0x7f51341ce550, args=&lt; out&gt;, kwargs=&lt; out&gt;) at psycopg/cursor_type.c:490
+#37 0x00007f516dfcc66a in call_function (oparg=&lt; out&gt;, pp_stack=0x7ffd42af8390) at Python/ceval.c:4376
+&& much more
+                    </code>
+                </pre>
+                <p class="fragment">Teraz? BPF + FlameChart</p>
+
+                <aside class="notes">
+                    Jak destruktor za wcześnie wjeżdżał nie czyścił się GIL. Następnie wykonywało się czyszczenie połączenia (cleanup obok destruktora) i.. czekał na GIL :)
+                </aside>
             </section>
 
-            <section data-menu-title="TODO Overscalling!">
+            <section data-menu-title="Overscalling!">
                 <h2>Więcej == lepiej??</h2>
                 <p class="fragment fade-in-then-semi-out">Więcej procesów FCGI/WSGI == szybciej, lepiej?</p>
                 <p class="fragment fade-in-then-semi-out">Sprawdźmy :-)</p>
-                <pre class="bash">
+                <pre class="bash fragment">
                     <code>
-la la la
+TODO - ups... zabrakło mi czasu
+nie będzie pokazówki overscallingu :'<
                     </code>
                 </pre>
             </section>
 
             <section data-menu-title="DNS hang">
                 <h3 class="r-fit-text">Muli przeglądanie sieci / aplikacja wisi na zapytaniach</h3>
-                <p>Z praktyki przeczuwam, że DNS dogorywa...</p>
-                <small class="fragment fade-in-then-semi-out">(firmowy dns po vpn, anyone :) ?)</small>
-                <p class="fragment semi-fade-out">Sprawdźmy to!</p>
-                <p>Live: narzędzie BPF'owe gethostlatency</p>
+                <p class="fragment">Z praktyki przeczuwam, że DNS dogorywa...</p>
+                <small class="fragment fade-in-then-out">(firmowy dns po vpn, anyone :) ?)</small>
+                <p class="fragment">Sprawdźmy to!</p>
+                <p class="fragment">Live: narzędzie BPF'owe gethostlatency</p>
             </section>
 
             <section data-menu-title="Intrusive admin :)">
