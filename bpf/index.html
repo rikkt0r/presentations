@@ -70,11 +70,15 @@
 
             <section data-menu-title="Quality bait">
                 <h2>Przedsmak</h2>
-                <p class="fragment highlight-current-blue">BPF('92) -> eBPF('14) -> BPF(now)</p>
+                <p class="fragment highlight-current-blue">Będzie dużo teorii, sorry :'&lt;</p>
                 <p class="fragment highlight-current-blue">Mechanizm kernela</p>
                 <p class="fragment highlight-current-blue">Nowa klasa aplikacji!</p>
                 <p class="fragment highlight-current-blue">(づ｡◕‿‿◕｡)づ Wykonujemy kod z poziomu kernela</p>
                 <p class="fragment highlight-current-blue">Observability, tracing, forwarding, security</p>
+
+                <aside class="notes">
+                    No bo BPF bez teorii to bezsens. On umożliwia jej wdrożenie w życie w lepszy sposób :)
+                </aside>
             </section>
 
             <section data-menu-title="Workshop plans">
@@ -198,34 +202,108 @@
 
         <section> <!-- begin performance -->
 
-            <section data-menu-title="TODO Performance">
-                <h2>intro do analizy performanceu</h2>
+            <section data-menu-title="Performance">
+                <h2>Analiza performance - intro!</h2>
                 <p>Zliczanie, samplowanie, traceowanie, benchmarkowanie</p>
             </section>
 
-            <section data-menu-title="TODO What we have">
-                <h2>co mamy: eventy, k/uprobe, ustd, tracepoint, PMC</h2>
+            <section data-menu-title="What we have">
+                <h2>Co daje nam kernel</h2>
+                <ul>
+                    <li>perf_event</li>
+                    <li>kprobe, uprobe</li>
+                    <li>tracepoint, USDT (user statically defined tracing)</li>
+                    <li>PMC(performance monitoring counters)</li>
+                </ul>
             </section>
 
             <section data-menu-title="TODO PMC">
-                <h2>Liczniki sprzętowe</h2>
+                <h2>Liczniki sprzętowe, PMC</h2>
                 <p>PMC, performance monitoring counters</p>
             </section>
 
             <section data-menu-title="TODO perf event">
-                <h2>Perf</h2>
+                <h2>Perf_event</h2>
             </section>
 
-            <section data-menu-title="TODO kernel tracepoints">
-                <h2>kernel tracepoints</h2>
+            <section data-menu-title="Tracepoints & USDT">
+                <h3>kernel tracepoints, user USDT</h3>
+                <p>Kod wymaga zadeklarowania tracepointu</p>
+                <p>Statyczna nazwa, statyczne argumenty</p>
+                <p>W momencie kompilacji w miejscu TC znajduje się NOP(prawie zerowy narzut)</p>
+                <p>Przy aktywacji TC NOP zamieniany jest na INT3</p>
+                <p>Wstrzyknięta zostaje funkcja "trampolina"</p>
+                <p>Po deaktywacji TC przywrócony jest NOP i usunięta trampolina</p>
+                <small>https://leezhenghui.github.io/linux/2019/03/05/exploring-usdt-on-linux.html</small>
             </section>
 
-            <section data-menu-title="TODO lib tracepoints">
-                <h2>lib tracepoints / ustd</h2>
+            <section>
+                <h3>Przykład USDT</h3>
+                <pre class="bash" style="width: 150%; margin-left: -25%;">
+                    <code data-trim data-noescape>
+rikkt0r@nasa.gov:/usr/lib$ readelf -n /lib/x86_64-linux-gnu/libc.so.6
+
+Displaying notes found in: .note.gnu.property
+  Owner                Data size        Description
+  GNU                  0x00000020       NT_GNU_PROPERTY_TYPE_0
+      Properties: x86 feature: IBT, SHSTK
+        x86 ISA needed: x86-64-baseline
+
+Displaying notes found in: .note.gnu.build-id
+  Owner                Data size        Description
+  GNU                  0x00000014       NT_GNU_BUILD_ID (unique build ID bitstring)
+    Build ID: 490fef8403240c91833978d494d39e537409b92e
+
+Displaying notes found in: .note.ABI-tag
+  Owner                Data size        Description
+  GNU                  0x00000010       NT_GNU_ABI_TAG (ABI version tag)
+    OS: Linux, ABI: 3.2.0
+
+Displaying notes found in: .note.stapsdt
+  Owner                Data size        Description
+
+    [...]
+
+  stapsdt              0x0000004c       NT_STAPSDT (SystemTap probe descriptors)
+    Provider: libc
+    Name: pthread_start
+    Location: 0x000000000009491a, Base: 0x00000000001e3e28, Semaphore: 0x0000000000000000
+    Arguments: 8@%rbx 8@1600(%rbx) 8@1608(%rbx)
+  stapsdt              0x00000053       NT_STAPSDT (SystemTap probe descriptors)
+    Provider: libc
+    Name: pthread_create
+    Location: 0x000000000009511a, Base: 0x00000000001e3e28, Semaphore: 0x0000000000000000
+    Arguments: 8@%rax 8@8(%rsp) 8@16(%rsp) 8@24(%rsp)
+  stapsdt              0x00000031       NT_STAPSDT (SystemTap probe descriptors)
+    Provider: libc
+    Name: pthread_join
+    Location: 0x000000000009654b, Base: 0x00000000001e3e28, Semaphore: 0x0000000000000000
+    Arguments: 8@%rdi
+  stapsdt              0x00000045       NT_STAPSDT (SystemTap probe descriptors)
+    Provider: libc
+    Name: pthread_join_ret
+    Location: 0x000000000009659c, Base: 0x00000000001e3e28, Semaphore: 0x0000000000000000
+    Arguments: 8@%rbx -4@%r12d 8@%r13
+  stapsdt              0x00000033       NT_STAPSDT (SystemTap probe descriptors)
+    Provider: libc
+    Name: mutex_acquired
+    Location: 0x0000000000096b4d, Base: 0x00000000001e3e28, Semaphore: 0x0000000000000000
+    Arguments: 8@%rbp
+
+    [...]
+
+                    </code>
+                </pre>
             </section>
 
-            <section data-menu-title="TODO kprobe, uprobe">
-                <h2>kprobe, uprobe</h2>
+            <section data-menu-title="kprobe, uprobe">
+                <h3>kprobe, uprobe - dynamic tracing</h3>
+                <p>Zapinamy się dynamicznie na funkcje kernela/aplikacji</p>
+                <p>Przyjmujemy wszystkie argumenty funkcji</p>
+                <p>Kod nie wymaga żadnej modyfikacji</p>
+                <p>Kernel w locie patchuje adres funkcji na INT3</p>
+                <p>Jeśli interrupt był z powodu k/uprobe, wykonywany jest kod probe</p>
+                <p>Dla kprobe to tyle, dla uprobe tworzona jest funkcja trampolina przez którą przelatuje wątek</p>
             </section>
 
             <section data-menu-title="Stats & graphs magic">
@@ -237,10 +315,12 @@
                     <li>Flame graph (& chart*)</li>
                     <li>Heatmap/Flamescope</li>
                 </ul>
+            </section>
 
-                <aside class="notes">
-                    Flame chart == JS, w czasie
-                </aside>
+            <section data-menu-title="Timed diagram">
+                <h2>Rozkład w czasie</h2>
+                <img src="assets/timed_diagram.png" />
+                <small>https://grafana.com/grafana/ example</small>
             </section>
 
             <section data-menu-title="Histogram">
@@ -285,6 +365,10 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
                 <h3>Flame graph JVM + separate kernel</h3>
                 <img style="max-height: 500px;" src="assets/flame_graph_2.svg" />
                 <small>https://www.brendangregg.com/FlameGraphs/example-perf.svg</small>
+
+                <aside class="notes">
+                    Flame chart == JS, w czasie
+                </aside>
             </section>
 
             <section data-menu-title="Heatmap">
@@ -372,7 +456,7 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
             </section>
 
             <section data-menu-title="TODO Mem">
-                <h2>Mem - avail, free, buffered, cached, soft page fail, hard page fail, segmentacja vs. paging</h2>
+                <h2>TODO Mem - avail, free, buffered, cached, soft page fail, hard page fail, segmentacja vs. paging</h2>
             </section>
 
             <section data-menu-title="Network">
@@ -384,7 +468,10 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
             <section data-menu-title="TODO Network">
                 <h3>Sieć - ciekawe pytania</h3>
                 <ul>
-                    <li>Które procesy gdzie się odwołują?</li>
+                    <li>Problemy z L3? L4? Socketami?</li>
+                    <li>Dlaczego pakiety są gubione?</li>
+                    <li>Latencja TCP? Długość trwania połączenia?</li>
+                    <li>Ile pakiety leżakują w kolejce?</li>
                 </ul>
             </section>
 
@@ -510,7 +597,7 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
             </section>
 
             <section data-menu-title="Alternatives">
-                <h2>Ale przecie istnieją już narzędzia do profilowania/traecingu?</h2>
+                <h4>Ale przecie istnieją już narzędzia do profilowania/traecingu?</h4>
                 <p class="fragment fade-in-then-semi-out">No tak...</p>
                 <p>
                     <span class="fragment fade-in-then-semi-out">ftrace</span>
@@ -523,7 +610,7 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
                 <p class="fragment fade-in-then-semi-out">Są na poziomie user space (skrót myślowy)</p>
                 <p class="fragment fade-in-then-semi-out">BPF umie więcej niż tylko tracing</p>
                 <p class="fragment fade-in-then-semi-out">BPF umi szybciej</p>
-                <p class="fragment fade-in-then-semi-out">Narzędzia BPF korzystają z dorobku intelektualnego powyższych</p>
+                <p class="fragment fade-in-then-semi-out r-fit-text">Narzędzia BPF korzystają z dorobku intelektualnego powyższych</p>
                 <p class="fragment fade-in-then-semi-out">Optymalne BPF'owe bajery!</p>
 
                 <aside class="notes">
@@ -544,13 +631,38 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
 
             <section data-menu-title="TODO BPFtrace">
                 <h2>BPFtrace</h2>
+                <pre>
+BEGIN
+{
+	printf("Tracing block device I/O... Hit Ctrl-C to end.\n");
+}
+
+tracepoint:block:block_bio_queue
+{
+	@start[args.sector] = nsecs;
+}
+
+tracepoint:block:block_rq_complete,
+tracepoint:block:block_bio_complete
+/@start[args.sector]/
+{
+	@usecs = hist((nsecs - @start[args.sector]) / 1000);
+	delete(@start[args.sector]);
+}
+
+END
+{
+	clear(@start);
+}
+                </pre>
+                <small>https://github.com/bpftrace/bpftrace/blob/master/tools/biolatency.bt</small>
             </section>
 
             <section data-menu-title="TODO Typy programów bpf">
                 <h2>Typy programów BPF</h2>
                 <pre>
 BPF map types = {
-    // Picked just a few, all are available @ /usr/include/linux/bpf.h
+    // more @ /usr/include/linux/bpf.h
 
     BPF_MAP_TYPE_ARRAY,
     BPF_MAP_TYPE_ARRAY_OF_MAPS,
