@@ -77,6 +77,8 @@
                 <p>Observability, tracing, forwarding, security</p>
 
                 <aside class="notes">
+                    Daliście się nabrać! miało być cool,
+                    <br />
                     No bo BPF bez teorii to bezsens ;( Teoria to >=89%™
                 </aside>
             </section>
@@ -103,12 +105,12 @@
                     <li>Zyskacie szerszy obraz deployowanych aplikacji</li>
                     <li>Poznacie systemowe narzędzia do analizy, profilowania, debugu</li>
                     <li>Kernel pozostanie blisko Waszego serca</li>
-                    <li>Zyskacie dobre podstawy do dalszego samodoskonalenia</li>
+                    <li>Zyskacie dobre podstawy do dalszego <strong>samodoskonalenia</strong></li>
                 </ul>
             </section>
 
             <section data-menu-title="Side note">
-                <p>Prezentacja mocno inspirowana materiałami Brendan'a Gregg'a m. in.</p>
+                <p>Prezentacja <u>mocno</u> inspirowana materiałami Brendan'a Gregg'a m. in.</p>
                 <img class="max600" src="assets/bpfperftools_bookcover_1348.png"/>
             </section>
 
@@ -424,7 +426,9 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
 
             <section data-menu-title="Flame graph 2">
                 <h3>Flame graph JVM + separate kernel</h3>
-                <img style="max-height: 500px;" src="assets/flame_graph_2.svg" />
+                <a href="assets/flame_graph_2.svg" target="_blank">
+                    <img style="max-height: 500px;" src="assets/flame_graph_2.svg" />
+                </a>
                 <small>https://www.brendangregg.com/FlameGraphs/example-perf.svg</small>
 
                 <aside class="notes">
@@ -599,10 +603,11 @@ Tracing CPU scheduler... Hit Ctrl-C to end.
 
             <section data-menu-title="Brendan 60s">
                 <h3>60 second easy win by Brendan</h3>
+                <small>Tj. nie warto wyciągać armaty na słonia</small>
                 <pre class="bash">
                     <code data-trim data-noescape>
                         uptime
-                        dmesg | tail
+                        dmesg
                         vmstat 1
                         mpstat -P ALL 1
                         pidstat 1
